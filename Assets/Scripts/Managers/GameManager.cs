@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    #region Singleton
+    //#region Singleton
 
     private static GameManager _instance;
 
@@ -20,6 +20,13 @@ public class GameManager : MonoBehaviour
             return _instance;
         }
     }
+
+    public int uselessCounter;
+
+    public CubeManager cubeManager;
+
+    public CatInfoClient catInfoClient;
+
 
     private void Awake()
     {
@@ -43,13 +50,30 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Debug.Log("GameManager START");
+
+        uselessCounter = 0;
+
+        cubeManager = GameObject.Find("Cube").GetComponent<CubeManager>();
+        cubeManager.OnStart(this);
+
+        catInfoClient = new CatInfoClient(this);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        uselessCounter++;
+        int uselessCounterLimit = 1000;
+        if (uselessCounter > uselessCounterLimit)
+        {
+            Debug.Log("GameManager UPDATE / " + uselessCounterLimit);
+            uselessCounter = 0;
+        }
+
+        cubeManager.OnUpdate();
+
+        catInfoClient.OnUpdate();
     }
 
-    #endregion
+    //#endregion
 }
