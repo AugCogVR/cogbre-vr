@@ -1023,6 +1023,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a52242c6b2e0440a8e0897d8b59d7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  uselessCounter: 0
 --- !u!1 &513064945
 GameObject:
   m_ObjectHideFlags: 0
@@ -1995,7 +1996,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a3e37f1bbd8e1c4381a2bd9fb9a934e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cube: {fileID: 0}
+  uselessCounter: 0
+  cubeManager: {fileID: 0}
 --- !u!1 &1248742771
 GameObject:
   m_ObjectHideFlags: 0
