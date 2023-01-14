@@ -25,8 +25,9 @@ public class GameManager : MonoBehaviour
 
     public CubeManager cubeManager;
 
-    public CatInfoClient catInfoClient;
+    //public CatInfoClient catInfoClient;
 
+    public NexusClient nexusClient;
 
     private void Awake()
     {
@@ -53,10 +54,14 @@ public class GameManager : MonoBehaviour
 
         uselessCounter = 0;
 
+        // Initialize scene objects
         cubeManager = GameObject.Find("Cube").GetComponent<CubeManager>();
         cubeManager.OnStart(this);
 
-        catInfoClient = new CatInfoClient(this);
+        //catInfoClient = new CatInfoClient(this);
+
+        // Initialize data client
+        nexusClient = new NexusClient(this);
     }
 
     // Update is called once per frame
@@ -70,9 +75,14 @@ public class GameManager : MonoBehaviour
             uselessCounter = 0;
         }
 
+        // Get new data
+        nexusClient.OnUpdate();
+
+        // Update scene
         cubeManager.OnUpdate();
 
-        catInfoClient.OnUpdate();
+        //catInfoClient.OnUpdate();
+
     }
 
     //#endregion
