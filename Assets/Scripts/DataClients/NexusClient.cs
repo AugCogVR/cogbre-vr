@@ -57,9 +57,9 @@ public class NexusClient  // : MonoBehaviour  // Later we might want to make thi
         // request.keepAlive = false;
         request.ContentType = "application/json";
         request.Method = "POST";
-        StreamWriter writer = new StreamWriter(request.GetRequestStream());
+        StreamWriter writer = new StreamWriter(await request.GetRequestStreamAsync());
         string jsonRequest = "{\"userId\":\"" + userId + "\"}";
-        Debug.Log("REQUEST:" + jsonRequest);
+        //Debug.Log("REQUEST:" + jsonRequest);
         writer.Write(jsonRequest);
         writer.Close();
 
