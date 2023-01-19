@@ -8,14 +8,9 @@ using UnityEngine;
 
 public class NexusClient  // : MonoBehaviour  // Later we might want to make this a MonoBehavior again...?
 {
-    public class FileStats
-    {
-        public string whatever;
-    }
-
     GameManager _gameManager;
 
-    public int uselessCounter;
+    public int pacingCounter;
 
     public NexusClient(GameManager gameManager)
     {
@@ -23,43 +18,43 @@ public class NexusClient  // : MonoBehaviour  // Later we might want to make thi
 
         _gameManager = gameManager;
 
-        uselessCounter = 0; 
+        pacingCounter = 0;
 
-        PingNexus();
+        NexusSync("initial");
     }
 
     // OnUpdate is called by Game Manager Update
     public void OnUpdate()
     {
-        uselessCounter++;
-        int uselessCounterLimit = 1000;
-        if (uselessCounter > uselessCounterLimit)
+        pacingCounter++;
+        int pacingCounterLimit = 1000;
+        if (pacingCounter > pacingCounterLimit)
         {
-            Debug.Log("NexusClient ONUPDATE / " + uselessCounterLimit);
-            uselessCounter = 0;
-            PingNexus();
+            pacingCounter = 0;
+
+            NexusSync("update");       
         }
-        
     }
 
-    public async void PingNexus()
+    public async void NexusSync(string command)
     {
-        FileStats fileStats = await GetFileStats(12345);
-        Debug.Log("NexusClient DATA: " + fileStats.whatever);
-        Debug.Log("NexusClient COUNTER: " + uselessCounter);
+        string jsonResponse = await NexusSyncTask(12345, command);
+        Debug.Log("NexusSync JSON response: " + jsonResponse);
+        Debug.Log("NexusSync cycles used: " + pacingCounter);
     }
 
-    private async Task<FileStats> GetFileStats(int userId)
+    private async Task<string> NexusSyncTask(int userId, string command)
     {
-        //Debug.Log("NexusClient GETFILESTATS ENTER");
+        //Debug.Log("NexusSyncTask ENTER");
 
-        HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:5000/filestats");
+        HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:5000/sync_portal");
         // request.keepAlive = false;
         request.ContentType = "application/json";
         request.Method = "POST";
         StreamWriter writer = new StreamWriter(await request.GetRequestStreamAsync());
-        string jsonRequest = "{\"userId\":\"" + userId + "\"}";
-        //Debug.Log("REQUEST:" + jsonRequest);
+        string jsonRequest = "{\"userId\":\"" + userId 
+            + "\", \"command\":\"" + command + "\"}";
+        Debug.Log("NexusSync JSON request:" + jsonRequest);
         writer.Write(jsonRequest);
         writer.Close();
 
@@ -69,9 +64,7 @@ public class NexusClient  // : MonoBehaviour  // Later we might want to make thi
         reader.Close();
         response.Close();
 
-        FileStats fileStats = JsonUtility.FromJson<FileStats>(jsonResponse);
-
-        //Debug.Log("NexusClient GETFILESTATS EXIT");
-        return fileStats;
+        //Debug.Log("NexusSyncTask EXIT");
+        return jsonResponse;
     }
 }

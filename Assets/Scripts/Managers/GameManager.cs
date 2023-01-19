@@ -21,8 +21,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public int uselessCounter;
-
     public CubeManager cubeManager;
 
     //public CatInfoClient catInfoClient;
@@ -52,37 +50,26 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("GameManager START");
 
-        uselessCounter = 0;
-
         // Initialize scene objects
         cubeManager = GameObject.Find("Cube").GetComponent<CubeManager>();
         cubeManager.OnStart(this);
 
-        //catInfoClient = new CatInfoClient(this);
-
         // Initialize data client
         nexusClient = new NexusClient(this);
+
+        //catInfoClient = new CatInfoClient(this);
     }
 
     // Update is called once per frame
     void Update()
     {
-        uselessCounter++;
-        int uselessCounterLimit = 1000;
-        if (uselessCounter > uselessCounterLimit)
-        {
-            Debug.Log("GameManager UPDATE / " + uselessCounterLimit);
-            uselessCounter = 0;
-        }
+        //catInfoClient.OnUpdate();
 
-        // Get new data
+        // Sync with Nexus
         nexusClient.OnUpdate();
 
         // Update scene
         cubeManager.OnUpdate();
-
-        //catInfoClient.OnUpdate();
-
     }
 
     //#endregion
