@@ -53,7 +53,7 @@ public class NexusClient  // : MonoBehaviour  // Later we might want to make thi
     {
         //Debug.Log("NexusClient GETFILESTATS ENTER");
 
-        HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://localhost:5000/filestats");
+        HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:5000/filestats");
         // request.keepAlive = false;
         request.ContentType = "application/json";
         request.Method = "POST";
