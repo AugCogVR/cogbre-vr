@@ -68,10 +68,17 @@ public class GameManager : MonoBehaviour
             cubeList.Add(newCube);
             newCube.GetComponent<CubeManager>().OnStart(this);
 
-            TextMeshPro textObject = newCube.AddComponent<TextMeshPro>();
+            GameObject canvasMaybe = new GameObject();
+            canvasMaybe.transform.parent = newCube.transform;
+            TextMeshPro textObject = canvasMaybe.AddComponent<TextMeshPro>();
+            RectTransform rectTransform = canvasMaybe.GetComponent<RectTransform>();
+            rectTransform.localPosition = new Vector3(0, 1.0f, 0);
+            //rectTransform.sizeDelta = new Vector2(400, 200);
+            textObject.font = Resources.Load("Fonts/LiberationSans", typeof(TMP_FontAsset)) as TMP_FontAsset;
+            textObject.color = new Color(0,0,0,1.0f);
             textObject.text = "CUBE#" + i;
-            textObject.autoSizeTextContainer = true;
-            textObject.fontSize = 10;  
+            textObject.fontSize = 1;  
+            //textObject.autoSizeTextContainer = true;
             textObject.alignment = TextAlignmentOptions.Center;
         }
 
