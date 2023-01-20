@@ -62,18 +62,24 @@ public class GameManager : MonoBehaviour
         {
             //Debug.Log("MAKE A CUBE");
 
+            // Create a new cube
             GameObject prefab = Resources.Load("Prefabs/Cube") as GameObject;
             var position = new Vector3(Random.Range(-1.0f, 1.0f), 0.01f, Random.Range(-1.0f, 1.0f));
             GameObject newCube = Instantiate(prefab, position, Quaternion.identity);
             cubeList.Add(newCube);
             newCube.GetComponent<CubeManager>().OnStart(this);
 
-            GameObject canvasMaybe = new GameObject();
-            canvasMaybe.transform.parent = newCube.transform;
-            TextMeshPro textObject = canvasMaybe.AddComponent<TextMeshPro>();
-            RectTransform rectTransform = canvasMaybe.GetComponent<RectTransform>();
+            // Add object to hold text 
+            GameObject textHolder = new GameObject();
+            textHolder.transform.parent = newCube.transform;
+
+            // Create text mesh and attach to text holder object; position above cube
+            TextMeshPro textObject = textHolder.AddComponent<TextMeshPro>();
+            RectTransform rectTransform = textHolder.GetComponent<RectTransform>();
             rectTransform.localPosition = new Vector3(0, 1.0f, 0);
             //rectTransform.sizeDelta = new Vector2(400, 200);
+
+            // Set text contents and style
             textObject.font = Resources.Load("Fonts/LiberationSans", typeof(TMP_FontAsset)) as TMP_FontAsset;
             textObject.color = new Color(0,0,0,1.0f);
             textObject.text = "CUBE#" + i;
