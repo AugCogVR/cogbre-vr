@@ -14,7 +14,7 @@ public class NexusClient  // : MonoBehaviour  // Later we might want to make thi
 
     public NexusClient(GameManager gameManager)
     {
-        Debug.Log("NexusClient Constructor");
+        //Debug.Log("NexusClient Constructor");
 
         _gameManager = gameManager;
 

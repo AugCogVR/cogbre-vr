@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+// using UnityEngine.UI;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -51,7 +53,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("GameManager START");
+        //Debug.Log("GameManager START");
 
         // Initialize scene objects
         
@@ -61,11 +63,16 @@ public class GameManager : MonoBehaviour
             //Debug.Log("MAKE A CUBE");
 
             GameObject prefab = Resources.Load("Prefabs/Cube") as GameObject;
-            // GameObject prefab = GameObject.Find("Cube");
-            var position = new Vector3(Random.Range(-1.0f, 1.0f), 0, Random.Range(-1.0f, 1.0f));
+            var position = new Vector3(Random.Range(-1.0f, 1.0f), 0.01f, Random.Range(-1.0f, 1.0f));
             GameObject newCube = Instantiate(prefab, position, Quaternion.identity);
             cubeList.Add(newCube);
             newCube.GetComponent<CubeManager>().OnStart(this);
+
+            TextMeshPro textObject = newCube.AddComponent<TextMeshPro>();
+            textObject.text = "CUBE#" + i;
+            textObject.autoSizeTextContainer = true;
+            textObject.fontSize = 10;  
+            textObject.alignment = TextAlignmentOptions.Center;
         }
 
         // Initialize data client
