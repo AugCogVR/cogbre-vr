@@ -58,16 +58,21 @@ public class GameManager : MonoBehaviour
         // Initialize scene objects
         
         cubeList = new List<GameObject>();
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 50; i++)
         {
             //Debug.Log("MAKE A CUBE");
 
             // Create a new cube
             GameObject prefab = Resources.Load("Prefabs/Cube") as GameObject;
-            var position = new Vector3(Random.Range(-1.0f, 1.0f), 0.01f, Random.Range(-1.0f, 1.0f));
+            var position = new Vector3(Random.Range(-5.0f, 5.0f), 0.01f, Random.Range(-5.0f, 5.0f));
             GameObject newCube = Instantiate(prefab, position, Quaternion.identity);
             cubeList.Add(newCube);
             newCube.GetComponent<CubeManager>().OnStart(this);
+
+            // Set random color
+            var cubeRenderer = newCube.GetComponent<Renderer>();
+            Color newColor = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), 1.0f);
+            cubeRenderer.material.SetColor("_Color", newColor);
 
             // Add object to hold text 
             GameObject textHolder = new GameObject();
