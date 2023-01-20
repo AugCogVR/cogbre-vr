@@ -6,30 +6,29 @@ public class CubeManager : MonoBehaviour
 {
     GameManager _gameManager;
 
-    public int uselessCounter;
-
     // OnStart is called by Game Manager Start
     public void OnStart(GameManager gameManager)
     {
-        Debug.Log("CubeManager ONSTART");
+        // Debug.Log("CubeManager ONSTART");
 
         _gameManager = gameManager;
-
-        uselessCounter = 0; 
     }
 
     // OnUpdate is called by Game Manager Update
     public void OnUpdate()
     {
-        uselessCounter++;
-        int uselessCounterLimit = 1000;
-        if (uselessCounter > uselessCounterLimit)
-        {
-            Debug.Log("CubeManager ONUPDATE / " + uselessCounterLimit);
-            uselessCounter = 0;
-        }
+        // https://docs.unity3d.com/ScriptReference/Transform-rotation.html
+        float smooth = 5.0f;
+        float tiltAngle = 60.0f;
+        // Smoothly tilts a transform towards a target rotation.
+        float tiltAroundZ = tiltAngle;
+        float tiltAroundX = tiltAngle;
 
-        
+        // Rotate the cube by converting the angles into a quaternion.
+        Quaternion target = Quaternion.Euler(tiltAroundX, 0, tiltAroundZ);
+
+        // Dampen towards the target rotation
+        transform.rotation = Quaternion.Slerp(transform.rotation, target,  Time.deltaTime * smooth);
     }
 
 

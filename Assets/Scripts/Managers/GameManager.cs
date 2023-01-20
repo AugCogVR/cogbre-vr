@@ -23,6 +23,9 @@ public class GameManager : MonoBehaviour
 
     public CubeManager cubeManager;
 
+
+    List<GameObject> cubeList;
+
     //public CatInfoClient catInfoClient;
 
     public NexusClient nexusClient;
@@ -51,8 +54,19 @@ public class GameManager : MonoBehaviour
         Debug.Log("GameManager START");
 
         // Initialize scene objects
-        cubeManager = GameObject.Find("Cube").GetComponent<CubeManager>();
-        cubeManager.OnStart(this);
+        
+        cubeList = new List<GameObject>();
+        for (int i = 0; i < 5; i++)
+        {
+            //Debug.Log("MAKE A CUBE");
+
+            GameObject prefab = Resources.Load("Prefabs/Cube") as GameObject;
+            // GameObject prefab = GameObject.Find("Cube");
+            var position = new Vector3(Random.Range(-1.0f, 1.0f), 0, Random.Range(-1.0f, 1.0f));
+            GameObject newCube = Instantiate(prefab, position, Quaternion.identity);
+            cubeList.Add(newCube);
+            newCube.GetComponent<CubeManager>().OnStart(this);
+        }
 
         // Initialize data client
         nexusClient = new NexusClient(this);
@@ -69,7 +83,11 @@ public class GameManager : MonoBehaviour
         nexusClient.OnUpdate();
 
         // Update scene
-        cubeManager.OnUpdate();
+        foreach(GameObject currCube in cubeList)
+        {
+            currCube.GetComponent<CubeManager>().OnUpdate();
+        }
+
     }
 
     //#endregion
