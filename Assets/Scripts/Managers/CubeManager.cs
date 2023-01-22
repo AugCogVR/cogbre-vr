@@ -6,6 +6,7 @@ public class CubeManager : MonoBehaviour
 {
     GameManager _gameManager;
 
+    // vars for wiggling cubes
     private int flipCounter = 0;
     private float targetAngle = 60.0f;
 
@@ -20,13 +21,13 @@ public class CubeManager : MonoBehaviour
     // OnUpdate is called by Game Manager Update
     public void OnUpdate()
     {
+        // Wiggle the cube back and forth just to know that the cube update works
         flipCounter++;
         if (flipCounter == 100)
         {
             targetAngle *= -1.0f;
             flipCounter = 0;
         }
-
         // https://docs.unity3d.com/ScriptReference/Transform-rotation.html
         // Smoothly tilts a transform towards a target rotation.
         float smooth = 5.0f;
@@ -35,7 +36,6 @@ public class CubeManager : MonoBehaviour
         // Dampen towards the target rotation
         transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * smooth);
     }
-
 
     // Start is called before the first frame update
     void Start()
