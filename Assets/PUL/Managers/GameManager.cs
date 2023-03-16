@@ -23,9 +23,6 @@ namespace PUL
             }
         }
 
-        // // TODO: replace this Dict with an instance of a graph object. 
-        // public Dictionary<string, SimpleCubeNode> cubeDict;
-
         // TODO: We need to support more than a single graph of a single type, obviously, but we're here for now.
         public RandomGraph codeGraph;
 
@@ -66,6 +63,7 @@ namespace PUL
             // Sync with Nexus
             nexusClient.OnUpdate();
 
+            // Update the graph
             codeGraph.OnUpdate();
         }
 

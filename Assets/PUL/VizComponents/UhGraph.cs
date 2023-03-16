@@ -9,7 +9,7 @@ using UnityEngine;
 namespace PUL
 {
     /// <summary>
-    /// Uh... a graph. Adapted from https://github.com/atonalfreerider/Unity-FDG 
+    /// Uh... a graph. UNTESTED. Adapted from https://github.com/atonalfreerider/Unity-FDG 
     ///
     /// Usage:
     /// -Attach this component to a GameObject in a scene.
