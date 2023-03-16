@@ -22,8 +22,6 @@ This app (so far) is designed for the HTC Vive Pro. This is what I had to do to 
 
 ## XR Device Simulator
 
-- Navigate to the XR Device Simulator folder by going into Assets → Samples → XR Interaction Toolkit → (whichever version you have installed). 
-- Finally, just drag and drop the XR Device Simulator into the Hierarchy.
 - Right click it -> Toggle Active State to turn it on and off.
 - Refs: 
   - https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@2.0/manual/xr-device-simulator.html 
@@ -71,6 +69,10 @@ The GameManager creates a NexusClient (see Assets/PUL/DataClients/NexusClient).
 
 The NexusClient periodically polls the server for updates using a separate thread to avoid delaying the Unity game loop. Inspired by https://www.red-gate.com/simple-talk/development/dotnet-development/calling-restful-apis-unity3d/ 
 
+
+## Visualization Components
+
+The various components, behaviors, etc. that can/will be used to create the visualization are in Assets/PUL/VizComponents. Right now, it's a set of very basic and not particularly practical things mainly thrown together to get comfortable with how Unity works. 
 
 
 
