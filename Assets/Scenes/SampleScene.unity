@@ -1732,6 +1732,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a3e37f1bbd8e1c4381a2bd9fb9a934e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  codeGraph: {fileID: 0}
   nexusClient: {fileID: 0}
 --- !u!1 &1248742771
 GameObject:
