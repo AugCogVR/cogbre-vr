@@ -10,7 +10,7 @@ namespace PUL
 
         public static SimpleCubeNode New(string nodeName)
         {
-            GameObject cubePrefab = Resources.Load("Prefabs/GrabbableCube") as GameObject;
+            GameObject cubePrefab = Resources.Load("Prefabs/BACube") as GameObject;
             var position = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(2.0f, 5.0f), Random.Range(-5.0f, 5.0f));
             GameObject newCube = Instantiate(cubePrefab, position, Quaternion.identity);
             SimpleCubeNode scn = newCube.AddComponent<SimpleCubeNode>();
