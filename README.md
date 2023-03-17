@@ -8,6 +8,8 @@ This application supports research of the Auburn CSSE Program Understanding Lab 
 
 This is a Unity-based front-end to provide an immersive and egocentric experience for those who perform reverse engineering on binary programs. 
 
+Built and tested with the Unity 2021.3.4f1 LTS editor.
+
 
 # Setup
 
