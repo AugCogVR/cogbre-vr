@@ -11,7 +11,18 @@ This is a Unity-based front-end to provide an immersive and egocentric experienc
 Built and tested with the Unity 2021.3.4f1 LTS editor.
 
 
-# Setup
+# Setting up Unity and this app
+
+Download and install Unity Hub and editor version 2021.3.4f1. This project doesn't use modules other than those installed by default. 
+
+NOTE: As of this writing, 2021.3.21f1 is the latest LTS, and this app *probably* works with it. However, if you use it, you *might* introduce problems for others working on this project using 2021.3.4f1. Yeah, we should all just update, but in this case it's "leave well enough alone."
+
+Add the project to Unity Hub and open it. Open "SampleScene" from Assets/Scenes. 
+
+Any required packages that aren't included in the baseline Unity installation should be in the project and repo so no additional manual package installations should be required.
+
+
+# VR Device Setup Notes
 
 ## HTC Vive
 
@@ -24,19 +35,30 @@ This app (so far) is designed for the HTC Vive Pro. This is what I had to do to 
 
 ## XR Device Simulator
 
-- Right click it -> Toggle Active State to turn it on and off.
+- When not using the VR hardware, you can use the XR Device Simulator.
 - Refs: 
   - https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@2.0/manual/xr-device-simulator.html 
   - https://blog.immersive-insiders.com/xr-simulator/ 
 
+## Switching between VR Hardware and XR Simulator:
 
-## Running it
+### To use hardware: 
+- Enable Open XR: Project Settings -> XR Plug-In Management -> check "Open XR" 
+- Deactivate XR Device Simulator: Hierarchy -> SampleScene -> right click XR Device Simulator -> Toggle Active State (or go to inspector and uncheck the very first checkbox)
+
+### To use device simulator:
+- Reverse the above
+
+NOTE: Recently, Unity will crash if you start the app configured to use VR Hardware but the hardware is powered off/disconnected. Before some recent change I can't pinpoint, it would gracefully and silently ignore taht the hardware was not available and proceed without it. If you figure it out let me know.
+
+
+# Running it
 
 Set up and start the Nexus: https://github.com/AugCogVR/cogbre-nexus
 
 NOTE: For now, the VR component is hardcoded to look for the server on 127.0.0.1
 
-Load the VR project into Unity and run it
+Load the VR project into Unity, open the main scene, and run it.
 
 
 # Architecture
