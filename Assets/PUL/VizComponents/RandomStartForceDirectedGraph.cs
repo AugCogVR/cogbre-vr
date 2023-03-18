@@ -6,34 +6,28 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 
-namespace FDG
+namespace PUL
 {
     /// <summary>
-    /// A force directed graph for Unity that uses Hooke's Law and Coulombs Law running in Unity C# Jobs.
+    /// Force-Directed Graph starting with randomly-placed nodes. See https://github.com/atonalfreerider/Unity-FDG 
     ///
     /// Usage:
     /// -Attach this component to a GameObject in a scene.
-    /// -Add nodes to the FDG by calling <see cref="AddNodeToGraph"/> and passing a Unity component that will act
+    /// -Add nodes by calling <see cref="AddNodeToGraph"/> and passing a Unity component that will act
     ///  as the node.
-    /// -Add edges to the FDG by calling <see cref="AddEdgeToGraph"/> and passing two components that have been
-    ///  previously added to the graph and therefore have <see cref="Node"/> components attached to them. Note that
-    ///  there is no visual edge that is drawn by this graph. Such an edge must be created by the user.
+    /// -Add edges by calling <see cref="AddEdgeToGraph"/> and passing two components that have been
+    ///  previously added to the graph and therefore have <see cref="Node"/> components attached to them.
     /// -Run and Stop the graph using <see cref="StartGraph"/> and <see cref="StopGraph"/>. 
     /// </summary>
-    public class ForceDirectedGraph : MonoBehaviour
+    public class RandomStartForceDirectedGraph : MonoBehaviour
     {
-        // internal variables
-
         /// <summary>
-        /// All of the nodes in the graph. While running, the forces acting on the nodes will move the transform that
-        /// is associated with that node.
+        /// All of the nodes in the graph.
         /// </summary>
         readonly Dictionary<int, Node> nodes = new();
         readonly Dictionary<int, int> idToIndexMap = new();
 
         bool backgroundCalculation = false;
-
-        public delegate void MovementCallback();
 
         /// <summary>
         /// A coroutine that continuously runs and updates the state of the world on every iteration.
@@ -43,7 +37,7 @@ namespace FDG
         // variables that can be set externally or adjusted from the Unity Editor.
         [Header("Adjustable Values")] [Range(0.001f, 500)]
         // The constant that resembles Ke in Coulomb's Law to signify the strength of the repulsive force between nodes.
-        public float UniversalRepulsiveForce = 100;
+        public float UniversalRepulsiveForce = 15;
 
         [Range(0.001f, 100)]
         // The constant that resembles K in Hooke's Law to signify the strength of the attraction on an edge.
@@ -51,7 +45,7 @@ namespace FDG
 
         [Range(1, 10)]
         // The speed at which each iteration is run (lower is faster).
-        public int TimeStep = 2;
+        public int TimeStep = 20;
 
         [Range(1, 20)]
         // An optimization for the C# Job. Gradually increase this value until performance begins to drop.
@@ -68,12 +62,11 @@ namespace FDG
         public void AddNodeToGraph(
             Component component,
             int index,
-            float nodeMass = 1,
-            MovementCallback movementCallback = null)
+            float nodeMass = 1)
         {
             Node newNode = component.gameObject.AddComponent<Node>();
+            newNode.scn = (SimpleCubeNode)component;
             newNode.Mass = nodeMass;
-            newNode.movementCallback = movementCallback;
             nodes.Add(index, newNode);
             idToIndexMap.Add(component.GetInstanceID(), index);
         }
@@ -90,6 +83,15 @@ namespace FDG
             {
                 nodeA.MyEdges.Add(indexB);
                 nodeB.MyEdges.Add(indexA);
+            }
+        }
+
+        [PublicAPI]
+        public void OnUpdate()
+        {
+            foreach (Node node in nodes.Values)
+            {
+                node.scn.OnUpdate();
             }
         }
 
@@ -179,7 +181,6 @@ namespace FDG
                     foreach (Node node in nodes.Values)
                     {
                         node.transform.position = node.VirtualPosition;
-                        node.movementCallback?.Invoke();
                     }
 
                     yield return null;
@@ -209,8 +210,6 @@ namespace FDG
                         node.VirtualPosition,
                         Time.deltaTime / (animSec - prog)
                     );
-
-                    node.movementCallback?.Invoke();
                 }
 
                 yield return null;
@@ -221,7 +220,6 @@ namespace FDG
             foreach (Node node in nodes.Values)
             {
                 node.transform.position = node.VirtualPosition;
-                node.movementCallback?.Invoke();
             }
         }
 
@@ -352,12 +350,13 @@ namespace FDG
 
         class Node : MonoBehaviour
         {
+            public SimpleCubeNode scn;   // TODO: This reference probably doesn't belong here OR should be a "node interface" for abstraction purposes
             public float Mass;
             public bool IsImmobile = false;
             public Vector3 VirtualPosition = Vector3.zero;
             public readonly List<int> MyEdges = new();
-
-            public MovementCallback movementCallback;
         }
     }
 }
+
+

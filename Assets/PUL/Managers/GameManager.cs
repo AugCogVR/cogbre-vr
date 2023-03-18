@@ -24,7 +24,8 @@ namespace PUL
         }
 
         // TODO: We need to support more than a single graph of a single type, obviously, but we're here for now.
-        public RandomGraph codeGraph;
+        //public UhGraph codeGraph;
+        public RandomStartForceDirectedGraph codeGraph;
 
         public NexusClient nexusClient;
 
@@ -51,7 +52,9 @@ namespace PUL
             //Debug.Log("GameManager START");
 
             // Initialize scene objects
-            codeGraph = new RandomGraph();
+            GameObject graphHolder = new GameObject("graphHolder");
+            // codeGraph = graphHolder.AddComponent<UhGraph>() as UhGraph;
+            codeGraph = graphHolder.AddComponent<RandomStartForceDirectedGraph>() as RandomStartForceDirectedGraph;
 
             // Initialize Nexus client
             nexusClient = new NexusClient(this);

@@ -10,11 +10,13 @@ namespace PUL
 
         public static SimpleCubeNode New(string nodeName)
         {
+            // Isntantiate the cube
             GameObject cubePrefab = Resources.Load("Prefabs/BACube") as GameObject;
             var position = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(2.0f, 5.0f), Random.Range(-5.0f, 5.0f));
             GameObject newCube = Instantiate(cubePrefab, position, Quaternion.identity);
             SimpleCubeNode scn = newCube.AddComponent<SimpleCubeNode>();
 
+            // Add a behavior
             newCube.AddComponent<TwistyBehavior>();
             newCube.GetComponent<TwistyBehavior>().OnStart();            
 
@@ -48,7 +50,11 @@ namespace PUL
 
         public void OnUpdate()
         {
-            this.GetComponent<TwistyBehavior>().OnUpdate();     
+            this.GetComponent<TwistyBehavior>().OnUpdate();
+            
+            // move nodes steadily outward as a dumb test to make sure edges follow nodes (they do)
+            //this.transform.position = Vector3.Scale(this.transform.position, new Vector3(1.0005f, 1.0005f, 1.0005f));
+            
             UpdateMyEdges();
         }
 
