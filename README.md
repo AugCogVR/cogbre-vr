@@ -44,12 +44,12 @@ This app (so far) is designed for the HTC Vive Pro. This is what I had to do to 
 
 ### To use hardware: 
 - Enable Open XR: Project Settings -> XR Plug-In Management -> check "Open XR" 
-- Deactivate XR Device Simulator: Hierarchy -> SampleScene -> right click XR Device Simulator -> Toggle Active State (or go to inspector and uncheck the very first checkbox)
+- Deactivate XR Device Simulator: Hierarchy -> SampleScene -> right click XR Device Simulator -> Toggle Active State (or go to Inspector and uncheck the very first checkbox)
 
 ### To use device simulator:
 - Reverse the above
 
-NOTE: Recently, Unity will crash if you start the app configured to use VR Hardware but the hardware is powered off/disconnected. Before some recent change I can't pinpoint, it would gracefully and silently ignore taht the hardware was not available and proceed without it. If you figure it out let me know.
+NOTE: Recently, Unity will crash if you start the app configured to use VR Hardware but the hardware is powered off/disconnected. Before some recent change I can't pinpoint, it would gracefully and silently ignore that the hardware was not available and proceed without it. If you figure it out let me know.
 
 
 # Running it
