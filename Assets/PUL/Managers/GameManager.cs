@@ -52,7 +52,7 @@ namespace PUL
             //Debug.Log("GameManager START");
 
             // Initialize scene objects
-            GameObject graphHolder = new GameObject("graphHolder");
+            GameObject graphHolder = new GameObject("graphHolder"); // Graph has to be a component within a GameObject for StartCoroutine to work
             // codeGraph = graphHolder.AddComponent<UhGraph>() as UhGraph;
             codeGraph = graphHolder.AddComponent<RandomStartForceDirectedGraph>() as RandomStartForceDirectedGraph;
 
