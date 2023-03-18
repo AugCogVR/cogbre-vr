@@ -8,7 +8,7 @@ namespace PUL
     {
         public readonly List<BasicEdge> MyEdges = new();
 
-        public static SimpleCubeNode New(string nodeName)
+        public static SimpleCubeNode New(string nodeName, string nodeText)
         {
             // Isntantiate the cube
             GameObject cubePrefab = Resources.Load("Prefabs/BACube") as GameObject;
@@ -25,6 +25,7 @@ namespace PUL
             Color newColor = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), 1.0f);
             cubeRenderer.material.SetColor("_Color", newColor);
 
+            // Title Text
             // Add object to hold text 
             GameObject textHolder = new GameObject();
             textHolder.transform.parent = newCube.transform;
@@ -43,6 +44,23 @@ namespace PUL
             //textObject.autoSizeTextContainer = true;
             textObject.alignment = TextAlignmentOptions.Center;
 
+            // Content Text
+            // Add object to hold text 
+            GameObject textHolder2 = new GameObject();
+            textHolder2.transform.parent = newCube.transform;
+
+            // Create text mesh and attach to text holder object; position outside cube
+            TextMeshPro textObject2 = textHolder2.AddComponent<TextMeshPro>();
+            RectTransform rectTransform2 = textHolder2.GetComponent<RectTransform>();
+            rectTransform2.localPosition = new Vector3(0, 0, -0.52f);
+
+            // Set text contents and style
+            textObject2.font = Resources.Load("Fonts/LiberationSans", typeof(TMP_FontAsset)) as TMP_FontAsset;
+            textObject2.color = new Color(0,0,0,1.0f);
+            textObject2.text = nodeText;
+            textObject2.fontSize = 0.125f;  
+            textObject2.alignment = TextAlignmentOptions.Center;
+
             newCube.name = nodeName;
 
             return scn;
@@ -50,7 +68,8 @@ namespace PUL
 
         public void OnUpdate()
         {
-            this.GetComponent<TwistyBehavior>().OnUpdate();
+            // Disable twisting for now. I can't think of a good reason to have it anyway, but it's fun.
+            // this.GetComponent<TwistyBehavior>().OnUpdate();
             
             // move nodes steadily outward as a dumb test to make sure edges follow nodes (they do)
             //this.transform.position = Vector3.Scale(this.transform.position, new Vector3(1.0005f, 1.0005f, 1.0005f));

@@ -18,6 +18,7 @@ namespace PUL
         public IList<int> members { get; set; }
         public IList<int> targets { get; set; }
         public string hash { get; set; }
+        public IDictionary<string, string> insns {get; set; }
     }
 
     [System.Serializable]
@@ -65,9 +66,7 @@ namespace PUL
         {
             // Get basic program blocks from Nexus
             string basicBlocksJSON = await NexusSyncTask(userId, "session_init");
-            IList<IDictionary<string, IDictionary<string, BasicBlock>>> pointlessList = 
-                JsonConvert.DeserializeObject<IList<IDictionary<string, IDictionary<string, BasicBlock>>>>(basicBlocksJSON);
-            IDictionary<string, BasicBlock> blockDict = pointlessList[0]["basic_blocks"];
+            IDictionary<string, BasicBlock> blockDict = JsonConvert.DeserializeObject<IDictionary<string, BasicBlock>>(basicBlocksJSON);
             // Debug.Log("XXXXXXXXXXX " + blocks.Count);   
             // Debug.Log("XXXXXXXXXXX " + blocks.ElementAt(2).Key);   
             // BasicBlock bb = blocks.ElementAt(2).Value;
@@ -81,13 +80,14 @@ namespace PUL
         {
             Dictionary<string, SimpleCubeNode> nodeDict = new Dictionary<string, SimpleCubeNode>();
 
-            int counter = 0;
-            foreach (string blockKey in blockDict.Keys)
+            int nodeCounter = 0;
+            foreach (KeyValuePair<string, BasicBlock> keyValue in blockDict)
             {
-                SimpleCubeNode scn = SimpleCubeNode.New(blockKey);
-                nodeDict.Add(blockKey, scn);
-                gameManager.codeGraph.AddNodeToGraph(scn, counter, blockDict[blockKey].members.Count); 
-                counter++;
+                string codeString = getCodeString(keyValue.Value);
+                SimpleCubeNode scn = SimpleCubeNode.New(keyValue.Key, codeString);
+                nodeDict.Add(keyValue.Key, scn);
+                gameManager.codeGraph.AddNodeToGraph(scn, nodeCounter, keyValue.Value.members.Count); 
+                nodeCounter++;
             }
 
             foreach (string blockKey in blockDict.Keys)
@@ -120,6 +120,21 @@ namespace PUL
 
             gameManager.codeGraph.StartGraph();
         }
+
+
+        private string getCodeString(BasicBlock block)
+        {
+            string returnMe = "";
+
+            foreach(string insn in block.insns.Values)
+            {
+                returnMe = returnMe + insn + "\n";
+            }
+
+            // Debug.Log(returnMe);
+            return returnMe;
+        }
+         
 
         private async void NexusUpdate()
         {
