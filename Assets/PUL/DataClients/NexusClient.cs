@@ -86,7 +86,8 @@ namespace PUL
             {
                 string codeString = getCodeString(keyValue.Value);
                 SimpleCubeNode scn = SimpleCubeNode.New(keyValue.Key, codeString);
-                scn.transform.position = new Vector3(Random.Range(-5.0f, 5.0f), nodeMaxHeight - (nodeCounter * 3.0f), Random.Range(-5.0f, 5.0f));
+                scn.transform.parent = gameManager.codeGraph.transform;
+                scn.transform.localPosition = new Vector3(Random.Range(-5.0f, 5.0f), nodeMaxHeight - (nodeCounter * 3.0f), Random.Range(-5.0f, 5.0f));
                 nodeDict.Add(keyValue.Key, scn);
                 gameManager.codeGraph.AddNodeToGraph(scn, nodeCounter, keyValue.Value.members.Count); 
                 nodeCounter++;

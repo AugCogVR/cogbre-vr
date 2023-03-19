@@ -89,6 +89,8 @@ namespace PUL
         [PublicAPI]
         public void OnUpdate()
         {
+            //transform.localEulerAngles = new Vector3(0, stupid++, 0);
+            
             foreach (Node node in nodes.Values)
             {
                 node.scn.OnUpdate();
@@ -111,7 +113,7 @@ namespace PUL
         {
             foreach (Node node in nodes.Values)
             {
-                node.VirtualPosition = node.transform.position;
+                node.VirtualPosition = node.transform.localPosition;
             }
 
             graphAnimator = StartCoroutine(Iterate());
@@ -132,7 +134,7 @@ namespace PUL
             backgroundCalculation = true;
             foreach (Node node in nodes.Values)
             {
-                node.VirtualPosition = node.transform.position;
+                node.VirtualPosition = node.transform.localPosition;
             }
 
             graphAnimator = StartCoroutine(Iterate(numIterations));
@@ -180,7 +182,7 @@ namespace PUL
                 {
                     foreach (Node node in nodes.Values)
                     {
-                        node.transform.position = node.VirtualPosition;
+                        node.transform.localPosition = node.VirtualPosition;
                     }
 
                     yield return null;
@@ -205,8 +207,8 @@ namespace PUL
             {
                 foreach (Node node in nodes.Values)
                 {
-                    node.transform.position = Vector3.Lerp(
-                        node.transform.position,
+                    node.transform.localPosition = Vector3.Lerp(
+                        node.transform.localPosition,
                         node.VirtualPosition,
                         Time.deltaTime / (animSec - prog)
                     );
@@ -219,7 +221,7 @@ namespace PUL
 
             foreach (Node node in nodes.Values)
             {
-                node.transform.position = node.VirtualPosition;
+                node.transform.localPosition = node.VirtualPosition;
             }
         }
 

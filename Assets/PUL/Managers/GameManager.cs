@@ -53,8 +53,14 @@ namespace PUL
 
             // Initialize scene objects
             GameObject graphHolder = new GameObject("graphHolder"); // Graph has to be a component within a GameObject for StartCoroutine to work
+            graphHolder.transform.position = Vector3.zero;
+            graphHolder.transform.eulerAngles = Vector3.zero;
+            
             // codeGraph = graphHolder.AddComponent<UhGraph>() as UhGraph;
             codeGraph = graphHolder.AddComponent<RandomStartForceDirectedGraph>() as RandomStartForceDirectedGraph;
+            codeGraph.transform.localPosition = Vector3.zero;
+            codeGraph.transform.localEulerAngles = Vector3.zero;
+
 
             // Initialize Nexus client
             nexusClient = new NexusClient(this);
