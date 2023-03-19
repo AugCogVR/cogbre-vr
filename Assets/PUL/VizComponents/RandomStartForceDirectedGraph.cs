@@ -37,15 +37,15 @@ namespace PUL
         // variables that can be set externally or adjusted from the Unity Editor.
         [Header("Adjustable Values")] [Range(0.001f, 500)]
         // The constant that resembles Ke in Coulomb's Law to signify the strength of the repulsive force between nodes.
-        public float UniversalRepulsiveForce = 15;
+        public float UniversalRepulsiveForce = 10;
 
         [Range(0.001f, 100)]
         // The constant that resembles K in Hooke's Law to signify the strength of the attraction on an edge.
-        public float UniversalSpringForce = 15;
+        public float UniversalSpringForce = 20;
 
         [Range(1, 10)]
         // The speed at which each iteration is run (lower is faster).
-        public int TimeStep = 20;
+        public int TimeStep = 2;
 
         [Range(1, 20)]
         // An optimization for the C# Job. Gradually increase this value until performance begins to drop.

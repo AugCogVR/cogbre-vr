@@ -52,7 +52,7 @@ namespace PUL
             // Create text mesh and attach to text holder object; position outside cube
             TextMeshPro textObject2 = textHolder2.AddComponent<TextMeshPro>();
             RectTransform rectTransform2 = textHolder2.GetComponent<RectTransform>();
-            rectTransform2.localPosition = new Vector3(0, 0, -0.52f);
+            rectTransform2.localPosition = new Vector3(0, 0, -0.55f);
 
             // Set text contents and style
             textObject2.font = Resources.Load("Fonts/LiberationSans", typeof(TMP_FontAsset)) as TMP_FontAsset;
