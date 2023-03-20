@@ -89,7 +89,10 @@ namespace PUL
         [PublicAPI]
         public void OnUpdate()
         {
-            //transform.localEulerAngles = new Vector3(0, stupid++, 0);
+            // BARF-O-MATIC -- test that the graph node & edge transforms are properly
+            // connected to the parent graph by spinning the whole graph wildly. 
+            // This should never be enabled in normal operations.
+            //transform.localEulerAngles = transform.localEulerAngles + new Vector3(0, 1, 0);
             
             foreach (Node node in nodes.Values)
             {

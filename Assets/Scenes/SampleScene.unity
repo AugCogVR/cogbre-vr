@@ -1736,7 +1736,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a3e37f1bbd8e1c4381a2bd9fb9a934e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  graphHolder: {fileID: 0}
   codeGraph: {fileID: 0}
+  rightHandRotateAnchor:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
   nexusClient: {fileID: 0}
 --- !u!1 &1248742771
 GameObject:
@@ -1851,7 +1861,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1248742771}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 919e39492806b334982b6b84c90dd927, type: 3}
   m_Name: 
@@ -1895,7 +1905,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_System: {fileID: 0}
-  m_MoveSpeed: 1
+  m_MoveSpeed: 10
   m_EnableStrafe: 1
   m_EnableFly: 1
   m_UseGravity: 0
@@ -2016,7 +2026,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1454203155}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

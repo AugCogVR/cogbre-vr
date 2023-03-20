@@ -155,7 +155,7 @@ namespace PUL
             StreamWriter writer = new StreamWriter(await request.GetRequestStreamAsync());
             string jsonRequest = "{\"userId\":\"" + userId 
                 + "\", \"command\":\"" + command + "\"}";
-            Debug.Log("NexusSync JSON request:" + jsonRequest);
+            // Debug.Log("NexusSync JSON request:" + jsonRequest);
             writer.Write(jsonRequest);
             writer.Close();
 
@@ -164,10 +164,10 @@ namespace PUL
             string responseStringJson = reader.ReadToEnd();
             reader.Close();
             response.Close();
-            Debug.Log("NexusSyncTask cycles used: " + pacingCounter);
+            // Debug.Log("NexusSyncTask cycles used: " + pacingCounter);
 
             string responseString = JsonConvert.DeserializeObject<string>(responseStringJson);
-            Debug.Log("NexusSync response string:" + responseString);
+            // Debug.Log("NexusSync response string:" + responseString);
 
             return responseString;
         }
