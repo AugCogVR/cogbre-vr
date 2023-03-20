@@ -13,6 +13,7 @@ namespace PUL
         {
             BasicEdge newCylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder).AddComponent<BasicEdge>();
             newCylinder.name = edgeName;
+            Destroy(newCylinder.GetComponent<CapsuleCollider>());
             //newCylinder.transform.localScale = new Vector3(.1f, 1f, .1f);
             return newCylinder;
         }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine;
 
 namespace PUL
@@ -11,14 +12,15 @@ namespace PUL
         public static SimpleCubeNode New(string nodeName, string nodeText)
         {
             // Isntantiate the cube
-            GameObject cubePrefab = Resources.Load("Prefabs/BACube") as GameObject;
+            GameObject cubePrefab = Resources.Load("Prefabs/GrabbableCube 1 1") as GameObject;
             var position = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(2.0f, 5.0f), Random.Range(-5.0f, 5.0f));
             GameObject newCube = Instantiate(cubePrefab, position, Quaternion.identity);
             SimpleCubeNode scn = newCube.AddComponent<SimpleCubeNode>();
 
             // Add a behavior
-            newCube.AddComponent<TwistyBehavior>();
-            newCube.GetComponent<TwistyBehavior>().OnStart();            
+           // newCube.AddComponent<TwistyBehavior>();
+            //newCube.GetComponent<TwistyBehavior>().OnStart();
+            
 
             // Set random color
             var cubeRenderer = newCube.GetComponent<Renderer>();
