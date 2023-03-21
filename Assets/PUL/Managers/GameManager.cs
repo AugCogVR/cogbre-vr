@@ -80,7 +80,7 @@ namespace PUL
 
 
             // Find rightHandRotateAnchor input action
-            // TODO: Find a direct route to the action isntead of this tedious drill-down
+            // TODO: Find a direct route to the action instead of this tedious drill-down
             // TODO: Learn the Unity Action-based input system better... I guess
             InputActionManager iam = FindObjectOfType<InputActionManager>();
             List<InputActionAsset> actionAssets = iam.actionAssets;
