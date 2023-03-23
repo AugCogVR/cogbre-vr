@@ -8,7 +8,6 @@ namespace PUL
     public class SimpleCubeNode : MonoBehaviour
     {
         public readonly List<BasicEdge> MyEdges = new();
-
         public static SimpleCubeNode New(string nodeName, string nodeText)
         {
             // Isntantiate the cube
@@ -51,10 +50,10 @@ namespace PUL
             GameObject textHolder2 = new GameObject();
             textHolder2.transform.parent = newCube.transform;
 
-            // Create text mesh and attach to text holder object; position outside cube
+            // Create text mesh and attach to text holder object; position on interior plane
             TextMeshPro textObject2 = textHolder2.AddComponent<TextMeshPro>();
             RectTransform rectTransform2 = textHolder2.GetComponent<RectTransform>();
-            rectTransform2.localPosition = new Vector3(0, 0, -0.55f);
+            rectTransform2.localPosition = new Vector3(0, 0, -0.05f);
 
             // Set text contents and style
             textObject2.font = Resources.Load("Fonts/LiberationSans", typeof(TMP_FontAsset)) as TMP_FontAsset;
