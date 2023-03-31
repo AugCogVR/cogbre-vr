@@ -81,13 +81,13 @@ namespace PUL
             Dictionary<string, SimpleCubeNode> nodeDict = new Dictionary<string, SimpleCubeNode>();
 
             int nodeCounter = 0;
-            float nodeMaxHeight = (blockDict.Keys.Count * 1.5f);
+
             foreach (KeyValuePair<string, BasicBlock> keyValue in blockDict)
             {
                 string codeString = getCodeString(keyValue.Value);
                 SimpleCubeNode scn = SimpleCubeNode.New(keyValue.Key, codeString);
                 scn.transform.parent = gameManager.codeGraph.transform;
-                scn.transform.localPosition = new Vector3(Random.Range(-5.0f, 5.0f), nodeMaxHeight - (nodeCounter * 3.0f), Random.Range(-5.0f, 5.0f));
+                scn.transform.localPosition = new Vector3(Random.Range(-15.0f, 8.0f), Random.Range(1f, 10.0f), Random.Range(-10.0f, 10.0f));
                 nodeDict.Add(keyValue.Key, scn);
                 gameManager.codeGraph.AddNodeToGraph(scn, nodeCounter, keyValue.Value.members.Count); 
                 nodeCounter++;

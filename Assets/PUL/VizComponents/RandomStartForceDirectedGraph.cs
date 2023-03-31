@@ -9,7 +9,7 @@ using UnityEngine;
 namespace PUL
 {
     /// <summary>
-    /// Force-Directed Graph starting with randomly-placed nodes. See https://github.com/atonalfreerider/Unity-FDG 
+    /// Force-Directed Graph starting with randomly-placed nodes. See Edge 
     ///
     /// Usage:
     /// -Attach this component to a GameObject in a scene.
@@ -37,11 +37,11 @@ namespace PUL
         // variables that can be set externally or adjusted from the Unity Editor.
         [Header("Adjustable Values")] [Range(0.001f, 500)]
         // The constant that resembles Ke in Coulomb's Law to signify the strength of the repulsive force between nodes.
-        public float UniversalRepulsiveForce = 10;
+        public float UniversalRepulsiveForce = 4.5f;
 
         [Range(0.001f, 100)]
         // The constant that resembles K in Hooke's Law to signify the strength of the attraction on an edge.
-        public float UniversalSpringForce = 20;
+        public float UniversalSpringForce = 3;
 
         [Range(1, 10)]
         // The speed at which each iteration is run (lower is faster).
@@ -357,7 +357,8 @@ namespace PUL
         {
             public SimpleCubeNode scn;   // TODO: This reference probably doesn't belong here OR should be a "node interface" for abstraction purposes
             public float Mass;
-            public bool IsImmobile = false;
+            //temporary fix. this script is built upon the 
+            public bool IsImmobile = true;
             public Vector3 VirtualPosition = Vector3.zero;
             public readonly List<int> MyEdges = new();
         }
