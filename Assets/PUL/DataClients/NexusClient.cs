@@ -33,6 +33,8 @@ namespace PUL
 
         public int pacingCounter;
 
+        public float timeBeforeNodesAnchor = 5f;
+
         private string userId;
 
         public NexusClient(GameManager gameManager)
@@ -57,7 +59,6 @@ namespace PUL
             if (pacingCounter > pacingCounterLimit)
             {
                 pacingCounter = 0;
-
                 NexusUpdate();
             }
         }
@@ -89,7 +90,7 @@ namespace PUL
                 scn.transform.parent = gameManager.codeGraph.transform;
                 scn.transform.localPosition = new Vector3(Random.Range(-15.0f, 8.0f), Random.Range(1f, 10.0f), Random.Range(-10.0f, 10.0f));
                 nodeDict.Add(keyValue.Key, scn);
-                gameManager.codeGraph.AddNodeToGraph(scn, nodeCounter, keyValue.Value.members.Count); 
+                gameManager.codeGraph.AddNodeToGraph(scn, nodeCounter, keyValue.Value.members.Count);
                 nodeCounter++;
             }
 
@@ -122,6 +123,7 @@ namespace PUL
             }
 
             gameManager.codeGraph.StartGraph();
+            gameManager.codeGraph.setLoneValuesImmobile();
         }
 
 

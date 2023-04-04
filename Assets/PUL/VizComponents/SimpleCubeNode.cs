@@ -10,7 +10,7 @@ namespace PUL
         public readonly List<BasicEdge> MyEdges = new();
         public static SimpleCubeNode New(string nodeName, string nodeText)
         {
-            // Isntantiate the cube
+            // Instantiate the cube
             GameObject cubePrefab = Resources.Load("Prefabs/GrabbableCube 1 1") as GameObject;
             var position = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(2.0f, 5.0f), Random.Range(-5.0f, 5.0f));
             GameObject newCube = Instantiate(cubePrefab, position, Quaternion.identity);
@@ -64,9 +64,9 @@ namespace PUL
             textObject2.alignment = TextAlignmentOptions.Center;
 
             newCube.name = nodeName;
-
             return scn;
         }
+        
 
         public void OnUpdate()
         {

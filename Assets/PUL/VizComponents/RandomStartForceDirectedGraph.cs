@@ -24,8 +24,8 @@ namespace PUL
         /// <summary>
         /// All of the nodes in the graph.
         /// </summary>
-        readonly Dictionary<int, Node> nodes = new();
-        readonly Dictionary<int, int> idToIndexMap = new();
+        public Dictionary<int, Node> nodes = new();
+        public Dictionary<int, int> idToIndexMap = new();
 
         bool backgroundCalculation = false;
 
@@ -35,13 +35,13 @@ namespace PUL
         Coroutine graphAnimator;
 
         // variables that can be set externally or adjusted from the Unity Editor.
-        [Header("Adjustable Values")] [Range(0.001f, 500)]
+        [Header("Adjustable Values")][Range(0.001f, 500)]
         // The constant that resembles Ke in Coulomb's Law to signify the strength of the repulsive force between nodes.
         public float UniversalRepulsiveForce = 4.5f;
 
         [Range(0.001f, 100)]
         // The constant that resembles K in Hooke's Law to signify the strength of the attraction on an edge.
-        public float UniversalSpringForce = 3;
+        public float UniversalSpringForce = 2;
 
         [Range(1, 10)]
         // The speed at which each iteration is run (lower is faster).
@@ -93,10 +93,24 @@ namespace PUL
             // connected to the parent graph by spinning the whole graph wildly. 
             // This should never be enabled in normal operations.
             //transform.localEulerAngles = transform.localEulerAngles + new Vector3(0, 1, 0);
-            
+
             foreach (Node node in nodes.Values)
             {
                 node.scn.OnUpdate();
+            }
+        }
+        [PublicAPI]
+        //This creates "Anchor Nodes" that are immobile. Stabilizes lone nodes, or nodes that only have 1 target.
+        //TO DO: a good fix, but it's ugly. obvious that some work is going on behind the scenes, because the nodes with single edges are often stretched across the screen. Needs some work, but good for now.
+        public void setLoneValuesImmobile()
+        {
+            foreach(Node node in nodes.Values)
+            {
+                if(node.MyEdges.Count <= 1)
+                {
+                    Debug.Log(node.MyEdges.Count);
+                    node.IsImmobile = true;
+                }
             }
         }
 
@@ -353,12 +367,11 @@ namespace PUL
             }
         }
 
-        class Node : MonoBehaviour
+        public class Node : MonoBehaviour
         {
             public SimpleCubeNode scn;   // TODO: This reference probably doesn't belong here OR should be a "node interface" for abstraction purposes
             public float Mass;
-            //temporary fix. this script is built upon the 
-            public bool IsImmobile = true;
+            public bool IsImmobile = false;
             public Vector3 VirtualPosition = Vector3.zero;
             public readonly List<int> MyEdges = new();
         }
