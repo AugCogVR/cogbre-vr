@@ -10,7 +10,7 @@ using System.Linq;
 namespace PUL
 {
     [System.Serializable]
-    public class BasicBlock
+    public class OxideBasicBlock
     {
         public int first_insn { get; set; }
         public int last_insn { get; set; }
@@ -22,9 +22,9 @@ namespace PUL
     }
 
     [System.Serializable]
-    public class BasicBlocksDict
+    public class OxideBasicBlocksDict
     {
-        public IDictionary<string, BasicBlock> basic_blocks { get; set; }
+        public IDictionary<string, OxideBasicBlock> basic_blocks { get; set; }
     }
 
     public class NexusClient : MonoBehaviour
@@ -65,25 +65,22 @@ namespace PUL
 
         private async void NexusSessionInit()
         {
-            // Get basic program blocks from Nexus
-            string basicBlocksJSON = await NexusSyncTask(userId, "session_init");
-            IDictionary<string, BasicBlock> blockDict = JsonConvert.DeserializeObject<IDictionary<string, BasicBlock>>(basicBlocksJSON);
-            // Debug.Log("XXXXXXXXXXX " + blocks.Count);   
-            // Debug.Log("XXXXXXXXXXX " + blocks.ElementAt(2).Key);   
-            // BasicBlock bb = blocks.ElementAt(2).Value;
-            // Debug.Log("XXXXXXXXXXX " + bb.last_insn);   
+            string sessionInitResult = await NexusSyncTask(userId, "session_init");
 
+            // Get basic program blocks from Nexus
+            string oxideBasicBlocksJSON = await NexusSyncTask(userId, "get_oxide_program elf_fib_recursive");
+            IDictionary<string, OxideBasicBlock> oxideBlockDict = JsonConvert.DeserializeObject<IDictionary<string, OxideBasicBlock>>(oxideBasicBlocksJSON);
             // Build graph from program blocks
-            buildGraphFromBlocks(blockDict);
+            buildGraphFromOxideBlocks(oxideBlockDict);
         }
 
-        private void buildGraphFromBlocks(IDictionary<string, BasicBlock> blockDict)
+        private void buildGraphFromOxideBlocks(IDictionary<string, OxideBasicBlock> oxideBlockDict)
         {
             Dictionary<string, SimpleCubeNode> nodeDict = new Dictionary<string, SimpleCubeNode>();
 
             int nodeCounter = 0;
 
-            foreach (KeyValuePair<string, BasicBlock> keyValue in blockDict)
+            foreach (KeyValuePair<string, OxideBasicBlock> keyValue in oxideBlockDict)
             {
                 string codeString = getCodeString(keyValue.Value);
                 SimpleCubeNode scn = SimpleCubeNode.New(keyValue.Key, codeString);
@@ -94,10 +91,10 @@ namespace PUL
                 nodeCounter++;
             }
 
-            foreach (string blockKey in blockDict.Keys)
+            foreach (string blockKey in oxideBlockDict.Keys)
             {
                 // Debug.Log("BLOCK CHECK KEY " + blockKey);
-                BasicBlock block1 = blockDict[blockKey];
+                OxideBasicBlock block1 = oxideBlockDict[blockKey];
                 // Debug.Log("CUBE CHECK KEY " + blockKey);
                 SimpleCubeNode cube1 = nodeDict[blockKey];
 
@@ -126,12 +123,11 @@ namespace PUL
             gameManager.codeGraph.setLoneValuesImmobile();
         }
 
-
-        private string getCodeString(BasicBlock block)
+        private string getCodeString(OxideBasicBlock oxideBlock)
         {
             string returnMe = "";
 
-            foreach(string insn in block.insns.Values)
+            foreach(string insn in oxideBlock.insns.Values)
             {
                 returnMe = returnMe + insn + "\n";
             }
@@ -140,7 +136,6 @@ namespace PUL
             return returnMe;
         }
          
-
         private async void NexusUpdate()
         {
             string whatever = await NexusSyncTask(userId, "get_session_update");
