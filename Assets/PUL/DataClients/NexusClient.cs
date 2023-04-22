@@ -72,6 +72,9 @@ namespace PUL
             IDictionary<string, OxideBasicBlock> oxideBlockDict = JsonConvert.DeserializeObject<IDictionary<string, OxideBasicBlock>>(oxideBasicBlocksJSON);
             // Build graph from program blocks
             buildGraphFromOxideBlocks(oxideBlockDict);
+
+            string compVizStagesJSON = await NexusSyncTask(userId, "get_compviz_stages perfect-func");
+            Debug.Log("COMP VIZ " + compVizStagesJSON);
         }
 
         private void buildGraphFromOxideBlocks(IDictionary<string, OxideBasicBlock> oxideBlockDict)
@@ -82,7 +85,7 @@ namespace PUL
 
             foreach (KeyValuePair<string, OxideBasicBlock> keyValue in oxideBlockDict)
             {
-                string codeString = getCodeString(keyValue.Value);
+                string codeString = getOxideCodeString(keyValue.Value);
                 SimpleCubeNode scn = SimpleCubeNode.New(keyValue.Key, codeString);
                 scn.transform.parent = gameManager.codeGraph.transform;
                 scn.transform.localPosition = new Vector3(Random.Range(-15.0f, 8.0f), Random.Range(1f, 10.0f), Random.Range(-10.0f, 10.0f));
@@ -123,7 +126,7 @@ namespace PUL
             gameManager.codeGraph.setLoneValuesImmobile();
         }
 
-        private string getCodeString(OxideBasicBlock oxideBlock)
+        private string getOxideCodeString(OxideBasicBlock oxideBlock)
         {
             string returnMe = "";
 
