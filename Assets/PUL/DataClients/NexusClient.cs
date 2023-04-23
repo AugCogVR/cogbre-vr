@@ -21,11 +21,39 @@ namespace PUL
         public IDictionary<string, string> insns {get; set; }
     }
 
+
     [System.Serializable]
-    public class OxideBasicBlocksDict
+    public class OxideBasicBlocks
     {
         public IDictionary<string, OxideBasicBlock> basic_blocks { get; set; }
     }
+
+
+    [System.Serializable]
+    public class CompVizBlock
+    {
+        public IList<string> lines { get; set; }
+        public IList<string> targets { get; set; }
+    }
+
+
+    [System.Serializable]
+    public class CompVizStage
+    {
+        public string type { get; set; }
+        public string id { get; set; }
+        public IDictionary<string, string> code { get; set; }
+        public IDictionary<string, CompVizBlock> blocks { get; set; }
+    }
+
+
+    [System.Serializable]
+    public class CompVizStages
+    {
+        public IList<CompVizStage> stages { get; set; }
+        public IList<IList<IList<string>>> blockRelations { get; set; }
+    }
+
 
     public class NexusClient : MonoBehaviour
     {
@@ -67,14 +95,19 @@ namespace PUL
         {
             string sessionInitResult = await NexusSyncTask(userId, "session_init");
 
+            // OXIDE
             // Get basic program blocks from Nexus
             string oxideBasicBlocksJSON = await NexusSyncTask(userId, "get_oxide_program elf_fib_recursive");
-            IDictionary<string, OxideBasicBlock> oxideBlockDict = JsonConvert.DeserializeObject<IDictionary<string, OxideBasicBlock>>(oxideBasicBlocksJSON);
+            OxideBasicBlocks oxideBasicBlocks = new OxideBasicBlocks();
+            oxideBasicBlocks.basic_blocks = JsonConvert.DeserializeObject<IDictionary<string, OxideBasicBlock>>(oxideBasicBlocksJSON);
             // Build graph from program blocks
-            buildGraphFromOxideBlocks(oxideBlockDict);
+            buildGraphFromOxideBlocks(oxideBasicBlocks.basic_blocks);
 
+            // COMPILER VISUALIZATION
             string compVizStagesJSON = await NexusSyncTask(userId, "get_compviz_stages perfect-func");
-            Debug.Log("COMP VIZ " + compVizStagesJSON);
+            // Debug.Log("COMP VIZ " + compVizStagesJSON);
+            CompVizStages cvs = JsonConvert.DeserializeObject<CompVizStages>(compVizStagesJSON);
+
         }
 
         private void buildGraphFromOxideBlocks(IDictionary<string, OxideBasicBlock> oxideBlockDict)
