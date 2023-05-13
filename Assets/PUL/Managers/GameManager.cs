@@ -29,15 +29,23 @@ namespace PUL
         }
 
 
-        public GameObject graphHolder;
+        public List<GameObject> graphHolder = new List<GameObject>();
 
         // TODO: We need to support more than a single graph of a single type, obviously, but we're here for now.
         //public UhGraph codeGraph;
-        public RandomStartForceDirectedGraph codeGraph;
+        public RandomStartForceDirectedGraph codeGraph1;
+
+        public Graph codeGraph2;
+
+        public CompVizStages cvs;
 
         public InputAction rightHandRotateAnchor = null;
 
         public NexusClient nexusClient;
+
+        public int graphTotal = 0;
+
+        bool isFinished = false;
 
         private void Awake()
         {
@@ -61,24 +69,85 @@ namespace PUL
             // InputSystem.settings.SetInternalFeatureFlag("DISABLE_SHORTCUT_SUPPORT", true);
         }
 
+        //places the graphHolders in the world.
+        List<GameObject> instantiateGraphHolders(int graphTotal)
+        {
+            List<GameObject> graphList = new List<GameObject>();
+
+            Vector3 graphPos = Vector3.zero;
+            for (int i = 0; i < graphTotal; i++)
+            {
+                Debug.Log("Running Graph Holder Instantiation!");
+                GameObject newGraph = new GameObject("graphHolder");
+                newGraph.transform.position = graphPos;
+                newGraph.transform.rotation = Quaternion.identity;
+                graphPos.x += 5;
+                graphList.Add(newGraph);
+            }
+            return graphList;
+        }
+        //instantiates the random stat force directed graph
+        void instantiateGraph1()
+        {
+            Vector3 graphPos = Vector3.zero;
+            foreach (GameObject graph in graphHolder)
+            {
+                codeGraph1 = graph.AddComponent<RandomStartForceDirectedGraph>() as RandomStartForceDirectedGraph;
+                codeGraph1.transform.localPosition = graphPos;
+                graphPos.x += 5;
+                codeGraph1.transform.localEulerAngles = Vector3.zero;
+            }
+            //use nexus to build this graph later on.
+        }
+
+        //instantiates the 2D Node graph.
+        void instantiateGraph2(List<GameObject> graphHolder)
+        {
+            Vector3 graphPos = Vector3.zero;
+            foreach (GameObject graph in graphHolder)
+            {
+                Debug.Log("Adding Graph!");
+                codeGraph2 = graph.AddComponent<Graph>() as Graph;
+            }
+
+            if (cvs != null)
+            {
+                nexusClient.buildGraph2FromOxideBlocks(cvs, ref graphHolder);
+            }
+
+           else
+            {
+                Debug.LogWarning("Error! CVS is Empty!");
+            }
+        }
+
         // Start is called before the first frame update
         void Start()
         {
+            // Initialize Nexus client
+            nexusClient = new NexusClient(this);
+
+
+            nexusClient.NexusSessionInit();
+          //  graphTotal = cvs.stages.Count;
             //Debug.Log("GameManager START");
 
             // Initialize scene objects
 
             // TODO: This probably needs to be a class member
-            graphHolder = new GameObject("graphHolder"); // Graph has to be a component within a GameObject for StartCoroutine to work
-            graphHolder.transform.position = Vector3.zero;
-            graphHolder.transform.eulerAngles = Vector3.zero;
+            
 
             // codeGraph = graphHolder.AddComponent<UhGraph>() as UhGraph;
-            codeGraph = graphHolder.AddComponent<RandomStartForceDirectedGraph>() as RandomStartForceDirectedGraph;
-            codeGraph.transform.localPosition = Vector3.zero;
-            codeGraph.transform.localEulerAngles = Vector3.zero;
 
+            //instantiateGraph1();
 
+            //instantiateGraph2();
+            //findRightHandAnchor();
+
+            
+        }
+        void findRightHandAnchor()
+        {
             // Find rightHandRotateAnchor input action
             // TODO: Find a direct route to the action instead of this tedious drill-down
             // TODO: Learn the Unity Action-based input system better... I guess
@@ -102,32 +171,47 @@ namespace PUL
                     }
                 }
             }
+        }
 
+        void rotateGraph()
+        {
+            foreach (GameObject graph in graphHolder)
+            {
+                // Rotate the code graph based on user input
+                Vector2 v = rightHandRotateAnchor.ReadValue<Vector2>();
+                //Debug.Log(v.x);
+                if (Math.Abs(v.x) > 0.7f)
+                {
+                    graph.transform.localEulerAngles = graph.transform.localEulerAngles + new Vector3(0, v.x * -0.5f, 0);
+                }
+                if (Math.Abs(v.y) > 0.7f)
+                {
+                    graph.transform.localPosition = graph.transform.localPosition + new Vector3(0, v.y * 10.0f, 0);
+                }
 
-            // Initialize Nexus client
-            nexusClient = new NexusClient(this);
+            }
         }
 
         // Update is called once per frame
         void Update()
         {
+           
             // Sync with Nexus
             nexusClient.OnUpdate();
 
-            // Rotate the code graph based on user input
-            Vector2 v = rightHandRotateAnchor.ReadValue<Vector2>();
-            //Debug.Log(v.x);
-            if (Math.Abs(v.x) > 0.7f)
-            {   
-                graphHolder.transform.localEulerAngles = graphHolder.transform.localEulerAngles + new Vector3(0, v.x * -0.5f, 0);
+            if (graphTotal != 0 && !isFinished)
+            {
+                isFinished = true;
+              
+                graphHolder = instantiateGraphHolders(graphTotal);
+                //Debug.Log(graphHolder[0]);
+                instantiateGraph2(graphHolder);
+                // Graph has to be a component within a GameObject for StartCoroutine to work
             }
-            if (Math.Abs(v.y) > 0.7f)
-            {   
-                graphHolder.transform.localPosition = graphHolder.transform.localPosition + new Vector3(0, v.y * 10.0f, 0);
-            }
+            
 
             // Update the graph
-            codeGraph.OnUpdate();
+            //codeGraph1.OnUpdate();
         }
 
         //#endregion

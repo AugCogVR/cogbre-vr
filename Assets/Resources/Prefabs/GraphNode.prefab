@@ -401,7 +401,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeName: 
   nodeType: 
-  nodeValue: 
+  nodeValue: []
 --- !u!1 &3204272120718662662
 GameObject:
   m_ObjectHideFlags: 0
@@ -569,8 +569,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -15.2, y: -27.8}
-  m_SizeDelta: {x: 75, y: 80}
+  m_AnchoredPosition: {x: -15.2, y: 12.8}
+  m_SizeDelta: {x: 75, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6912233770470195955
 CanvasRenderer:
@@ -1078,7 +1078,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6353273346127619819}
   - component: {fileID: 2217781326437017529}
-  - component: {fileID: 3859573883091263003}
   - component: {fileID: 5315859765688362212}
   m_Layer: 0
   m_Name: Title
@@ -1149,14 +1148,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!222 &3859573883091263003
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5162458494681600855}
-  m_CullTransparentMesh: 0
 --- !u!114 &5315859765688362212
 MonoBehaviour:
   m_ObjectHideFlags: 0

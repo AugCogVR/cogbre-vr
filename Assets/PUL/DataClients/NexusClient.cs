@@ -65,10 +65,12 @@ namespace PUL
 
         private string userId;
 
+       
+
         public NexusClient(GameManager gameManager)
         {
             //Debug.Log("NexusClient Constructor");
-
+           
             this.gameManager = gameManager;
 
             pacingCounter = 0;
@@ -91,72 +93,112 @@ namespace PUL
             }
         }
 
-        private async void NexusSessionInit()
+      public async void NexusSessionInit()
         {
             string sessionInitResult = await NexusSyncTask(userId, "session_init");
 
             // OXIDE
             // Get basic program blocks from Nexus
-            string oxideBasicBlocksJSON = await NexusSyncTask(userId, "get_oxide_program elf_fib_recursive");
-            OxideBasicBlocks oxideBasicBlocks = new OxideBasicBlocks();
-            oxideBasicBlocks.basic_blocks = JsonConvert.DeserializeObject<IDictionary<string, OxideBasicBlock>>(oxideBasicBlocksJSON);
-            // Build graph from program blocks
-            buildGraphFromOxideBlocks(oxideBasicBlocks.basic_blocks);
+            //string oxideBasicBlocksJSON = await NexusSyncTask(userId, "get_oxide_program elf_fib_recursive");
+            //OxideBasicBlocks oxideBasicBlocks = new OxideBasicBlocks();
+            //oxideBasicBlocks.basic_blocks = JsonConvert.DeserializeObject<IDictionary<string, OxideBasicBlock>>(oxideBasicBlocksJSON);
+
 
             // COMPILER VISUALIZATION
-            string compVizStagesJSON = await NexusSyncTask(userId, "get_compviz_stages perfect-func");
-            // Debug.Log("COMP VIZ " + compVizStagesJSON);
-            CompVizStages cvs = JsonConvert.DeserializeObject<CompVizStages>(compVizStagesJSON);
 
+            string compVizStagesJSON = await NexusSyncTask(userId, "get_compviz_stages perfect-func");
+            //Debug.Log("COMP VIZ " + compVizStagesJSON);
+            CompVizStages cvs = JsonConvert.DeserializeObject<CompVizStages>(compVizStagesJSON);
+            this.gameManager.cvs = cvs;
+            setNumberOfGraphs(cvs);
         }
 
-        private void buildGraphFromOxideBlocks(IDictionary<string, OxideBasicBlock> oxideBlockDict)
+        public void setNumberOfGraphs(CompVizStages cvs)
         {
-            Dictionary<string, SimpleCubeNode> nodeDict = new Dictionary<string, SimpleCubeNode>();
+        this.gameManager.graphTotal = cvs.stages.Count;
+        }
 
-            int nodeCounter = 0;
+        public void buildGraph2FromOxideBlocks(CompVizStages oxideBlockDict, ref List<GameObject> graphHolders)
+        {
+           
+            int graphHolderIndex = 0;
+          
+            
+            foreach (CompVizStage stage in oxideBlockDict.stages) { 
+                foreach(KeyValuePair<string, CompVizBlock> node in stage.blocks)
+                {
+                    graphHolders[graphHolderIndex].GetComponent<Graph>().nodePrefab = Resources.Load("Prefabs/GraphNode") as GameObject;
+                    graphHolders[graphHolderIndex].GetComponent<Graph>().edgePrefab = Resources.Load("Prefabs/Edge") as GameObject;
 
-            foreach (KeyValuePair<string, OxideBasicBlock> keyValue in oxideBlockDict)
-            {
-                string codeString = getOxideCodeString(keyValue.Value);
-                SimpleCubeNode scn = SimpleCubeNode.New(keyValue.Key, codeString);
-                scn.transform.parent = gameManager.codeGraph.transform;
-                scn.transform.localPosition = new Vector3(Random.Range(-15.0f, 8.0f), Random.Range(1f, 10.0f), Random.Range(-10.0f, 10.0f));
-                nodeDict.Add(keyValue.Key, scn);
-                gameManager.codeGraph.AddNodeToGraph(scn, nodeCounter, keyValue.Value.members.Count);
-                nodeCounter++;
+                    List<string> codeValues = new List<string>();
+                    foreach (string lineNumber in node.Value.lines)
+                    {
+                        codeValues.Add(stage.code[lineNumber]);
+                    }
+
+                    graphHolders[graphHolderIndex].GetComponent<Graph>().AddNodeToGraph(node.Key, codeValues);
+                    graphHolders[graphHolderIndex].GetComponent<Graph>().totalNodes[node.Key].transform.parent = graphHolders[graphHolderIndex].transform;
+                    graphHolders[graphHolderIndex].GetComponent<Graph>().totalNodes[node.Key].transform.position = graphHolders[graphHolderIndex].GetComponent<Graph>().totalNodes[node.Key].transform.parent.position;
+                }
+            
+                graphHolderIndex += 1;
             }
 
-            foreach (string blockKey in oxideBlockDict.Keys)
+            //this is an absolutely disgusting function. we'll see if this works but lets see if we can come back to this and make it cleaner.
+            //get every graph inside graphHolders
+            int i = 0;
+            
+            foreach (GameObject graphHolder in graphHolders)
             {
-                // Debug.Log("BLOCK CHECK KEY " + blockKey);
-                OxideBasicBlock block1 = oxideBlockDict[blockKey];
-                // Debug.Log("CUBE CHECK KEY " + blockKey);
-                SimpleCubeNode cube1 = nodeDict[blockKey];
-
-                // Scale size of cube per number of members
-                cube1.transform.localScale += (new Vector3(1.0f, 1.0f, 1.0f) * block1.members.Count * 0.1f);
-
-                // Create graph edges between nodes associated with connected blocks
-                foreach(int target in block1.targets)
+                //create a list to store whether we have visited this node before.
+                //initialize to contain every node, and ensure that no other node has been traveled to before.
+                Dictionary<GameObject, bool> hasVisited = new Dictionary<GameObject, bool>();
+                foreach(KeyValuePair<string, GameObject> node in graphHolder.GetComponent<Graph>().totalNodes)
                 {
-                    if (nodeDict.ContainsKey("" + target))
+                    hasVisited.Add(node.Value, false);
+                }
+                
+                //then, get every information block from the json
+                foreach (CompVizStage stage in oxideBlockDict.stages)
+                {
+                    foreach (KeyValuePair<string, CompVizBlock> node in stage.blocks)
                     {
-                        SimpleCubeNode cube2 = nodeDict["" + target];
-                        string edgeName = $"edge: {cube1.name} - {cube2.name}";
-                        BasicEdge newEdge = BasicEdge.New(edgeName);
-                        //newEdge.transform.parent = cube1.transform; // don't think we need to do this
-                        newEdge.NodeA = cube1.transform;
-                        newEdge.NodeB = cube2.transform;
-                        gameManager.codeGraph.AddEdgeToGraph(cube1, cube2);
-                        cube1.MyEdges.Add(newEdge);
-                        cube2.MyEdges.Add(newEdge);
+                        //next, compare the information stored in the node game objects with the information blocks
+                        foreach (KeyValuePair<string, GameObject> nodeComparison in graphHolder.GetComponent<Graph>().totalNodes)
+                        {
+                            //Debug.LogWarning(nodeComparison.Key);
+                            //if this node targets another node, add it to the list.
+                            if (node.Value.targets.Contains(nodeComparison.Key))
+                            {
+                                Debug.LogWarning("Line 171 If Statement Works!");
+                                GameObject parentNode = graphHolder.GetComponent<Graph>().totalNodes[node.Key];
+                                GameObject edgePrefab = Object.Instantiate(graphHolder.GetComponent<Graph>().edgePrefab);
+                                parentNode.GetComponent<Node>().AddChild(nodeComparison.Value, edgePrefab);
+                                nodeComparison.Value.GetComponent<Node>().AddParent(parentNode, edgePrefab);
+                                hasVisited[parentNode] = true;
+                            }
+                        }
+                    
                     }
                 }
-            }
+                
+                foreach(KeyValuePair<string, GameObject> node in graphHolder.GetComponent<Graph>().totalNodes)
+                {
+                    List<GameObject> childNodes = new List<GameObject>();
+                    foreach (KeyValuePair<GameObject, GameObject> childNode in node.Value.GetComponent<Node>().childNodes) 
+                    {
+                        Debug.Log(childNode.Key);
+                        childNodes.Add(childNode.Value);
+                    }
+                    //graphHolder.GetComponent<Graph>().AssignChildrenToNode(node.Value, childNodes);
 
-            gameManager.codeGraph.StartGraph();
-            gameManager.codeGraph.setLoneValuesImmobile();
+                }
+
+                GameObject StartNode = graphHolder.transform.GetChild(graphHolder.transform.childCount - 1).gameObject;
+                GameObject ExitNode = graphHolder.transform.GetChild(0).gameObject;
+
+                graphHolder.GetComponent<Graph>().ArrangeGraph(ExitNode, StartNode);
+            }
         }
 
         private string getOxideCodeString(OxideBasicBlock oxideBlock)
