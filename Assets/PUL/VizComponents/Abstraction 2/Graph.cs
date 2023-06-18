@@ -9,15 +9,17 @@ namespace PUL
     {
         public GameObject nodePrefab;
         public GameObject edgePrefab;
+        //name of node associated with the game object;
         public IDictionary<string, GameObject> totalNodes = new Dictionary<string, GameObject>();
         public List<GameObject> totalEdges = new List<GameObject>();
 
         //adds node to graph and stores the node in the list "total nodes"
-        public void AddNodeToGraph(string nodeName, List<string> nodeValue)
+        public void AddNodeToGraph(string nodeName, List<string> nodeValue, GameManager gameManager)
         {
 
             GameObject node = Object.Instantiate(nodePrefab);
             Node nodeComponent = node.GetComponent<Node>();
+            nodeComponent.gameManager = gameManager;
             nodeComponent.nodeName = nodeName;
             nodeComponent.nodeValue = nodeValue;
             totalNodes.Add(nodeName, node);
@@ -86,7 +88,7 @@ namespace PUL
 
             foreach (List<GameObject> list in ans)
             {
-                Debug.Log(list.ToString());
+                //Debug.Log(list.ToString());
                 layerNodes.Add(list);
             }
 
@@ -95,17 +97,17 @@ namespace PUL
 
         public void ArrangeGraph(GameObject startNode, GameObject exitNode)
         {
-            Debug.Log("Arranging Graph!");
+            //Debug.Log("Arranging Graph!");
             List<List<GameObject>> layerNodes = new List<List<GameObject>>();
             SetLayerList(ref layerNodes, startNode);
-            Debug.Log(layerNodes.Count());
+            //Debug.Log(layerNodes.Count());
             float yTransform = layerNodes.Count();
 
             startNode.transform.localPosition = new Vector3(0, yTransform, 0);
             
 
 
-            Debug.Log(layerNodes.Count());
+            //Debug.Log(layerNodes.Count());
 
             foreach (List<GameObject> nodes in layerNodes)
             {
@@ -114,15 +116,15 @@ namespace PUL
                 {
                     if (node.GetComponent<Node>().nodeName == startNode.GetComponent<Node>().nodeName || node.GetComponent<Node>().nodeName == exitNode.GetComponent<Node>().nodeName)
                     {
-                        Debug.Log("Start or Exit Present!");
+                        //Debug.Log("Start or Exit Present!");
                         noStartOrExitPresent = false;
                     }
 
                 }
-                Debug.Log("Continuing Onward!");
+                //Debug.Log("Continuing Onward!");
                 if (noStartOrExitPresent)
                 {
-                    Debug.Log("Line 107 If Statement Works!");
+                    //Debug.Log("Line 107 If Statement Works!");
                     float xTransform = 0;
                     foreach (GameObject node in nodes)
                     {

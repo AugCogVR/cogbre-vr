@@ -51,6 +51,7 @@ namespace PUL
     public class CompVizStages
     {
         public IList<CompVizStage> stages { get; set; }
+        //innermost list: [StageID, BlockID], Second list: List<[StageID, BlockID]> relations between blocks and stages, Third List: Container of All Relations
         public IList<IList<IList<string>>> blockRelations { get; set; }
     }
 
@@ -130,13 +131,18 @@ namespace PUL
                     graphHolders[graphHolderIndex].GetComponent<Graph>().nodePrefab = Resources.Load("Prefabs/GraphNode") as GameObject;
                     graphHolders[graphHolderIndex].GetComponent<Graph>().edgePrefab = Resources.Load("Prefabs/Edge") as GameObject;
 
+                    //derives all code values
                     List<string> codeValues = new List<string>();
+                    List<string> lineNumbers = new List<string>();
+                   
                     foreach (string lineNumber in node.Value.lines)
                     {
+                        //we can assume line numbers to be ordered, since we're using it to obtain the correct value from stage.code
                         codeValues.Add(stage.code[lineNumber]);
+                        lineNumbers.Add(lineNumber);
                     }
 
-                    graphHolders[graphHolderIndex].GetComponent<Graph>().AddNodeToGraph(node.Key, codeValues);
+                    graphHolders[graphHolderIndex].GetComponent<Graph>().AddNodeToGraph(node.Key, codeValues, gameManager);
                     graphHolders[graphHolderIndex].GetComponent<Graph>().totalNodes[node.Key].transform.parent = graphHolders[graphHolderIndex].transform;
                     graphHolders[graphHolderIndex].GetComponent<Graph>().totalNodes[node.Key].transform.position = graphHolders[graphHolderIndex].GetComponent<Graph>().totalNodes[node.Key].transform.parent.position;
                 }
@@ -144,9 +150,9 @@ namespace PUL
                 graphHolderIndex += 1;
             }
 
-            //this is an absolutely disgusting function. we'll see if this works but lets see if we can come back to this and make it cleaner.
+            //this is an absolutely disgusting function. this works but lets see if we can come back to this and make it cleaner.
             //get every graph inside graphHolders
-            int i = 0;
+           
             
             foreach (GameObject graphHolder in graphHolders)
             {
@@ -155,6 +161,7 @@ namespace PUL
                 Dictionary<GameObject, bool> hasVisited = new Dictionary<GameObject, bool>();
                 foreach(KeyValuePair<string, GameObject> node in graphHolder.GetComponent<Graph>().totalNodes)
                 {
+                    Debug.Log(node.Key);
                     hasVisited.Add(node.Value, false);
                 }
                 
@@ -170,8 +177,9 @@ namespace PUL
                             //if this node targets another node, add it to the list.
                             if (node.Value.targets.Contains(nodeComparison.Key))
                             {
-                                Debug.LogWarning("Line 171 If Statement Works!");
+                              //  Debug.Log("Line 171 If Statement Works!");
                                 GameObject parentNode = graphHolder.GetComponent<Graph>().totalNodes[node.Key];
+                                //Debug.Log("Line 172 If Statement Works!");
                                 GameObject edgePrefab = Object.Instantiate(graphHolder.GetComponent<Graph>().edgePrefab);
                                 parentNode.GetComponent<Node>().AddChild(nodeComparison.Value, edgePrefab);
                                 nodeComparison.Value.GetComponent<Node>().AddParent(parentNode, edgePrefab);
@@ -187,10 +195,10 @@ namespace PUL
                     List<GameObject> childNodes = new List<GameObject>();
                     foreach (KeyValuePair<GameObject, GameObject> childNode in node.Value.GetComponent<Node>().childNodes) 
                     {
-                        Debug.Log(childNode.Key);
+                        //Debug.Log(childNode.Key);
                         childNodes.Add(childNode.Value);
                     }
-                    //graphHolder.GetComponent<Graph>().AssignChildrenToNode(node.Value, childNodes);
+                    //graphHolder.GetComponent<Graph>ChildrenToNode(node.Value, childNodes);
 
                 }
 
@@ -198,8 +206,13 @@ namespace PUL
                 GameObject ExitNode = graphHolder.transform.GetChild(0).gameObject;
 
                 graphHolder.GetComponent<Graph>().ArrangeGraph(ExitNode, StartNode);
+
+
+                gameManager.DisplayTextOnPanelView(gameManager.panelView, graphHolders[0]);
             }
         }
+
+
 
         private string getOxideCodeString(OxideBasicBlock oxideBlock)
         {

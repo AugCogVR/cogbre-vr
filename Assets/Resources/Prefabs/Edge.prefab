@@ -145,7 +145,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4682caeabe71e9642aaf7efe119a5e5e, type: 2}
+  - {fileID: 2100000, guid: e84fbe56e21324c43a583939d9154d29, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -176,8 +176,8 @@ LineRenderer:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0.0019681435
-        value: 0.021367814
+        time: 0
+        value: 0.017080095
         inSlope: 0
         outSlope: 0
         tangentMode: 0
