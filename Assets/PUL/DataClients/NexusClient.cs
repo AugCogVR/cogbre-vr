@@ -100,7 +100,7 @@ namespace PUL
 
             // OXIDE
             // Get basic program blocks from Nexus
-            //string oxideBasicBlocksJSON = await NexusSyncTask(userId, "get_oxide_program elf_fib_recursive");
+            //string oxideBasicBlocksJSON = await NexusSyncTask(userId, "get_canned_oxide_program elf_fib_recursive");
             //OxideBasicBlocks oxideBasicBlocks = new OxideBasicBlocks();
             //oxideBasicBlocks.basic_blocks = JsonConvert.DeserializeObject<IDictionary<string, OxideBasicBlock>>(oxideBasicBlocksJSON);
 
