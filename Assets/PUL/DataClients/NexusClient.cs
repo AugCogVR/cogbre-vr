@@ -18,7 +18,6 @@ namespace PUL2
         public IList<string> CIDs { get; set; }
     }
 
-
     public class NexusClient : MonoBehaviour
     {
         GameManager gameManager;
@@ -27,7 +26,7 @@ namespace PUL2
 
         private string userId;
 
-
+        
 
         public NexusClient (GameManager gameManager)
         {

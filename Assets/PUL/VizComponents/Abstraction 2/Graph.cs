@@ -1,9 +1,11 @@
+/*
+ * CODE FOR INSTATNIATING A CONTROL FLOW GRAPH. USES DEPRECATED GAME MANAGER SCRIPT, HARVEST USEFUL CODE IF NECESSARY
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace PUL
+namespace PUL2
 {
     public class Graph : MonoBehaviour
     {
@@ -179,3 +181,4 @@ namespace PUL
         }
     }
 }
+*/

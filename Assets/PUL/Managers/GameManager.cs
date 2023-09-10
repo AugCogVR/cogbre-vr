@@ -17,7 +17,8 @@ namespace PUL2
 
         public NexusClient nexusClient;
         public ActiveOxideData aod;
-        public MenuManager menuManager;
+        //This does not exist yet, uncomment when we have made a menu manager.
+        //public MenuManager menuManager;
         private static GameManager _instance;
 
         public static GameManager Instance

@@ -1,3 +1,4 @@
+/*
 using System.Collections;
 using System.Collections.Generic;
 using Microsoft.MixedReality.Toolkit.UI;
@@ -48,7 +49,7 @@ namespace PUL
             }
         }
         */
-
+/*
         //This function is not working correctly. Something about an object reference exception. it probably has to do with the asynchronus destruction of currentFlowGraphEdges. Fix this. GLHF, future julian.
         void UpdateEdges()
         {
@@ -77,4 +78,5 @@ namespace PUL
         }
         }
     }
+*/
 
