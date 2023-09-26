@@ -56,6 +56,7 @@ namespace PUL2
 
         public async void NexusSessionInit()
         {
+            Debug.Log("NExus Session Init is Running!");
             string sessionInitResult = await NexusSyncTask(userId, "session_init");
             string activeOxideData = await NexusSyncTask(userId, "oxide_collection_names");
             
@@ -63,6 +64,7 @@ namespace PUL2
             ActiveOxideData aod = new ActiveOxideData();
             aod.CIDs = JsonConvert.DeserializeObject<IList<string>>(activeOxideData);
             this.gameManager.aod = aod;
+
 
 
         }

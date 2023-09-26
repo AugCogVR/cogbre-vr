@@ -64,6 +64,7 @@ namespace PUL2
             // Initialize Nexus client
             nexusClient = new NexusClient(this);
             nexusClient.NexusSessionInit();
+            Debug.Log(aod.CIDs[0]);
         }
         
 
