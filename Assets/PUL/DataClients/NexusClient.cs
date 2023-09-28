@@ -63,7 +63,7 @@ namespace PUL2
             
             ActiveOxideData aod = new ActiveOxideData();
             aod.CIDs = JsonConvert.DeserializeObject<IList<string>>(activeOxideData);
-            this.gameManager.aod = aod;
+            this.gameManager.menuManager.aod = aod;
 
 
 

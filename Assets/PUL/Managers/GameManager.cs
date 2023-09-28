@@ -16,9 +16,8 @@ namespace PUL2
         //#region Singleton
 
         public NexusClient nexusClient;
-        public ActiveOxideData aod;
-        //This does not exist yet, uncomment when we have made a menu manager.
-        //public MenuManager menuManager;
+        public MenuManager menuManager;
+        
         private static GameManager _instance;
 
         public static GameManager Instance
@@ -64,7 +63,6 @@ namespace PUL2
             // Initialize Nexus client
             nexusClient = new NexusClient(this);
             nexusClient.NexusSessionInit();
-            Debug.Log(aod.CIDs[0]);
         }
         
 
