@@ -4,7 +4,7 @@
 
 NOTE: This is the VR component for "cogbre." The nexus (server) component is at https://github.com/AugCogVR/cogbre-nexus
 
-This application supports research of the Auburn CSSE Program Understanding Lab (PUL). 
+This application supports research of the [Auburn CSSE Program Understanding Lab](https://program-understanding.github.io/).
 
 This is a Unity-based front-end to provide an immersive and egocentric experience for those who perform reverse engineering on binary programs. 
 
