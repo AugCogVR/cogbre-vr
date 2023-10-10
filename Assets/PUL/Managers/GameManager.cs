@@ -62,7 +62,8 @@ namespace PUL2
         {
             // Initialize Nexus client
             nexusClient = new NexusClient(this);
-            nexusClient.NexusSessionInit();
+            // nexusClient.NexusSessionInit();
+            //on init, menu manager is given 
         }
         
 

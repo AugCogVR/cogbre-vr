@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8962121247308525392}
   - component: {fileID: 8962121247308525393}
   - component: {fileID: 600437132410049283}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: HighlightPlate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 8962121247613878957}
   - component: {fileID: 8962121247613878954}
   - component: {fileID: 600437132410049788}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: FrontPlate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -234,7 +234,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8962121248024659804}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: ButtonContent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -272,7 +272,7 @@ GameObject:
   - component: {fileID: 8962121248065496616}
   - component: {fileID: 8962121248065496617}
   - component: {fileID: 8962121248065496614}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MenuButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -288,7 +288,7 @@ Transform:
   m_GameObject: {fileID: 8962121248065496612}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.25, y: -0.025, z: 0}
-  m_LocalScale: {x: 2.6508014, y: 0.93630964, z: 0.077427834}
+  m_LocalScale: {x: 2.6508014, y: 0.93630964, z: 1.41}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8962121248024659804}
@@ -309,7 +309,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.096, y: 0.032, z: 0.016}
+  m_Size: {x: 0.096, y: 0.032, z: 0.04}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8962121248065496621
 MonoBehaviour:
@@ -789,7 +789,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8962121248138876003}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BackPlate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -821,7 +821,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8962121248313119723}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CompressableButtonVisuals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -857,7 +857,7 @@ GameObject:
   - component: {fileID: 8962121248402786440}
   - component: {fileID: 8962121248402786441}
   - component: {fileID: 600437132410049281}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: TextMeshPro
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -957,7 +957,7 @@ MonoBehaviour:
   m_text: sample[]
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6a84f857bec7e7345843ae29404c57ce, type: 2}
-  m_sharedMaterial: {fileID: 0}
+  m_sharedMaterial: {fileID: 21202819797275496, guid: 6a84f857bec7e7345843ae29404c57ce, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1017,7 +1017,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 1
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: -0.0022691963, z: -0.031214677, w: 0}
+  m_margin: {x: -0.00047911517, y: -0.0022691963, z: -0.04085227, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   _SortingLayer: 0
@@ -1053,7 +1053,7 @@ GameObject:
   - component: {fileID: 8962121248404350668}
   - component: {fileID: 8962121248404350669}
   - component: {fileID: 600437132410049282}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Quad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
