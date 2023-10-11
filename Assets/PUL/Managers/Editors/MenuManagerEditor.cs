@@ -10,6 +10,9 @@ using UnityEngine.UI;
 public class MenuManagerEditor : Editor
 {
     int cidIndex = 0;
+    int oidIndex = 0;
+    List<NexusObject> currentOIDs = null;
+
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
@@ -29,6 +32,7 @@ public class MenuManagerEditor : Editor
         EditorGUILayout.LabelField("===== Editor =====", EditorStyles.boldLabel);
 
 
+
         // Input field for CID to test
         cidIndex = EditorGUILayout.IntSlider("CID", cidIndex, 0, GameManager.Instance.nexusClient.aod.CIDs.Count - 1);
         
@@ -44,6 +48,26 @@ public class MenuManagerEditor : Editor
 
             // -> Build first button
             mm.BuildButton(GameManager.Instance.nexusClient.aod.CIDs[cidIndex]);
+
+            // -> Set current OIDs
+            currentOIDs = new List<NexusObject>(GameManager.Instance.nexusClient.aod.CIDs[cidIndex].OIDs);
+        }
+
+        // Build information based on OIDs
+        if (currentOIDs != null && currentOIDs.Count > 0)
+        {
+            // Space contents
+            GUILayout.Space(EditorGUIUtility.singleLineHeight);
+
+            // Input field for OID to test
+            oidIndex = EditorGUILayout.IntSlider("OID", oidIndex, 0, currentOIDs.Count - 1);
+
+            // Build a button to select OID graph
+            if (GUILayout.Button($"Spawn OID[{oidIndex}] graph"))
+            {
+                // -> Build Graph
+                mm.SetOIDInformation(currentOIDs[oidIndex]);
+            }
         }
     }
 }

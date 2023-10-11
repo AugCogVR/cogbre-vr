@@ -16,15 +16,23 @@ namespace PUL2
         public GridObjectCollection CIDGridObjectCollection;
         //refers to the same thing, but for OIDs
         public GridObjectCollection OIDGridObjectCollection;
+        //refers to text box that displays information about the selected OID
+        public TextMeshPro oidInformation;
         //refers to the menu button prefabs that will be instantiated on the menu.
         public GameObject MenuButtonPrefab;
         public GameManager GameManager;
+        //refers to the transform of the UI panel
+        public Transform UIPanel;
+        //refers to the graph manager
+        public SpatialGraphManager graphManager;
 
         //store all active buttons in a list
         private List<GameObject> activeOIDButtons = new List<GameObject>();
 
         public bool initialized = false;
 
+
+        // DEBUG GRAPH
        public void MenuInit()
         {
             foreach (Collection CID in aod.CIDs)
@@ -35,13 +43,13 @@ namespace PUL2
                 // Set the parent to the GridObjectCollection.
                 newButton.transform.parent = CIDGridObjectCollection.transform;
                 newButton.transform.localEulerAngles = Vector3.zero;
+                newButton.transform.localScale = new Vector3(newButton.transform.localScale.x * UIPanel.localScale.x, newButton.transform.localScale.y * UIPanel.localScale.y, newButton.transform.localScale.z * UIPanel.localScale.z);
                 newButton.transform.name = CID.Name + ": Menu Button";
                 newButton.GetComponentInChildren<TextMeshPro>().text = CID.Name;
 
                 // Set button functions - Doesn't work yet
                 PressableButtonHoloLens2 buttonFunction = newButton.GetComponent<PressableButtonHoloLens2>();
                 buttonFunction.TouchBegin.AddListener(() => BuildButton(CID));
-
             }
 
             CIDGridObjectCollection.UpdateCollection();
@@ -50,6 +58,10 @@ namespace PUL2
 
         public void BuildButton(Collection CID)
         {
+            // Resets oid information
+            ResetOIDInformation();
+
+            // Builds Button
             StartCoroutine(BuildButtonEnum(CID));
         }
 
@@ -74,19 +86,44 @@ namespace PUL2
                 // Set the parent to the GridObjectCollection.
                 newButton.transform.parent = OIDGridObjectCollection.transform;
                 newButton.transform.localEulerAngles = Vector3.zero;
+                newButton.transform.localScale = new Vector3(newButton.transform.localScale.x * UIPanel.localScale.x, newButton.transform.localScale.y * UIPanel.localScale.y, newButton.transform.localScale.z * UIPanel.localScale.z);
                 newButton.transform.name = OID.Name + ": Menu Button";
                 newButton.GetComponentInChildren<TextMeshPro>().text = OID.Name;
 
                 activeOIDButtons.Add(newButton);
+
                 // Set button functions
-                /*PressableButtonHoloLens2 buttonFunction = newButton.GetComponent<PressableButtonHoloLens2>();
-                buttonFunction.TouchEnd.AddListener(delegate { BuildButton(CID); });*/
+                PressableButtonHoloLens2 buttonFunction = newButton.GetComponent<PressableButtonHoloLens2>();
+                buttonFunction.TouchEnd.AddListener(() => SetOIDInformation(OID));
 
             }
 
             yield return new WaitForEndOfFrame();
 
             OIDGridObjectCollection.UpdateCollection();
+        }
+
+        // Sets information about an oid and builds a graph
+        public void SetOIDInformation(NexusObject OID)
+        {
+            // Reset OID information
+            ResetOIDInformation();
+
+            // Set oid information to the name of the current selection
+            oidInformation.text = OID.Name;
+
+            // Builds a graph based on information contained
+            // -> NOTE! CURRENTLY GENERATES A RANDOM GRAPH
+            graphManager.CreateGraph(OID);
+        }
+
+        void ResetOIDInformation()
+        {
+            // Sets the selected OID to none
+            oidInformation.text = "NONE";
+
+            // Resets current graph
+            graphManager.DisableGraphs();
         }
     }
 }
