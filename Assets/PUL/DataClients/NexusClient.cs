@@ -163,7 +163,7 @@ namespace PUL2
 
                 // -> Get OIDs
                 string oidPull = await NexusSyncTask(userId, $"[\"oxide_get_oids_with_cid\", \"{cid}\"]");
-                //Debug.Log($"OID_pull (Collection: {cid}): {oidPull}");
+                // Debug.Log($"OID_pull (Collection: {cid}): {oidPull}");
                 // -> Format OIDs
                 IList<string> oids = JsonConvert.DeserializeObject<IList<string>>(oidPull);
                 IList<NexusObject> OIDs = new List<NexusObject>();
@@ -171,8 +171,13 @@ namespace PUL2
                 foreach (string oid in oids)
                 {
                     // -> Grab OID name
-                    string oName = "Nameless OID";
+                    string oNamePull = await NexusSyncTask(userId, $"[\"oxide_get_names_from_oid\", \"{oid}\"]");
+                    IList<string> oName = JsonConvert.DeserializeObject<IList<string>>(oNamePull);
+                    // --> Make sure oName has contents
+                    if (oName.Count <= 0)
+                        oName.Add("Nameless OID");
 
+                    Debug.Log($"OID NAME: {oName[0]}");
                     // -> Grab OID paths
                     IList<string> paths = new List<string>();
 
@@ -180,7 +185,7 @@ namespace PUL2
                     int size = 0;
 
                     // Compile information together into a new OID object
-                    OIDs.Add(new NexusObject(oid, oName, paths, size));
+                    OIDs.Add(new NexusObject(oid, oName[0], paths, size));
                 }
 
                 // Add collection to list

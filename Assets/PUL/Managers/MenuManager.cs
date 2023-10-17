@@ -16,10 +16,9 @@ namespace PUL2
         public GridObjectCollection CIDGridObjectCollection;
         //refers to the same thing, but for OIDs
         public GridObjectCollection OIDGridObjectCollection;
-        //refers to text box that displays information about the selected OID
-        public TextMeshPro oidInformation;
         //refers to the menu button prefabs that will be instantiated on the menu.
         public GameObject MenuButtonPrefab;
+        public GameObject ObjectButtonPrefab;
         public GameManager GameManager;
         //refers to the transform of the UI panel
         public Transform UIPanel;
@@ -81,14 +80,14 @@ namespace PUL2
             foreach (NexusObject OID in CID.OIDs)
             {
                 // Instantiate the button prefab.
-                GameObject newButton = Instantiate(MenuButtonPrefab);
+                GameObject newButton = Instantiate(ObjectButtonPrefab);
 
                 // Set the parent to the GridObjectCollection.
                 newButton.transform.parent = OIDGridObjectCollection.transform;
                 newButton.transform.localEulerAngles = Vector3.zero;
                 newButton.transform.localScale = new Vector3(newButton.transform.localScale.x * UIPanel.localScale.x, newButton.transform.localScale.y * UIPanel.localScale.y, newButton.transform.localScale.z * UIPanel.localScale.z);
                 newButton.transform.name = OID.Name + ": Menu Button";
-                newButton.GetComponentInChildren<TextMeshPro>().text = OID.Name;
+                newButton.GetComponentInChildren<TextMeshPro>().text = $"<size=145%><line-height=55%><b>{OID.Name}</b>\n<size=60%>{OID.OID}\n{OID.Size}";
 
                 activeOIDButtons.Add(newButton);
 
@@ -109,9 +108,6 @@ namespace PUL2
             // Reset OID information
             ResetOIDInformation();
 
-            // Set oid information to the name of the current selection
-            oidInformation.text = OID.Name;
-
             // Builds a graph based on information contained
             // -> NOTE! CURRENTLY GENERATES A RANDOM GRAPH
             graphManager.CreateGraph(OID);
@@ -119,9 +115,6 @@ namespace PUL2
 
         void ResetOIDInformation()
         {
-            // Sets the selected OID to none
-            oidInformation.text = "NONE";
-
             // Resets current graph
             graphManager.DisableGraphs();
         }
