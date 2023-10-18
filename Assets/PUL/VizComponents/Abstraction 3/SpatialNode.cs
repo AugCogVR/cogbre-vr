@@ -1,6 +1,7 @@
 using Microsoft.MixedReality.Toolkit.Utilities;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class SpatialNode : MonoBehaviour
@@ -17,7 +18,7 @@ public class SpatialNode : MonoBehaviour
     // Stores edge information
     // -> Indexes match up with parents
     public List<LineRenderer> lineRenderers = new List<LineRenderer>();
-    float edgeWidth = 0.015f;
+    float edgeWidth = 0.001f;
 
     // Movement information
     public float edgeLength = 2;
@@ -27,7 +28,7 @@ public class SpatialNode : MonoBehaviour
     public bool doneMoving = false;
 
     // Visual components
-    public MeshOutline outline;
+    public TextMeshPro idOut;
 
     // -> NOTE! THIS IS WHERE PACKAGED DATA WILL GO... NOT YET IMPLEMENTED
 
@@ -54,12 +55,16 @@ public class SpatialNode : MonoBehaviour
                 avgVector += (node.transform.position - transform.position) * Vector3.Distance(node.transform.position, transform.position);
             }
             // -> Move towards average
-            if (avgVector.magnitude > modEdgeLength + lengthSlack)
-                transform.position = Vector3.Lerp(transform.position, transform.position + avgVector.normalized, Time.deltaTime * moveSpeed);
-            else if (avgVector.magnitude < modEdgeLength - lengthSlack && !graph.interacting)
-                transform.position = Vector3.Lerp(transform.position, transform.position - avgVector.normalized, Time.deltaTime * moveSpeed);
+            if (avgVector.magnitude > modEdgeLength + lengthSlack && avgVector.normalized != Vector3.zero)
+                transform.position += avgVector.normalized * Time.deltaTime * moveSpeed;
+            else if (avgVector.magnitude < modEdgeLength - lengthSlack && !graph.interacting && avgVector.normalized != Vector3.zero)
+                transform.position -= avgVector.normalized * Time.deltaTime * moveSpeed;
             else
+            {
                 doneMoving = true;
+                // Expand graph bounds
+                graph.ModifyBounds(transform.position);
+            }
         }
 
         // Updates edges
@@ -68,6 +73,9 @@ public class SpatialNode : MonoBehaviour
             lineRenderers[i].SetPosition(0, transform.position);
             lineRenderers[i].SetPosition(1, parents[i].transform.position);
         }
+
+        // Make idOut look towards the main camera
+        idOut.transform.LookAt(Camera.main.transform);
     }
 
     // Connects two nodes treat the current as the child
@@ -86,6 +94,8 @@ public class SpatialNode : MonoBehaviour
         // Adds an edge between nodes
         GameObject edgeObj = new GameObject("Edge");
         edgeObj.transform.parent = transform;
+        edgeObj.layer = 8;
+
         LineRenderer newEdge = edgeObj.AddComponent<LineRenderer>();
         newEdge.positionCount = 2;
 
@@ -93,6 +103,27 @@ public class SpatialNode : MonoBehaviour
 
         newEdge.material = graph.graphManager.edgeMaterial;
         lineRenderers.Add(newEdge);
+    }
+
+    // Sets visibility of node
+    public void SetVisible(bool visible)
+    {
+        if (visible) 
+        {
+            gameObject.layer = 0;
+            idOut.gameObject.layer = 0;
+            // -> Set line renderers
+            foreach (LineRenderer line in lineRenderers)
+                line.gameObject.layer = 0;
+        }
+        else
+        {
+            gameObject.layer = 8;
+            idOut.gameObject.layer = 8;
+            // -> Set line renderers
+            foreach (LineRenderer line in lineRenderers)
+                line.gameObject.layer = 8;
+        }
     }
 
     // Sets the interact state
@@ -119,8 +150,6 @@ public class SpatialNode : MonoBehaviour
                 int pIndex = child.parents.FindIndex(x => x.ID == ID);
                 child.lineRenderers[pIndex].material = graph.graphManager.highlightMaterialChild;
             }
-
-            outline.enabled = true;
         }
         // Otherwise, set to default
         else
@@ -137,8 +166,6 @@ public class SpatialNode : MonoBehaviour
                 int pIndex = child.parents.FindIndex(x => x.ID == ID);
                 child.lineRenderers[pIndex].material = graph.graphManager.edgeMaterial;
             }
-
-            outline.enabled = false;
         }
     }
 }
