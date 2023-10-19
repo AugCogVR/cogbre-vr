@@ -87,7 +87,7 @@ namespace PUL2
                 newButton.transform.localEulerAngles = Vector3.zero;
                 newButton.transform.localScale = new Vector3(newButton.transform.localScale.x * UIPanel.localScale.x, newButton.transform.localScale.y * UIPanel.localScale.y, newButton.transform.localScale.z * UIPanel.localScale.z);
                 newButton.transform.name = OID.Name + ": Menu Button";
-                newButton.GetComponentInChildren<TextMeshPro>().text = $"<size=145%><line-height=55%><b>{OID.Name}</b>\n<size=60%>{OID.OID}\n{OID.Size}";
+                newButton.GetComponentInChildren<TextMeshPro>().text = $"<size=145%><line-height=55%><b>{OID.Name}</b>\n<size=60%>{OID.OID}\n<b>Size:</b> {OID.Size}";
 
                 activeOIDButtons.Add(newButton);
 

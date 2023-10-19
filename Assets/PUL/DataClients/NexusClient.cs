@@ -78,9 +78,9 @@ namespace PUL2
         public string Name { get; set; }
         public IList<string> originalPaths { get; set; }
 
-        public int Size { get; set; }
+        public string Size { get; set; }
 
-        public NexusObject(string oID, string name, IList<string> originalPaths, int size)
+        public NexusObject(string oID, string name, IList<string> originalPaths, string size)
         {
             OID = oID;
             Name = name;
@@ -182,7 +182,7 @@ namespace PUL2
                     IList<string> paths = new List<string>();
 
                     // -> Grab OID size
-                    int size = 0;
+                    string size = await NexusSyncTask(userId, $"[\"oxide_get_oid_file_size\", \"{oid}\"]");
 
                     // Compile information together into a new OID object
                     OIDs.Add(new NexusObject(oid, oName[0], paths, size));
