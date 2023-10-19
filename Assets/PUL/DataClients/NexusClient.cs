@@ -177,13 +177,16 @@ namespace PUL2
                     if (oName.Count <= 0)
                         oName.Add("Nameless OID");
 
-                    Debug.Log($"OID NAME: {oName[0]}");
+                    //Debug.Log($"OID NAME: {oName[0]}");
                     // -> Grab OID paths
                     IList<string> paths = new List<string>();
 
                     // -> Grab OID size
                     string size = await NexusSyncTask(userId, $"[\"oxide_get_oid_file_size\", \"{oid}\"]");
 
+                    string dissasm = await NexusSyncTask(userId, "[\"oxide_get_disassembly\", [\"" + oid + "\"]]");
+                    //IList<string> oName = JsonConvert.DeserializeObject<IList<string>>(oNamePull);
+                    Debug.Log(dissasm);
                     // Compile information together into a new OID object
                     OIDs.Add(new NexusObject(oid, oName[0], paths, size));
                 }
