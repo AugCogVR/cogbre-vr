@@ -186,7 +186,7 @@ namespace PUL2
 
                     string dissasm = await NexusSyncTask(userId, "[\"oxide_get_disassembly\", [\"" + oid + "\"]]");
                     //IList<string> oName = JsonConvert.DeserializeObject<IList<string>>(oNamePull);
-                    Debug.Log(dissasm);
+                    Debug.Log("DISS: " + dissasm);
                     // Compile information together into a new OID object
                     OIDs.Add(new NexusObject(oid, oName[0], paths, size));
                 }

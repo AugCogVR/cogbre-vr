@@ -19,6 +19,8 @@ public class SpatialGraph : MonoBehaviour
 
     // Holds refrence to the ring graphic
     public GameObject graphBorder = null;
+    // Holds refrence to the size of the ring graphic
+    float graphBorderScale = 5;
 
     // Flag to check if the graph is done generating
     public bool doneGenerating = false;
@@ -40,7 +42,7 @@ public class SpatialGraph : MonoBehaviour
     // Refers to the target scale of the current graph
     // -> This is used for resizing the graph to a consistant size
     Vector3 targetScale = Vector3.zero;
-    // Refers to the general scale of the graph
+    // Refers to the general scale of the graph nodes
     float graphScale = .15f;
 
     // Generates graph based off OID. Might move this to a manager to help parse data
@@ -120,7 +122,7 @@ public class SpatialGraph : MonoBehaviour
     public void Update()
     {
         // -> Check if the graph is done generating
-        if(!doneGenerating) return;
+        if (!doneGenerating) return;
 
         // -> Check if every node in the graph is done moving
         if (!staticGraph)
@@ -135,7 +137,7 @@ public class SpatialGraph : MonoBehaviour
 
             // Grab the target position of the graph
             targetPosition = (Camera.main.transform.forward * targetSetDistance) + Camera.main.transform.position;
-            targetPosition += Vector3.down * targetSetDistance / 2f;
+            targetPosition += Vector3.down * targetSetDistance / 6f;
 
             // Get the biggest side of the graph bounds
             float maxSide = Mathf.Max(graphBounds.size.x, Mathf.Max(graphBounds.size.y, graphBounds.size.z));
@@ -179,20 +181,31 @@ public class SpatialGraph : MonoBehaviour
             // Set border to max size
             // -> Unify edges by dividing by parent scale
             // -> Add extra padding
-            graphBorder.transform.transform.localScale = new Vector3(maxSide / transform.localScale.x, maxSide / transform.localScale.y, -maxSide / transform.localScale.z) + (Vector3.one * graphScale / 4f);
+            graphBorder.transform.localScale = new Vector3(maxSide * graphBorder.transform.localScale.x, maxSide * graphBorder.transform.localScale.y, maxSide * graphBorder.transform.localScale.z) + (Vector3.one * graphScale / 4f);
+            graphBorder.transform.localPosition = Vector3.down * 3;
+            graphBorderScale = graphBorder.transform.localScale.x;
             // -> Activate
             graphBorder.SetActive(true);
 
             // -> Push parent node underneath the border
             nodeParent.transform.parent = graphBorder.transform;
-            nodeParent.transform.localPosition = Vector3.zero;
+            nodeParent.transform.localPosition = Vector3.up * 3;
         }
-
-        // Make border look at camera
-        graphBorder.transform.LookAt(Camera.main.transform.position);
-        nodeParent.transform.up = Vector3.up;
     }
 
+    // When the user is done manipulating the scale/rotation of the graph the border will resize into view
+    public void ResizeRing()
+    {
+        // Grab the scale that the border should be shrunk by
+        float sScale = graphBorder.transform.localScale.x / graphBorderScale;
+
+        // -> Expand the graph object by the shrink scale
+        nodeParent.transform.localScale *= sScale;
+
+        // -> Shrink the bounds to be 1 unit in scale
+        graphBorder.transform.localScale = new Vector3(1, 1, -1) * graphBorderScale;
+
+    }
 
 
     // Draws Gizmos associated with graph, this includes...
