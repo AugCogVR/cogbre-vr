@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 7121948021907872180}
   - component: {fileID: 5902529165715887936}
   - component: {fileID: 6149973179030848406}
+  - component: {fileID: 3211721346090473271}
+  - component: {fileID: 3104223958697165645}
   m_Layer: 8
   m_Name: SpatialNode
   m_TagString: Untagged
@@ -122,6 +124,8 @@ MonoBehaviour:
   moveSpeed: 3.5
   doneMoving: 0
   idOut: {fileID: 5989023199078284071}
+  mtSpd: 3
+  grabMove: 0
 --- !u!114 &5902529165715887936
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,6 +223,78 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: SpatialNode, Assembly-CSharp
         m_MethodName: HighlightEdges
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &3211721346090473271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3535025006019664936}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19fe7721a0743104baae38e46537705b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isFocusRequired: 1
+  InputAction:
+    id: 7
+    description: Grip Press
+    axisConstraint: 3
+  MarkEventsAsUsed: 0
+  OnInputActionStarted:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7121948021907872180}
+        m_TargetAssemblyTypeName: SpatialNode, Assembly-CSharp
+        m_MethodName: StartMoveTowards
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnInputActionEnded:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &3104223958697165645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3535025006019664936}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19fe7721a0743104baae38e46537705b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isFocusRequired: 0
+  InputAction:
+    id: 7
+    description: Grip Press
+    axisConstraint: 3
+  MarkEventsAsUsed: 0
+  OnInputActionStarted:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInputActionEnded:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7121948021907872180}
+        m_TargetAssemblyTypeName: SpatialNode, Assembly-CSharp
+        m_MethodName: EndMoveTowards
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

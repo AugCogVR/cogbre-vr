@@ -1,3 +1,4 @@
+using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using System.Collections;
 using System.Collections.Generic;
@@ -29,6 +30,18 @@ public class SpatialNode : MonoBehaviour
 
     // Visual components
     public TextMeshPro idOut;
+
+    // Movement Input
+    [Header("Movement Input")]
+    // Refers to the movement speed of node to hand
+    public float mtSpd = 3;
+    // Refers to the state that the node moving is in
+    public bool grabMove = false;
+    // Refers to the input data
+    // -> This is used to keep track of the hand position
+    BaseInputEventData mData = null;
+
+
 
     // -> NOTE! THIS IS WHERE PACKAGED DATA WILL GO... NOT YET IMPLEMENTED
 
@@ -76,6 +89,14 @@ public class SpatialNode : MonoBehaviour
 
         // Make idOut look towards the main camera
         idOut.transform.LookAt(Camera.main.transform);
+
+
+        // Move node towards the users hand
+        if(grabMove && mData != null)
+        {
+            // -> Move the node towards the hand
+            transform.position = Vector3.MoveTowards(transform.position, mData.currentInputModule.transform.position, Time.deltaTime * mtSpd);
+        }
     }
 
     // Connects two nodes treat the current as the child
@@ -167,5 +188,16 @@ public class SpatialNode : MonoBehaviour
                 child.lineRenderers[pIndex].material = graph.graphManager.edgeMaterial;
             }
         }
+    }
+
+    // Methods to control pull
+    public void StartMoveTowards(BaseInputEventData data)
+    {
+        grabMove = true;
+        mData = data;
+    }
+    public void EndMoveTowards(BaseInputEventData data)
+    {
+        grabMove = false;
     }
 }

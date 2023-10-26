@@ -183,10 +183,13 @@ namespace PUL2
 
                     // -> Grab OID size
                     string size = await NexusSyncTask(userId, $"[\"oxide_get_oid_file_size\", \"{oid}\"]");
-
-                    string dissasm = await NexusSyncTask(userId, "[\"oxide_get_disassembly\", [\"" + oid + "\"]]");
+                    
+                    // -> DISSAM is not working (returning null)
+                    // string dissasm = await NexusSyncTask(userId, "[\"oxide_get_disassembly\", [\"" + oid + "\"]]");
                     //IList<string> oName = JsonConvert.DeserializeObject<IList<string>>(oNamePull);
-                    Debug.Log("DISS: " + dissasm);
+                    //Debug.Log("DISS: " + dissasm);
+                    
+                    
                     // Compile information together into a new OID object
                     OIDs.Add(new NexusObject(oid, oName[0], paths, size));
                 }

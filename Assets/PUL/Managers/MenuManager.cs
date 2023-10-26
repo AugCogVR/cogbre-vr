@@ -46,9 +46,13 @@ namespace PUL2
                 newButton.transform.name = CID.Name + ": Menu Button";
                 newButton.GetComponentInChildren<TextMeshPro>().text = CID.Name;
 
-                // Set button functions - Doesn't work yet
+                // Set button functions
+                // -> Physical Press
                 PressableButtonHoloLens2 buttonFunction = newButton.GetComponent<PressableButtonHoloLens2>();
                 buttonFunction.TouchBegin.AddListener(() => BuildButton(CID));
+                // -> Ray Press
+                Interactable distanceInteract = newButton.GetComponent<Interactable>();
+                distanceInteract.OnClick.AddListener(() => BuildButton(CID));
             }
 
             CIDGridObjectCollection.UpdateCollection();
@@ -92,8 +96,12 @@ namespace PUL2
                 activeOIDButtons.Add(newButton);
 
                 // Set button functions
+                // -> Physical Press
                 PressableButtonHoloLens2 buttonFunction = newButton.GetComponent<PressableButtonHoloLens2>();
                 buttonFunction.TouchEnd.AddListener(() => SetOIDInformation(OID));
+                // -> Ray Press
+                Interactable distanceInteract = newButton.GetComponent<Interactable>();
+                distanceInteract.OnClick.AddListener(() => SetOIDInformation(OID));
 
             }
 

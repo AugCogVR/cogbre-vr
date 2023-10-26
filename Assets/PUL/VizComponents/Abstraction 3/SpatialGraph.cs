@@ -44,6 +44,8 @@ public class SpatialGraph : MonoBehaviour
     Vector3 targetScale = Vector3.zero;
     // Refers to the general scale of the graph nodes
     float graphScale = .15f;
+    [Space]
+    public bool resizeRing = false;
 
     // Generates graph based off OID. Might move this to a manager to help parse data
     public void GenerateGraph(NexusObject OID)
@@ -121,6 +123,12 @@ public class SpatialGraph : MonoBehaviour
 
     public void Update()
     {
+        if (resizeRing)
+        {
+            ResizeRing();
+            resizeRing = false;
+        }
+
         // -> Check if the graph is done generating
         if (!doneGenerating) return;
 
@@ -149,18 +157,22 @@ public class SpatialGraph : MonoBehaviour
             transform.localScale = targetScale;
             transform.position = targetPosition;
 
+
+
             // Force nodes to centralize around graph point
             // -> Recalculate the center of the graph
             Vector3 totalNodePosition = Vector3.zero;
             foreach (SpatialNode node in nodes)
-                totalNodePosition += node.transform.position;
+                totalNodePosition += node.transform.localPosition;
             // -> Get average position
             totalNodePosition /= nodes.Count;
             // -> Get world difference
-            Vector3 nodeDifference = totalNodePosition - transform.position;
+            Vector3 nodeDifference = totalNodePosition - nodeParent.transform.position;
             // Move nodes (forcefully)
             foreach (SpatialNode node in nodes)
-                node.transform.position -= nodeDifference;
+                node.transform.localPosition += nodeDifference;
+
+
 
             // Recalculate bounds
             graphBounds = new Bounds();
@@ -174,22 +186,28 @@ public class SpatialGraph : MonoBehaviour
             // Get the new biggest side of the graph bounds
             maxSide = Mathf.Max(graphBounds.size.x, Mathf.Max(graphBounds.size.y, graphBounds.size.z));
 
+
+
             // Set nodes to render
             foreach (SpatialNode node in nodes)
                 node.SetVisible(true);
+
+
 
             // Set border to max size
             // -> Unify edges by dividing by parent scale
             // -> Add extra padding
             graphBorder.transform.localScale = new Vector3(maxSide * graphBorder.transform.localScale.x, maxSide * graphBorder.transform.localScale.y, maxSide * graphBorder.transform.localScale.z) + (Vector3.one * graphScale / 4f);
-            graphBorder.transform.localPosition = Vector3.down * 3;
+            graphBorder.transform.localPosition = Vector3.zero;
             graphBorderScale = graphBorder.transform.localScale.x;
             // -> Activate
             graphBorder.SetActive(true);
 
+
+
             // -> Push parent node underneath the border
             nodeParent.transform.parent = graphBorder.transform;
-            nodeParent.transform.localPosition = Vector3.up * 3;
+            nodeParent.transform.localPosition = Vector3.zero;// new Vector3(0, graphBounds.size.y, 0) * 6;
         }
     }
 
@@ -200,10 +218,11 @@ public class SpatialGraph : MonoBehaviour
         float sScale = graphBorder.transform.localScale.x / graphBorderScale;
 
         // -> Expand the graph object by the shrink scale
+        //nodeParent.transform.localPosition *= sScale;
         nodeParent.transform.localScale *= sScale;
 
         // -> Shrink the bounds to be 1 unit in scale
-        graphBorder.transform.localScale = new Vector3(1, 1, -1) * graphBorderScale;
+        graphBorder.transform.localScale = new Vector3(1, 1, 1) * graphBorderScale;
 
     }
 
@@ -216,7 +235,7 @@ public class SpatialGraph : MonoBehaviour
     {
         // Draw bounds
         Gizmos.color = Color.cyan;
-        Gizmos.DrawWireCube(graphBounds.center, graphBounds.size);
+        Gizmos.DrawWireCube(nodeParent.transform.position, graphBounds.size);
 
         // Draw graph position
         Gizmos.color = Color.red;
