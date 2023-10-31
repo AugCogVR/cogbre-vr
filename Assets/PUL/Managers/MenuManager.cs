@@ -25,11 +25,12 @@ namespace PUL2
         //refers to the graph manager
         public SpatialGraphManager graphManager;
 
+        public TextMeshPro disasmContainer;
+
         //store all active buttons in a list
         private List<GameObject> activeOIDButtons = new List<GameObject>();
 
         public bool initialized = false;
-
 
         // DEBUG GRAPH
        public void MenuInit()
@@ -119,6 +120,7 @@ namespace PUL2
             // Builds a graph based on information contained
             // -> NOTE! CURRENTLY GENERATES A RANDOM GRAPH
             graphManager.CreateGraph(OID);
+            disasmContainer.text = OID.disassembly;
         }
 
         void ResetOIDInformation()

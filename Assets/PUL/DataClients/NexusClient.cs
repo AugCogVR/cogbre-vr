@@ -77,14 +77,15 @@ namespace PUL2
         public string OID { get; set; }
         public string Name { get; set; }
         public IList<string> originalPaths { get; set; }
-
+        public string disassembly { get; set; }
         public string Size { get; set; }
 
-        public NexusObject(string oID, string name, IList<string> originalPaths, string size)
+        public NexusObject(string oID, string name, IList<string> originalPaths, string dissasembly, string size)
         {
             OID = oID;
             Name = name;
             this.originalPaths = originalPaths;
+            this.disassembly = dissasembly;
             Size = size;
         }
 
@@ -98,6 +99,8 @@ namespace PUL2
             {
                 output += "\t\t\t" + path + "\n";
             }
+
+            output += $"\n\t\t-- > Disassembly: {disassembly}";
 
             return output;
         }
@@ -185,13 +188,11 @@ namespace PUL2
                     string size = await NexusSyncTask(userId, $"[\"oxide_get_oid_file_size\", \"{oid}\"]");
                     
                     // -> DISSAM is not working (returning null)
-                    // string dissasm = await NexusSyncTask(userId, "[\"oxide_get_disassembly\", [\"" + oid + "\"]]");
-                    //IList<string> oName = JsonConvert.DeserializeObject<IList<string>>(oNamePull);
-                    //Debug.Log("DISS: " + dissasm);
-                    
+                    string disasm = await NexusSyncTask(userId, "[\"oxide_get_disassembly\", [\"" + oid + "\"]]");
+                    // IList<string> dissasmPull = JsonConvert.DeserializeObject<IList<string>>(dissasm);
                     
                     // Compile information together into a new OID object
-                    OIDs.Add(new NexusObject(oid, oName[0], paths, size));
+                    OIDs.Add(new NexusObject(oid, oName[0], paths, disasm, size));
                 }
 
                 // Add collection to list
@@ -231,12 +232,12 @@ namespace PUL2
                 response.Close();
 
                 // Log the JSON response before deserialization for debugging
-                Debug.Log("NexusSync response JSON: " + responseStringJson);
+                Debug.Log(jsonRequest + "\nNexusSync response JSON: " + responseStringJson);
 
                 string responseString = JsonConvert.DeserializeObject<string>(responseStringJson);
 
                 // Log the deserialized response string for debugging
-                Debug.Log("NexusSync response string: " + responseString);
+                Debug.Log(jsonRequest + "\nNexusSync response string: " + responseString);
 
                 return responseString;
             }
