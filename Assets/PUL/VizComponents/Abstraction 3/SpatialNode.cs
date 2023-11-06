@@ -92,10 +92,14 @@ public class SpatialNode : MonoBehaviour
 
 
         // Move node towards the users hand
-        if(grabMove && mData != null)
+        if(grabMove && mData != null && mData.InputSource.Pointers.Length > 0)
         {
+            // Ensure that the node can no longer move on its own.
+            doneMoving = true;
+            // -> Store the current pointer
+            IMixedRealityPointer pointer = mData.InputSource.Pointers[0];
             // -> Move the node towards the hand
-            transform.position = Vector3.MoveTowards(transform.position, mData.currentInputModule.transform.position, Time.deltaTime * mtSpd);
+            transform.position = Vector3.MoveTowards(transform.position, pointer.Position + (pointer.Rotation * Vector3.forward * 0.1f), Time.deltaTime * mtSpd);
         }
     }
 

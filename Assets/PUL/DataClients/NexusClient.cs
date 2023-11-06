@@ -189,6 +189,7 @@ namespace PUL2
                     
                     // -> DISSAM is not working (returning null)
                     string disasm = await NexusSyncTask(userId, "[\"oxide_get_disassembly\", [\"" + oid + "\"]]");
+                    if (disasm == null) disasm = "null... Check for 500 error.";
                     // IList<string> dissasmPull = JsonConvert.DeserializeObject<IList<string>>(dissasm);
                     
                     // Compile information together into a new OID object
