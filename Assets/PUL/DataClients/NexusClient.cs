@@ -11,6 +11,7 @@ using System.ComponentModel;
 using Unity.VisualScripting;
 using System.Globalization;
 using static UnityEngine.UI.Image;
+using Mono.Reflection;
 
 namespace PUL2
 {
@@ -77,15 +78,15 @@ namespace PUL2
         public string OID { get; set; }
         public string Name { get; set; }
         public IList<string> originalPaths { get; set; }
-        public string disassembly { get; set; }
+        public string dissasemblyPath { get; set; }
         public string Size { get; set; }
 
-        public NexusObject(string oID, string name, IList<string> originalPaths, string dissasembly, string size)
+        public NexusObject(string oID, string name, IList<string> originalPaths, string dissasemblyPath, string size)
         {
             OID = oID;
             Name = name;
             this.originalPaths = originalPaths;
-            this.disassembly = dissasembly;
+            this.dissasemblyPath = dissasemblyPath;
             Size = size;
         }
 
@@ -100,7 +101,7 @@ namespace PUL2
                 output += "\t\t\t" + path + "\n";
             }
 
-            output += $"\n\t\t-- > Disassembly: {disassembly}";
+            output += $"\n\t\t-- > Disassembly: {dissasemblyPath}";
 
             return output;
         }
@@ -151,6 +152,9 @@ namespace PUL2
             // Store found CIDS in a temporary list then parse into Collection type
             IList<string> collectionNames = JsonConvert.DeserializeObject<IList<string>>(activeCollectionNames);
 
+            // Open up a file stream
+            StreamWriter sw = null;
+
             // Set aod
             aod = new ActiveOxideData();
             // Run through collectionNames and convert to CIDs
@@ -190,17 +194,38 @@ namespace PUL2
                     // -> DISSAM is not working (returning null)
                     string disasm = await NexusSyncTask(userId, "[\"oxide_get_disassembly\", [\"" + oid + "\"]]");
                     if (disasm == null) disasm = "null... Check for 500 error.";
+                    // Chop out unnessesary information
+                    int startIndex = disasm.IndexOf("\"instructions\"") + 16;
+                    disasm = disasm.Substring(startIndex, disasm.Length - 2 - startIndex);
                     // IList<string> dissasmPull = JsonConvert.DeserializeObject<IList<string>>(dissasm);
-                    
+
+                    // -> Store disassem in a file
+                    // storedData/collectionID/objectID.txt
+                    string disamDirectory = Application.persistentDataPath + $"/storedData/{cid}";
+                    string fileName = $"{oid}.json";
+                    // If directory does not exist, create one
+                    if (!Directory.Exists(disamDirectory))
+                        Directory.CreateDirectory(disamDirectory);
+                    // Write info to file
+                    sw = new StreamWriter(disamDirectory + "/" + fileName);
+                    await sw.WriteAsync(disasm);
+
                     // Compile information together into a new OID object
-                    OIDs.Add(new NexusObject(oid, oName[0], paths, disasm, size));
+                    // -> Create oid
+                    NexusObject finalOID = new NexusObject(oid, oName[0], paths, disamDirectory + "/" + fileName, size);
+                    // -> Format the information within the oid
+                    sw.Close();
+                    gameManager.disassemblyFormatter.ParseDisassembly(finalOID);
+                    // -> Log oid
+                    OIDs.Add(finalOID);
                 }
 
                 // Add collection to list
                 aod.CIDs.Add(new Collection(cid, collectionName, "", new List<NexusObject>(OIDs)));
             }
 
-            this.gameManager.menuManager.aod = aod;
+            gameManager.menuManager.aod = aod;
+
 
             Debug.Log(aod);
 

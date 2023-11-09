@@ -17,6 +17,7 @@ namespace PUL2
 
         public NexusClient nexusClient;
         public MenuManager menuManager;
+        public DisassemblyFormatter disassemblyFormatter;
         
         private static GameManager _instance;
 

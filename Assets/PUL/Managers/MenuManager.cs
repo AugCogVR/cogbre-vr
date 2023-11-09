@@ -120,7 +120,7 @@ namespace PUL2
             // Builds a graph based on information contained
             // -> NOTE! CURRENTLY GENERATES A RANDOM GRAPH
             graphManager.CreateGraph(OID);
-            disasmContainer.text = OID.disassembly;
+            disasmContainer.text = OID.dissasemblyPath;
         }
 
         void ResetOIDInformation()
