@@ -73,6 +73,43 @@ namespace PUL2
     }
 
     [System.Serializable]
+    public class Operand
+    {
+        public class OperandMemory
+        {
+            public string memoryBase;
+            public string displacement;
+        }
+
+        public string type_reg;
+        public OperandMemory type_mem;
+        public string type_imm;
+        public int size;
+        public string access;
+    }
+
+    [System.Serializable]
+    public class NexusValue
+    {
+        public int id;
+        public string mnemonic;
+        public int address;
+        public string op_str;
+        public int size;
+        public string str;
+        public string[] groups;
+        public string[] regs_read;
+        public string[] regs_write;
+        public List<List<string>> regs_access;
+        public int[] prefix;
+        public int[] opcode;
+        public int rex;
+        public int operand_size;
+        public int modrm;
+        public List<Operand> operands;
+    }
+
+    [System.Serializable]
     public class NexusObject
     {
         public string OID { get; set; }
@@ -80,6 +117,7 @@ namespace PUL2
         public IList<string> originalPaths { get; set; }
         public string dissasemblyPath { get; set; }
         public string Size { get; set; }
+        public IList<NexusValue> instructions { get; set; }
 
         public NexusObject(string oID, string name, IList<string> originalPaths, string dissasemblyPath, string size)
         {
@@ -106,6 +144,8 @@ namespace PUL2
             return output;
         }
     }
+
+    [System.Serializable]
     public class NexusClient : MonoBehaviour
     {
         GameManager gameManager;
