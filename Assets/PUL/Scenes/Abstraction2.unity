@@ -11820,7 +11820,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Slate with blank content area
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6a84f857bec7e7345843ae29404c57ce, type: 2}
   m_sharedMaterial: {fileID: 21202819797275496, guid: 6a84f857bec7e7345843ae29404c57ce, type: 2}
@@ -11865,7 +11865,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
+  m_overflowMode: 4
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
@@ -11876,7 +11876,7 @@ MonoBehaviour:
   m_isOrthographic: 0
   m_isCullingEnabled: 0
   m_horizontalMapping: 0
-  m_verticalMapping: 0
+  m_verticalMapping: 1
   m_uvLineOffset: 0
   m_geometrySortingOrder: 0
   m_IsTextObjectScaleStatic: 0
@@ -12526,6 +12526,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28ed888f0dce4024f925386c38bddae8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  runParser: 1
+  nexusClientInstance: {fileID: 0}
 --- !u!4 &2053759364
 Transform:
   m_ObjectHideFlags: 0

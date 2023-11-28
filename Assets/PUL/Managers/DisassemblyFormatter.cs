@@ -9,15 +9,23 @@ using UnityEngine;
 public class DisassemblyFormatter : MonoBehaviour
 {
     public bool runParser = false;
+    public NexusClient nexusClientInstance;
     StreamReader sr = null;
 
+    // ! This method needs to be a lot faster. testing the sample program (roughly 26.5k elements) takes 5+ minutes to compile.
+    // ! We need to think of a coherent way to cache the stored data.
+    // - Luke 11/27/2023
+
     // Takes in an oid and parses the information from its file path into unity readable data
-    public /*async*/ void ParseDisassembly(NexusObject OID)
+    public /*async*/ async void ParseDisassembly(NexusObject OID)
     {
         if (!runParser) return;
 
         // -> Set the new stream reader path
         sr = new StreamReader(OID.dissasemblyPath);
+
+        // -> Reset disasm out
+        OID.dissasemblyOut = string.Empty;
 
         // -> Read information and write it to temp (Removes JSON formatting)
         string disasm = sr.ReadToEnd();
@@ -25,7 +33,8 @@ public class DisassemblyFormatter : MonoBehaviour
 
         // -> Parse through information and push it into the nexus object
         int n = 0;
-        int overflowCheck = 2147483600;
+        int overflowCheck = 10;
+        bool lastCheck = false;
         while(n < overflowCheck)
         {
             // Check for early throw
@@ -34,19 +43,60 @@ public class DisassemblyFormatter : MonoBehaviour
             // Check for the last curly bracket
             // -> Every JSON chunk ends in }},
             int startingIndex = disasm.IndexOf(":") + 3;
-            int cutLength = (disasm.IndexOf("}}, ") + 1) - startingIndex;
+
+            // -> Check if we grab normal index or if we are at the last statement
+            int endingIndex = disasm.IndexOf("}}, ") + 1;
+            if (endingIndex == 0)
+            {
+                endingIndex = disasm.Length - 1;
+                lastCheck = true;
+            }
+
+            int cutLength = endingIndex - startingIndex;
             string chunk = disasm.Substring(startingIndex, cutLength);
             // -> Resize final
-            disasm = disasm.Substring(cutLength + startingIndex + 3);
+            disasm = lastCheck ? string.Empty : disasm.Substring(cutLength + startingIndex + 3);
 
+            // -> Push information into a dictionary
+            // --> Get int
+            int aIndex = chunk.IndexOf("address") + 10;
+            string pAddress = chunk.Substring(aIndex, chunk.IndexOf(",", aIndex) - aIndex);
+            /*int address;
+            if (!int.TryParse(pAddress, out address))
+            {
+                n++;
+                continue;
+            }*/
+            // --> Get string
+            int strIndex = chunk.IndexOf("\"str\"") + 8;
+            string str = chunk.Substring(strIndex, chunk.IndexOf("\"", strIndex) - strIndex);
+
+            //Communicate with NexusAPI.
+
+            //A dictionary will be created inside the nexus API upon the loading of the disassembly. Once that is functional,
+            //we need to create a synchronous nexus function that takes in an address, and returns the appropriate string value associated
+            //with that address. I'm going home now, i'm tired. glhf, future Julian/Luke
+            //11/26/23 - Julian
+            // Seen :)
+
+            // --> Add to dictionary
+            OID.dissasemblyOut += $"{pAddress} - {str}\n";
+            OID.dissasembly.Add(pAddress, str);
+
+            //string currentDisasm = await nexusClientInstance.NexusSyncTask()
+
+
+
+            // -> Old list parser
+            #region List Parser
             // -> Reformat chunks into a json
-            NexusValue value = JsonUtility.FromJson<NexusValue>("{" + chunk + "}");
-            value.operands = new List<Operand>();
+            //NexusValue value = JsonUtility.FromJson<NexusValue>("{" + chunk + "}");
+            //value.operands = new List<Operand>();
 
 
 
             // -> Parse through operands
-            string operands = chunk.Substring(chunk.IndexOf("operands") + 11);
+            /*string operands = chunk.Substring(chunk.IndexOf("operands") + 11);
             while(n < overflowCheck)
             {
                 // Check for an early throw
@@ -107,11 +157,14 @@ public class DisassemblyFormatter : MonoBehaviour
                 }
 
                 value.regs_access.Add(caseList);
-            }
+            }*/
+            #endregion
 
             n++;
         }
         if (n >= overflowCheck) Debug.LogError("Overflow error");
+
+        Debug.Log("Parse Checks: " + n);
 
         // Close writer and reader
         sr.Close();

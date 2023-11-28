@@ -117,7 +117,9 @@ namespace PUL2
         public IList<string> originalPaths { get; set; }
         public string dissasemblyPath { get; set; }
         public string Size { get; set; }
-        public IList<NexusValue> instructions { get; set; }
+        public Dictionary<string, string> dissasembly { get; set; }
+        public string dissasemblyOut { get; set; }
+
 
         public NexusObject(string oID, string name, IList<string> originalPaths, string dissasemblyPath, string size)
         {
@@ -126,6 +128,8 @@ namespace PUL2
             this.originalPaths = originalPaths;
             this.dissasemblyPath = dissasemblyPath;
             Size = size;
+
+            dissasembly = new Dictionary<string, string>();
         }
 
         public override string ToString()
@@ -185,7 +189,7 @@ namespace PUL2
 
         public async void NexusSessionInit()
         {
-            Debug.Log("NExus Session Init is Running!");
+            Debug.Log("Nexus Session Init is Running!");
             string sessionInitResult = await NexusSyncTask(userId,  "[\"session_init\"]");
             string activeCollectionNames = await NexusSyncTask(userId, "[\"oxide_collection_names\"]");
 
@@ -279,7 +283,8 @@ namespace PUL2
             string whatever = await NexusSyncTask(userId, "[\"get_session_update\"]");
         }
 
-        private async Task<string> NexusSyncTask(string userId, string command)
+        //*** THIS WAS PRIVATE, CHANGED TO PUBLIC IN ORDER TO ALLOW FOR A CALL WITHIN DissassemblyFormatter.cs"
+        public async Task<string> NexusSyncTask(string userId, string command)
         {
             try
             {
