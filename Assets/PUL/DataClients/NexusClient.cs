@@ -247,6 +247,7 @@ namespace PUL2
 
                     // -> Store disassem in a file
                     // storedData/collectionID/objectID.txt
+                    // Application.persistentDataPath should be something like C:\Users\<you>\AppData\LocalLow\DefaultCompany\cogbre\storedData
                     string disamDirectory = Application.persistentDataPath + $"/storedData/{cid}";
                     string fileName = $"{oid}.json";
                     // If directory does not exist, create one
