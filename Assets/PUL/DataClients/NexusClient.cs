@@ -235,9 +235,11 @@ namespace PUL2
                     // -> Grab OID size
                     string size = await NexusSyncTask(userId, $"[\"oxide_get_oid_file_size\", \"{oid}\"]");
                     
-                    // -> DISSAM is not working (returning null)
-                    string disasm = await NexusSyncTask(userId, "[\"oxide_get_disassembly\", [\"" + oid + "\"]]");
+                    // -> Get disassembly via Nexus
+                    string disasm = await NexusSyncTask(userId, "[\"oxide_get_disassembly\", \"" + oid + "\"]");
                     if (disasm == null) disasm = "null... Check for 500 error.";
+                    // Debug.Log("DISASM: " + disasm);
+
                     // Chop out unnessesary information
                     int startIndex = disasm.IndexOf("\"instructions\"") + 16;
                     disasm = disasm.Substring(startIndex, disasm.Length - 2 - startIndex);
