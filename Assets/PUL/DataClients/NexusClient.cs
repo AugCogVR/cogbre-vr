@@ -12,6 +12,8 @@ using Unity.VisualScripting;
 using System.Globalization;
 using static UnityEngine.UI.Image;
 using Mono.Reflection;
+using LitJson;
+using PUL2;
 
 namespace PUL2
 {
@@ -49,7 +51,7 @@ namespace PUL2
         public string Notes { get; set; }
         public IList<NexusObject> OIDs { get; set; }
 
-        public Collection(string id,  string name, string notes, IList<NexusObject> OIDs) 
+        public Collection(string id, string name, string notes, IList<NexusObject> OIDs) 
         { 
             CID = id;
             Name = name;
@@ -61,11 +63,14 @@ namespace PUL2
         {
             string output = $"CID: {CID} || Name: {Name} || Notes: {Notes}";
 
-            if(OIDs.Count > 0) output += "\n\t->OIDs\n";
             // Print out oids
-            foreach (NexusObject nObj in OIDs) 
-            { 
-                output += "\t" + nObj.ToString() + "\n";
+            if ((OIDs != null) && (OIDs.Count > 0)) 
+            {
+                output += "\n\t->OIDs\n";
+                foreach (NexusObject nObj in OIDs) 
+                { 
+                    output += "\t" + nObj.ToString() + "\n";
+                }
             }
 
             return output;
@@ -112,11 +117,15 @@ namespace PUL2
     [System.Serializable]
     public class NexusObject
     {
+        // DGB: This class really should be named something like "BinaryInfo" since it's very specific 
+        // to that use case while "NexusObject" has a much broader meaning
+
         public string OID { get; set; }
         public string Name { get; set; }
         public IList<string> originalPaths { get; set; }
-        public string dissasemblyPath { get; set; }
         public string Size { get; set; }
+
+        public string dissasemblyPath { get; set; }
         public Dictionary<string, string> dissasembly { get; set; }
         public string dissasemblyOut { get; set; }
 
@@ -161,7 +170,7 @@ namespace PUL2
         public ActiveOxideData aod;
         
 
-        public NexusClient (GameManager gameManager)
+        public NexusClient(GameManager gameManager)
         {
             //Debug.Log("NexusClient Constructor");
 
@@ -190,90 +199,22 @@ namespace PUL2
         public async void NexusSessionInit()
         {
             Debug.Log("Nexus Session Init is Running!");
-            string sessionInitResult = await NexusSyncTask(userId,  "[\"session_init\"]");
-            string activeCollectionNames = await NexusSyncTask(userId, "[\"oxide_collection_names\"]");
+            string sessionInitResult = await NexusSyncTask("[\"session_init\"]");
 
+            // Retrieve collection info
+            string activeCollectionNames = await NexusSyncTask("[\"oxide_collection_names\"]");
             // Store found CIDS in a temporary list then parse into Collection type
             IList<string> collectionNames = JsonConvert.DeserializeObject<IList<string>>(activeCollectionNames);
 
-            // Open up a file stream
-            StreamWriter sw = null;
-
-            // Set aod
+            // Create aod and Collection objects
             aod = new ActiveOxideData();
-            // Run through collectionNames and convert to CIDs
             foreach (string collectionName in collectionNames)
             {
-                // Make sure collection is set properly
-                string cid = await NexusSyncTask(userId, $"[\"oxide_get_cid_from_name\", \"{collectionName}\"]");
+                string cid = await NexusSyncTask($"[\"oxide_get_cid_from_name\", \"{collectionName}\"]");
                 cid = cid.Replace("\"", "");
-
-                // UNUSED - Plan to pull notes out of information
-                //string collectionInfo = await NexusSyncTask(userId, $"[\"oxide_get_collection_info\", \"{collectionName}\", \"all\"]");
-                //Debug.Log("\t" + collectionInfo);
-
-                // -> Get OIDs
-                string oidPull = await NexusSyncTask(userId, $"[\"oxide_get_oids_with_cid\", \"{cid}\"]");
-                // Debug.Log($"OID_pull (Collection: {cid}): {oidPull}");
-                // -> Format OIDs
-                IList<string> oids = JsonConvert.DeserializeObject<IList<string>>(oidPull);
-                IList<NexusObject> OIDs = new List<NexusObject>();
-                // Roll through each OID found, assign information
-                foreach (string oid in oids)
-                {
-                    // -> Grab OID name
-                    string oNamePull = await NexusSyncTask(userId, $"[\"oxide_get_names_from_oid\", \"{oid}\"]");
-                    IList<string> oName = JsonConvert.DeserializeObject<IList<string>>(oNamePull);
-                    // --> Make sure oName has contents
-                    if (oName.Count <= 0)
-                        oName.Add("Nameless OID");
-
-                    //Debug.Log($"OID NAME: {oName[0]}");
-                    // -> Grab OID paths
-                    IList<string> paths = new List<string>();
-
-                    // -> Grab OID size
-                    string size = await NexusSyncTask(userId, $"[\"oxide_get_oid_file_size\", \"{oid}\"]");
-                    
-                    // -> Get disassembly via Nexus
-                    string disasm = await NexusSyncTask(userId, "[\"oxide_get_disassembly\", \"" + oid + "\"]");
-                    if (disasm == null) disasm = "null... Check for 500 error.";
-                    // Debug.Log("DISASM: " + disasm);
-
-                    // Chop out unnessesary information
-                    int startIndex = disasm.IndexOf("\"instructions\"") + 16;
-                    disasm = disasm.Substring(startIndex, disasm.Length - 2 - startIndex);
-                    // IList<string> dissasmPull = JsonConvert.DeserializeObject<IList<string>>(dissasm);
-
-                    // -> Store disassem in a file
-                    // storedData/collectionID/objectID.txt
-                    // Application.persistentDataPath should be something like C:\Users\<you>\AppData\LocalLow\DefaultCompany\cogbre\storedData
-                    string disamDirectory = Application.persistentDataPath + $"/storedData/{cid}";
-                    string fileName = $"{oid}.json";
-                    // If directory does not exist, create one
-                    if (!Directory.Exists(disamDirectory))
-                        Directory.CreateDirectory(disamDirectory);
-                    // Write info to file
-                    sw = new StreamWriter(disamDirectory + "/" + fileName);
-                    await sw.WriteAsync(disasm);
-
-                    // Compile information together into a new OID object
-                    // -> Create oid
-                    NexusObject finalOID = new NexusObject(oid, oName[0], paths, disamDirectory + "/" + fileName, size);
-                    // -> Format the information within the oid
-                    sw.Close();
-                    gameManager.disassemblyFormatter.ParseDisassembly(finalOID);
-                    // -> Log oid
-                    OIDs.Add(finalOID);
-                }
-
-                // Add collection to list
-                aod.CIDs.Add(new Collection(cid, collectionName, "", new List<NexusObject>(OIDs)));
+                aod.CIDs.Add(new Collection(cid, collectionName, null, null));
             }
-
             gameManager.menuManager.aod = aod;
-
-
             Debug.Log(aod);
 
             // Once all information is pulled initialize the menu
@@ -283,11 +224,11 @@ namespace PUL2
 
         private async void NexusUpdate()
         {
-            string whatever = await NexusSyncTask(userId, "[\"get_session_update\"]");
+            string whatever = await NexusSyncTask("[\"get_session_update\"]");
         }
 
-        //*** THIS WAS PRIVATE, CHANGED TO PUBLIC IN ORDER TO ALLOW FOR A CALL WITHIN DissassemblyFormatter.cs"
-        public async Task<string> NexusSyncTask(string userId, string command)
+
+        private async Task<string> NexusSyncTask(string command)
         {
             try
             {
@@ -321,7 +262,103 @@ namespace PUL2
                 Debug.LogError("Exception during NexusSyncTask: " + e.Message);
                 return null; // Return null or an empty string as a default value on error
             }
+        } 
+
+        public async Task<IList<NexusObject>> GetBinaryInfoForCollection(Collection collection)
+        {
+            // -> Get OIDs
+            string oidPull = await NexusSyncTask($"[\"oxide_get_oids_with_cid\", \"{collection.CID}\"]");
+            // Debug.Log($"OID_pull (Collection: {cid}): {oidPull}");
+            // -> Format OIDs
+            IList<string> oids = JsonConvert.DeserializeObject<IList<string>>(oidPull);
+            IList<NexusObject> OIDs = new List<NexusObject>();
+            // Roll through each OID found, assign information
+            foreach (string oid in oids)
+            {
+                // -> Grab OID name
+                string oNamePull = await NexusSyncTask($"[\"oxide_get_names_from_oid\", \"{oid}\"]");
+                IList<string> oName = JsonConvert.DeserializeObject<IList<string>>(oNamePull);
+                // --> Make sure oName has contents
+                if (oName.Count <= 0)
+                    oName.Add("Nameless OID");
+
+                //Debug.Log($"OID NAME: {oName[0]}");
+                // -> Grab OID paths
+                IList<string> paths = new List<string>();
+
+                // -> Grab OID size
+                string size = await NexusSyncTask($"[\"oxide_get_oid_file_size\", \"{oid}\"]");
+
+
+                // DGB: Skip this version of obtaining disassembly for now.
+                // Call GetDisassemblyText on demand instead.
+
+                // Open up a file stream
+                // StreamWriter sw = null;
+
+                // // -> Get disassembly via Nexus
+                // string disasm = await NexusSyncTask("[\"oxide_get_disassembly\", \"" + oid + "\"]");
+                // if (disasm == null) disasm = "null... Check for 500 error.";
+                // // Debug.Log("DISASM: " + disasm);
+
+                // // Chop out unnessesary information
+                // int startIndex = disasm.IndexOf("\"instructions\"") + 16;
+                // disasm = disasm.Substring(startIndex, disasm.Length - 2 - startIndex);
+                // // IList<string> dissasmPull = JsonConvert.DeserializeObject<IList<string>>(dissasm);
+
+                // // -> Store disassem in a file
+                // // storedData/collectionID/objectID.txt
+                // // Application.persistentDataPath should be something like C:\Users\<you>\AppData\LocalLow\DefaultCompany\cogbre\storedData
+                // string disamDirectory = Application.persistentDataPath + $"/storedData/{cid}";
+                // string fileName = $"{oid}.json";
+                // // If directory does not exist, create one
+                // if (!Directory.Exists(disamDirectory))
+                //     Directory.CreateDirectory(disamDirectory);
+                // // Write info to file
+                // sw = new StreamWriter(disamDirectory + "/" + fileName);
+                // await sw.WriteAsync(disasm);
+
+                // // Compile information together into a new OID object
+                // // -> Create oid
+                // NexusObject finalOID = new NexusObject(oid, oName[0], paths, disamDirectory + "/" + fileName, size);
+                // // -> Format the information within the oid
+                // sw.Close();
+                // gameManager.disassemblyFormatter.ParseDisassembly(finalOID);
+
+
+                NexusObject finalOID = new NexusObject(oid, oName[0], paths, null, size);                    
+                // -> Log oid
+                OIDs.Add(finalOID);
+            }
+
+            return OIDs;
         }
+
+        public async Task<string> GetDisassemblyText(NexusObject binaryInfo)
+        {
+            string disasmJSON = await NexusSyncTask("[\"oxide_get_disassembly_strings_only\", \"" + binaryInfo.OID + "\"]");
+            string returnText = $"Disassembly for {binaryInfo.Name}\n";
+            if (disasmJSON != null) 
+            {
+                JsonData instructions = JsonMapper.ToObject(disasmJSON)[binaryInfo.OID]["instructions"];
+                int arbitraryLimit = 100;
+                int count = 0;
+                foreach (KeyValuePair<string, JsonData> item in instructions)
+                {
+                    returnText += item.Key + " " + item.Value["str"] + "\n";
+                    if (++count > arbitraryLimit) break;
+                }
+            }
+            else 
+            {
+                returnText += "null... Check for 500 error.";
+            }
+
+            // TODO: Fill in the disassembly dictionary in the object 
+
+            return returnText;
+        }
+
 
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using TMPro;
@@ -60,8 +61,14 @@ namespace PUL2
             initialized = true;
         }
 
-        public void BuildButton(Collection CID)
+        public async void BuildButton(Collection CID)
         {
+            // On-demand loading: If OIDs is empty, grab the info from Nexus/Oxide
+            if (CID.OIDs == null) 
+            {
+                CID.OIDs = await GameManager.nexusClient.GetBinaryInfoForCollection(CID);
+            }
+
             // Resets oid information
             ResetOIDInformation();
 
@@ -79,8 +86,6 @@ namespace PUL2
             }
             //clear list space
             activeOIDButtons = new List<GameObject>();
-
-            
 
             foreach (NexusObject OID in CID.OIDs)
             {
@@ -112,15 +117,22 @@ namespace PUL2
         }
 
         // Sets information about an oid and builds a graph
-        public void SetOIDInformation(NexusObject OID)
+        public async void SetOIDInformation(NexusObject OID)
         {
             // Reset OID information
             ResetOIDInformation();
 
             // Builds a graph based on information contained
             // -> NOTE! CURRENTLY GENERATES A RANDOM GRAPH
-            graphManager.CreateGraph(OID);
-            disasmContainer.text = OID.dissasemblyOut;
+            // DGB: Commented out for now -- we'll re-look at 2D or 3D graphs later
+            // graphManager.CreateGraph(OID);
+
+            // DGB: Commented out this approach for now
+            // disasmContainer.text = OID.dissasemblyOut;
+
+            // On-demand loading: Grab the disassembly text from Nexus/Oxide
+            disasmContainer.text = $"Retrieving disassembly for {OID.Name}";
+            disasmContainer.text = await GameManager.nexusClient.GetDisassemblyText(OID);
         }
 
         void ResetOIDInformation()
