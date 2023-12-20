@@ -6,12 +6,16 @@ using Microsoft.MixedReality.Toolkit.Utilities;
 using TMPro;
 using Microsoft.MixedReality.Toolkit.UI;
 
+// CONVENTION IN THIS FILE:
+// CID or cid = oxide collection
+// OID or oid = oxide binary
+
 namespace PUL2
 {
     public class MenuManager : MonoBehaviour
     {
         //refers to the storage of the data actively being returned from Oxide.
-        public ActiveOxideData aod = null;
+        public OxideData oxideData = null;
         private bool isInitialized = false;
         //refers to the CID Grid Object Collection, stored inside the Scrolling Object Collection
         public GridObjectCollection CIDGridObjectCollection;
@@ -36,7 +40,7 @@ namespace PUL2
         // DEBUG GRAPH
        public void MenuInit()
         {
-            foreach (Collection CID in aod.CIDs)
+            foreach (OxideCollection collection in oxideData.collectionList)
             {
                 // Instantiate the button prefab.
                 GameObject newButton = Instantiate(MenuButtonPrefab);
@@ -45,39 +49,39 @@ namespace PUL2
                 newButton.transform.parent = CIDGridObjectCollection.transform;
                 newButton.transform.localEulerAngles = Vector3.zero;
                 newButton.transform.localScale = new Vector3(newButton.transform.localScale.x * UIPanel.localScale.x, newButton.transform.localScale.y * UIPanel.localScale.y, newButton.transform.localScale.z * UIPanel.localScale.z);
-                newButton.transform.name = CID.Name + ": Menu Button";
-                newButton.GetComponentInChildren<TextMeshPro>().text = CID.Name;
+                newButton.transform.name = collection.name + ": Menu Button";
+                newButton.GetComponentInChildren<TextMeshPro>().text = collection.name;
 
                 // Set button functions
                 // -> Physical Press
                 PressableButtonHoloLens2 buttonFunction = newButton.GetComponent<PressableButtonHoloLens2>();
-                buttonFunction.TouchBegin.AddListener(() => BuildButton(CID));
+                buttonFunction.TouchBegin.AddListener(() => BuildButton(collection));
                 // -> Ray Press
                 Interactable distanceInteract = newButton.GetComponent<Interactable>();
-                distanceInteract.OnClick.AddListener(() => BuildButton(CID));
+                distanceInteract.OnClick.AddListener(() => BuildButton(collection));
             }
 
             CIDGridObjectCollection.UpdateCollection();
             initialized = true;
         }
 
-        public async void BuildButton(Collection CID)
+        public async void BuildButton(OxideCollection collection)
         {
-            // On-demand loading: If OIDs is empty, grab the info from Nexus/Oxide
-            if (CID.OIDs == null) 
+            // On-demand loading: If binary list is empty, grab the info from Nexus/Oxide
+            if (collection.binaryList == null) 
             {
-                CID.OIDs = await GameManager.nexusClient.GetBinaryInfoForCollection(CID);
+                collection.binaryList = await GameManager.nexusClient.GetBinaryListForCollection(collection);
             }
 
-            // Resets oid information
-            ResetOIDInformation();
+            // // Resets oid information
+            // ResetBinaryInformation();
 
             // Builds Button
-            StartCoroutine(BuildButtonEnum(CID));
+            StartCoroutine(BuildButtonEnum(collection));
         }
 
         // Function that creates the objects that are associated with given collection
-        IEnumerator BuildButtonEnum(Collection CID)
+        IEnumerator BuildButtonEnum(OxideCollection collection)
         {   
             //destroy all active buttons
             foreach (GameObject button in activeOIDButtons)
@@ -87,7 +91,7 @@ namespace PUL2
             //clear list space
             activeOIDButtons = new List<GameObject>();
 
-            foreach (NexusObject OID in CID.OIDs)
+            foreach (OxideBinary binary in collection.binaryList)
             {
                 // Instantiate the button prefab.
                 GameObject newButton = Instantiate(ObjectButtonPrefab);
@@ -96,18 +100,18 @@ namespace PUL2
                 newButton.transform.parent = OIDGridObjectCollection.transform;
                 newButton.transform.localEulerAngles = Vector3.zero;
                 newButton.transform.localScale = new Vector3(newButton.transform.localScale.x * UIPanel.localScale.x, newButton.transform.localScale.y * UIPanel.localScale.y, newButton.transform.localScale.z * UIPanel.localScale.z);
-                newButton.transform.name = OID.Name + ": Menu Button";
-                newButton.GetComponentInChildren<TextMeshPro>().text = $"<size=145%><line-height=55%><b>{OID.Name}</b>\n<size=60%>{OID.OID}\n<b>Size:</b> {OID.Size}";
+                newButton.transform.name = binary.name + ": Menu Button";
+                newButton.GetComponentInChildren<TextMeshPro>().text = $"<size=145%><line-height=55%><b>{binary.name}</b>\n<size=60%>{binary.oid}\n<b>Size:</b> {binary.size}";
 
                 activeOIDButtons.Add(newButton);
 
                 // Set button functions
                 // -> Physical Press
                 PressableButtonHoloLens2 buttonFunction = newButton.GetComponent<PressableButtonHoloLens2>();
-                buttonFunction.TouchEnd.AddListener(async () => SetOIDInformation(OID));
+                buttonFunction.TouchEnd.AddListener(async () => SetBinaryInformation(binary));
                 // -> Ray Press
                 Interactable distanceInteract = newButton.GetComponent<Interactable>();
-                distanceInteract.OnClick.AddListener(async () => SetOIDInformation(OID));
+                distanceInteract.OnClick.AddListener(async () => SetBinaryInformation(binary));
 
                 yield return new WaitForEndOfFrame();
             }
@@ -116,29 +120,29 @@ namespace PUL2
         }
 
         // Sets information about an oid and builds a graph
-        public async void SetOIDInformation(NexusObject OID)
+        public async void SetBinaryInformation(OxideBinary binary)
         {
-            // Reset OID information
-            ResetOIDInformation();
+            // // Reset OID information
+            // ResetBinaryInformation();
 
             // Builds a graph based on information contained
             // -> NOTE! CURRENTLY GENERATES A RANDOM GRAPH
             // DGB: Commented out for now -- we'll re-look at 2D or 3D graphs later
-            // graphManager.CreateGraph(OID);
+            // graphManager.CreateGraph(binary);
 
             // DGB: Commented out this approach for now
-            // disasmContainer.text = OID.dissasemblyOut;
+            // disasmContainer.text = binary.dissasemblyOut;
 
             // On-demand loading: Grab the disassembly text from Nexus/Oxide
-            disasmContainer.text = $"Retrieving disassembly for {OID.Name}";
-            disasmContainer.text = await GameManager.nexusClient.GetDisassemblyText(OID);
+            disasmContainer.text = $"Retrieving disassembly for {binary.name}";
+            disasmContainer.text = await GameManager.nexusClient.GetDisassemblyTextForBinary(binary);
         }
 
-        void ResetOIDInformation()
-        {
-            // Resets current graph
-            graphManager.DisableGraphs();
-        }
+        // void ResetBinaryInformation()
+        // {
+        //     // Resets current graph
+        //     graphManager.DisableGraphs();
+        // }
     }
 }
 

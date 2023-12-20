@@ -17,7 +17,7 @@ public class DisassemblyFormatter : MonoBehaviour
     // - Luke 11/27/2023
 
     // Takes in an oid and parses the information from its file path into unity readable data
-    public /*async*/ async void ParseDisassembly(NexusObject OID)
+    public /*async*/ async void ParseDisassembly(OxideBinary OID)
     {
         if (!runParser) return;
 

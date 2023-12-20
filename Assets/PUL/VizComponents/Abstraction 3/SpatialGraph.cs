@@ -48,7 +48,7 @@ public class SpatialGraph : MonoBehaviour
     public bool resizeRing = false;
 
     // Generates graph based off OID. Might move this to a manager to help parse data
-    public void GenerateGraph(NexusObject OID)
+    public void GenerateGraph(OxideBinary OID)
     {
         // -> NOTE! CURRENTLY DOESNT PARSE ANY DATA BUT JUST GENERATES A RANDOM GRAPH
 

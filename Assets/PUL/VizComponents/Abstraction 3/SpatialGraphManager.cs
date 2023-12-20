@@ -13,26 +13,26 @@ public class SpatialGraphManager : MonoBehaviour
     public Material highlightMaterialParent;
     public Material highlightMaterialChild;
 
-    // Dictionary that links graphs to OIDs
-    Dictionary<NexusObject, SpatialGraph> spatialGraphs;
+    // Dictionary that links graphs to binaries
+    Dictionary<OxideBinary, SpatialGraph> spatialGraphs;
 
 
     // Creates dicitonary
     private void Awake()
     {
-        spatialGraphs = new Dictionary<NexusObject, SpatialGraph>();
+        spatialGraphs = new Dictionary<OxideBinary, SpatialGraph>();
     }
 
     // -> Creates a new graph and indexes it for later use
-    public void CreateGraph(NexusObject OID)
+    public void CreateGraph(OxideBinary binary)
     {
         // Disables graphs
         DisableGraphs();
 
         // Check for prexisting graph
-        if(spatialGraphs.ContainsKey(OID))
+        if(spatialGraphs.ContainsKey(binary))
         {
-            spatialGraphs[OID].gameObject.SetActive(true);
+            spatialGraphs[binary].gameObject.SetActive(true);
             return;
         }
 
@@ -40,13 +40,13 @@ public class SpatialGraphManager : MonoBehaviour
         GameObject newGraph = Instantiate(spatialGraph, transform);
         // Log in dictionary
         SpatialGraph sGraph = newGraph.GetComponent<SpatialGraph>();
-        spatialGraphs[OID] = sGraph;
+        spatialGraphs[binary] = sGraph;
 
         // Set graph manager
         sGraph.graphManager = this;
 
         // Call generate graph
-        sGraph.GenerateGraph(OID);
+        sGraph.GenerateGraph(binary);
     }
 
     // Disables all graphs
