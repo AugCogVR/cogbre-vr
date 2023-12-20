@@ -247,12 +247,12 @@ namespace PUL2
                 response.Close();
 
                 // Log the JSON response before deserialization for debugging
-                Debug.Log(jsonRequest + "\nNexusSync response JSON: " + responseStringJson);
+                // Debug.Log(jsonRequest + "\nNexusSync response JSON: " + responseStringJson);
 
                 string responseString = JsonConvert.DeserializeObject<string>(responseStringJson);
 
                 // Log the deserialized response string for debugging
-                Debug.Log(jsonRequest + "\nNexusSync response string: " + responseString);
+                // Debug.Log(jsonRequest + "\nNexusSync response string: " + responseString);
 
                 return responseString;
             }
@@ -264,99 +264,109 @@ namespace PUL2
             }
         } 
 
+        // Return a list of binaries given a collection
         public async Task<IList<NexusObject>> GetBinaryInfoForCollection(Collection collection)
         {
-            // -> Get OIDs
-            string oidPull = await NexusSyncTask($"[\"oxide_get_oids_with_cid\", \"{collection.CID}\"]");
-            // Debug.Log($"OID_pull (Collection: {cid}): {oidPull}");
-            // -> Format OIDs
-            IList<string> oids = JsonConvert.DeserializeObject<IList<string>>(oidPull);
-            IList<NexusObject> OIDs = new List<NexusObject>();
-            // Roll through each OID found, assign information
-            foreach (string oid in oids)
+            // This async method courtesy of https://stackoverflow.com/questions/25295166/async-method-is-blocking-ui-thread-on-which-it-is-executing
+            return await Task.Run<IList<NexusObject>>(async () =>
             {
-                // -> Grab OID name
-                string oNamePull = await NexusSyncTask($"[\"oxide_get_names_from_oid\", \"{oid}\"]");
-                IList<string> oName = JsonConvert.DeserializeObject<IList<string>>(oNamePull);
-                // --> Make sure oName has contents
-                if (oName.Count <= 0)
-                    oName.Add("Nameless OID");
+                // -> Get OIDs
+                string oidPull = await NexusSyncTask($"[\"oxide_get_oids_with_cid\", \"{collection.CID}\"]");
+                // Debug.Log($"OID_pull (Collection: {cid}): {oidPull}");
+                // -> Format OIDs
+                IList<string> oids = JsonConvert.DeserializeObject<IList<string>>(oidPull);
+                IList<NexusObject> OIDs = new List<NexusObject>();
+                // Roll through each OID found, assign information
+                foreach (string oid in oids)
+                {
+                    // -> Grab OID name
+                    string oNamePull = await NexusSyncTask($"[\"oxide_get_names_from_oid\", \"{oid}\"]");
+                    IList<string> oName = JsonConvert.DeserializeObject<IList<string>>(oNamePull);
+                    // --> Make sure oName has contents
+                    if (oName.Count <= 0)
+                        oName.Add("Nameless OID");
 
-                //Debug.Log($"OID NAME: {oName[0]}");
-                // -> Grab OID paths
-                IList<string> paths = new List<string>();
+                    //Debug.Log($"OID NAME: {oName[0]}");
+                    // -> Grab OID paths
+                    IList<string> paths = new List<string>();
 
-                // -> Grab OID size
-                string size = await NexusSyncTask($"[\"oxide_get_oid_file_size\", \"{oid}\"]");
-
-
-                // DGB: Skip this version of obtaining disassembly for now.
-                // Call GetDisassemblyText on demand instead.
-
-                // Open up a file stream
-                // StreamWriter sw = null;
-
-                // // -> Get disassembly via Nexus
-                // string disasm = await NexusSyncTask("[\"oxide_get_disassembly\", \"" + oid + "\"]");
-                // if (disasm == null) disasm = "null... Check for 500 error.";
-                // // Debug.Log("DISASM: " + disasm);
-
-                // // Chop out unnessesary information
-                // int startIndex = disasm.IndexOf("\"instructions\"") + 16;
-                // disasm = disasm.Substring(startIndex, disasm.Length - 2 - startIndex);
-                // // IList<string> dissasmPull = JsonConvert.DeserializeObject<IList<string>>(dissasm);
-
-                // // -> Store disassem in a file
-                // // storedData/collectionID/objectID.txt
-                // // Application.persistentDataPath should be something like C:\Users\<you>\AppData\LocalLow\DefaultCompany\cogbre\storedData
-                // string disamDirectory = Application.persistentDataPath + $"/storedData/{cid}";
-                // string fileName = $"{oid}.json";
-                // // If directory does not exist, create one
-                // if (!Directory.Exists(disamDirectory))
-                //     Directory.CreateDirectory(disamDirectory);
-                // // Write info to file
-                // sw = new StreamWriter(disamDirectory + "/" + fileName);
-                // await sw.WriteAsync(disasm);
-
-                // // Compile information together into a new OID object
-                // // -> Create oid
-                // NexusObject finalOID = new NexusObject(oid, oName[0], paths, disamDirectory + "/" + fileName, size);
-                // // -> Format the information within the oid
-                // sw.Close();
-                // gameManager.disassemblyFormatter.ParseDisassembly(finalOID);
+                    // -> Grab OID size
+                    string size = await NexusSyncTask($"[\"oxide_get_oid_file_size\", \"{oid}\"]");
 
 
-                NexusObject finalOID = new NexusObject(oid, oName[0], paths, null, size);                    
-                // -> Log oid
-                OIDs.Add(finalOID);
-            }
+                    // DGB: Skip this version of obtaining disassembly for now.
+                    // Call GetDisassemblyText on demand instead.
 
-            return OIDs;
+                    // Open up a file stream
+                    // StreamWriter sw = null;
+
+                    // // -> Get disassembly via Nexus
+                    // string disasm = await NexusSyncTask("[\"oxide_get_disassembly\", \"" + oid + "\"]");
+                    // if (disasm == null) disasm = "null... Check for 500 error.";
+                    // // Debug.Log("DISASM: " + disasm);
+
+                    // // Chop out unnessesary information
+                    // int startIndex = disasm.IndexOf("\"instructions\"") + 16;
+                    // disasm = disasm.Substring(startIndex, disasm.Length - 2 - startIndex);
+                    // // IList<string> dissasmPull = JsonConvert.DeserializeObject<IList<string>>(dissasm);
+
+                    // // -> Store disassem in a file
+                    // // storedData/collectionID/objectID.txt
+                    // // Application.persistentDataPath should be something like C:\Users\<you>\AppData\LocalLow\DefaultCompany\cogbre\storedData
+                    // string disamDirectory = Application.persistentDataPath + $"/storedData/{cid}";
+                    // string fileName = $"{oid}.json";
+                    // // If directory does not exist, create one
+                    // if (!Directory.Exists(disamDirectory))
+                    //     Directory.CreateDirectory(disamDirectory);
+                    // // Write info to file
+                    // sw = new StreamWriter(disamDirectory + "/" + fileName);
+                    // await sw.WriteAsync(disasm);
+
+                    // // Compile information together into a new OID object
+                    // // -> Create oid
+                    // NexusObject finalOID = new NexusObject(oid, oName[0], paths, disamDirectory + "/" + fileName, size);
+                    // // -> Format the information within the oid
+                    // sw.Close();
+                    // gameManager.disassemblyFormatter.ParseDisassembly(finalOID);
+
+
+                    NexusObject finalOID = new NexusObject(oid, oName[0], paths, null, size);                    
+                    // -> Log oid
+                    OIDs.Add(finalOID);
+                }
+
+                return OIDs;
+            });
         }
 
+        // Return a string containing the human-readable disassembly of the given binary
         public async Task<string> GetDisassemblyText(NexusObject binaryInfo)
         {
-            string disasmJSON = await NexusSyncTask("[\"oxide_get_disassembly_strings_only\", \"" + binaryInfo.OID + "\"]");
-            string returnText = $"Disassembly for {binaryInfo.Name}\n";
-            if (disasmJSON != null) 
+            // This async method courtesy of https://stackoverflow.com/questions/25295166/async-method-is-blocking-ui-thread-on-which-it-is-executing
+            return await Task.Run<string>(async () =>
             {
-                JsonData instructions = JsonMapper.ToObject(disasmJSON)[binaryInfo.OID]["instructions"];
-                int arbitraryLimit = 100;
-                int count = 0;
-                foreach (KeyValuePair<string, JsonData> item in instructions)
+                string disasmJSON = await NexusSyncTask("[\"oxide_get_disassembly_strings_only\", \"" + binaryInfo.OID + "\"]");
+                string returnText = $"Disassembly for {binaryInfo.Name}\n";
+                if (disasmJSON != null) 
                 {
-                    returnText += item.Key + " " + item.Value["str"] + "\n";
-                    if (++count > arbitraryLimit) break;
+                    JsonData instructions = JsonMapper.ToObject(disasmJSON)[binaryInfo.OID]["instructions"];
+                    int arbitraryLimit = 200; // This limit is TEMPORARY and used for troubleshooting
+                    int count = 0;
+                    foreach (KeyValuePair<string, JsonData> item in instructions)
+                    {
+                        returnText += item.Key + " " + item.Value["str"] + "\n";
+                        if (++count > arbitraryLimit) break;
+                    }
                 }
-            }
-            else 
-            {
-                returnText += "null... Check for 500 error.";
-            }
+                else 
+                {
+                    returnText += "null... Check for 500 error.";
+                }
 
-            // TODO: Fill in the disassembly dictionary in the object 
+                // TODO: Fill in the disassembly dictionary in the object 
 
-            return returnText;
+                return returnText;
+            });
         }
 
 

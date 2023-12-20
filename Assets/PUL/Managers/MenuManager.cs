@@ -104,14 +104,13 @@ namespace PUL2
                 // Set button functions
                 // -> Physical Press
                 PressableButtonHoloLens2 buttonFunction = newButton.GetComponent<PressableButtonHoloLens2>();
-                buttonFunction.TouchEnd.AddListener(() => SetOIDInformation(OID));
+                buttonFunction.TouchEnd.AddListener(async () => SetOIDInformation(OID));
                 // -> Ray Press
                 Interactable distanceInteract = newButton.GetComponent<Interactable>();
-                distanceInteract.OnClick.AddListener(() => SetOIDInformation(OID));
+                distanceInteract.OnClick.AddListener(async () => SetOIDInformation(OID));
 
+                yield return new WaitForEndOfFrame();
             }
-
-            yield return new WaitForEndOfFrame();
 
             OIDGridObjectCollection.UpdateCollection();
         }
