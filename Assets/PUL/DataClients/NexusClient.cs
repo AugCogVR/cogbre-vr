@@ -350,7 +350,7 @@ namespace PUL2
                 if (disasmJSON != null) 
                 {
                     JsonData instructions = JsonMapper.ToObject(disasmJSON)[binaryInfo.OID]["instructions"];
-                    int arbitraryLimit = 200; // This limit is TEMPORARY and used for troubleshooting
+                    int arbitraryLimit = 50; // This limit is TEMPORARY and used for troubleshooting
                     int count = 0;
                     foreach (KeyValuePair<string, JsonData> item in instructions)
                     {
