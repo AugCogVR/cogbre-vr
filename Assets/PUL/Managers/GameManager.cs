@@ -9,7 +9,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Inputs;
 using UnityEngine.InputSystem.Utilities;
 
-namespace PUL2
+namespace PUL
 {
     public class GameManager : MonoBehaviour
     {

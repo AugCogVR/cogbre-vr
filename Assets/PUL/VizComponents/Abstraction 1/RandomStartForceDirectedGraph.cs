@@ -6,7 +6,7 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 
-namespace PUL
+namespace PUL_OLD
 {
     /// <summary>
     /// Force-Directed Graph starting with randomly-placed nodes. See Edge 

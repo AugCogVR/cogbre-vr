@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace PUL2
+namespace PUL
 {
     public class Graph : MonoBehaviour
     {

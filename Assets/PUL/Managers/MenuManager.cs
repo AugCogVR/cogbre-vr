@@ -10,7 +10,7 @@ using Microsoft.MixedReality.Toolkit.UI;
 // CID or cid = oxide collection
 // OID or oid = oxide binary
 
-namespace PUL2
+namespace PUL
 {
     public class MenuManager : MonoBehaviour
     {

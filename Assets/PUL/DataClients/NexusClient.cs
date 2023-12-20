@@ -13,9 +13,9 @@ using System.Globalization;
 using static UnityEngine.UI.Image;
 using Mono.Reflection;
 using LitJson;
-using PUL2;
+using PUL;
 
-namespace PUL2
+namespace PUL
 {
 
     [System.Serializable]

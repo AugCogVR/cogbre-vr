@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
-namespace PUL
+namespace PUL_OLD
 {
     // Code from https://github.com/atonalfreerider/Unity-FDG 
 

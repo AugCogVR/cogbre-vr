@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using Microsoft.MixedReality.Toolkit.UI;
 using UnityEngine.UI;
-using PUL2;
+using PUL;
 
 // CONVENTION IN THIS FILE:
 // CID or cid = oxide collection
