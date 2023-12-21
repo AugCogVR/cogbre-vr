@@ -142,22 +142,25 @@ namespace PUL
 
         IEnumerator SetAllDisassemblyText(Dictionary<string, string> disassemblyStringDict)
         {
-            var sb = new System.Text.StringBuilder();
+            // var sb = new System.Text.StringBuilder();
+            disasmContainer.text = "";
             if (disassemblyStringDict != null)
             {
                 int count = 0;
                 foreach (KeyValuePair<string, string> item in disassemblyStringDict)
                 {
-                    sb.AppendLine(item.Key + " " + item.Value);
+                    // sb.AppendLine(item.Key + " " + item.Value);
+                    disasmContainer.text += item.Key + " " + item.Value + "\n";
                     if (++count > 100) break;  // ONLY USE SOME INSTRUCTIONS TO MAKE TESTING BEARABLE
                     yield return new WaitForEndOfFrame();
                 }
             }
             else 
             {
-                sb.AppendLine("null... Check for 500 error.");
+                // sb.AppendLine("null... Check for 500 error.");
+                disasmContainer.text += "null... Check for 500 error.";
             }
-            disasmContainer.text = sb.ToString();
+            // disasmContainer.text = sb.ToString();
         }
 
 
