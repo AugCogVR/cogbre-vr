@@ -67,21 +67,18 @@ namespace PUL
 
         public async void BuildButton(OxideCollection collection)
         {
-            // On-demand loading: If binary list is empty, grab the info from Nexus/Oxide
-            if (collection.binaryList == null) 
-            {
-                collection.binaryList = await GameManager.nexusClient.GetBinaryListForCollection(collection);
-            }
+            // Get binary list for this collection. Must use this method instead of a normal getter due to ... reasons.
+            IList<OxideBinary> binaryList = await GameManager.nexusClient.GetBinaryListForColleciton(collection);
 
             // // Resets oid information
             // ResetBinaryInformation();
 
             // Builds Button
-            StartCoroutine(BuildButtonEnum(collection));
+            StartCoroutine(BuildButtonEnum(binaryList));
         }
 
         // Function that creates the objects that are associated with given collection
-        IEnumerator BuildButtonEnum(OxideCollection collection)
+        IEnumerator BuildButtonEnum(IList<OxideBinary> binaryList)
         {   
             //destroy all active buttons
             foreach (GameObject button in activeOIDButtons)
@@ -91,7 +88,7 @@ namespace PUL
             //clear list space
             activeOIDButtons = new List<GameObject>();
 
-            foreach (OxideBinary binary in collection.binaryList)
+            foreach (OxideBinary binary in binaryList)
             {
                 // Instantiate the button prefab.
                 GameObject newButton = Instantiate(ObjectButtonPrefab);
@@ -133,10 +130,36 @@ namespace PUL
             // DGB: Commented out this approach for now
             // disasmContainer.text = binary.dissasemblyOut;
 
-            // On-demand loading: Grab the disassembly text from Nexus/Oxide
+            IList<OxideFunction> functionList = await GameManager.nexusClient.GetFunctionListForBinary(binary);
+            Debug.Log($"=============== FUNCTIONS FOUND: {functionList.Count}");
+
             disasmContainer.text = $"Retrieving disassembly for {binary.name}";
-            disasmContainer.text = await GameManager.nexusClient.GetDisassemblyTextForBinary(binary);
+            // Get disasm string dict this binary. Must use this method instead of a normal getter due to ... reasons.
+            Dictionary<string, string> disassemblyStringDict = await GameManager.nexusClient.GetDisassemblyStringDictForBinary(binary);
+            // Put text into container
+            StartCoroutine(SetAllDisassemblyText(disassemblyStringDict));
         }
+
+        IEnumerator SetAllDisassemblyText(Dictionary<string, string> disassemblyStringDict)
+        {
+            var sb = new System.Text.StringBuilder();
+            if (disassemblyStringDict != null)
+            {
+                int count = 0;
+                foreach (KeyValuePair<string, string> item in disassemblyStringDict)
+                {
+                    sb.AppendLine(item.Key + " " + item.Value);
+                    if (++count > 100) break;  // ONLY USE SOME INSTRUCTIONS TO MAKE TESTING BEARABLE
+                    yield return new WaitForEndOfFrame();
+                }
+            }
+            else 
+            {
+                sb.AppendLine("null... Check for 500 error.");
+            }
+            disasmContainer.text = sb.ToString();
+        }
+
 
         // void ResetBinaryInformation()
         // {

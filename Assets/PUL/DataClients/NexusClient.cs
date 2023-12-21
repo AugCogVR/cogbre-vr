@@ -120,6 +120,8 @@ namespace PUL
         public string oid { get; set; }
         public string name { get; set; }
         public string size { get; set; }
+        public Dictionary<string, string> disassemblyStringDict { get; set; }
+        public IList<OxideFunction> functionList {get; set; }
 
         // public IList<string> originalPaths { get; set; }
         // Keep the next fields so that DisassemblyFormatter will compile
@@ -127,12 +129,13 @@ namespace PUL
         public Dictionary<string, string> dissasembly { get; set; }
         public string dissasemblyOut { get; set; }
 
-
-        public OxideBinary(string oid, string name, string size /*IList<string> originalPaths, string dissasemblyPath,*/)
+        public OxideBinary(string oid, string name, string size, Dictionary<string, string> disassemblyStringDict, IList<OxideFunction> functionList /*IList<string> originalPaths, string dissasemblyPath,*/)
         {
             this.oid = oid;
             this.name = name;
             this.size = size;
+            this.disassemblyStringDict = disassemblyStringDict;
+            this.functionList = functionList;
 
             // this.originalPaths = originalPaths;
             // this.dissasemblyPath = dissasemblyPath;
@@ -150,6 +153,28 @@ namespace PUL
             //     output += "\t\t\t" + path + "\n";
             // }
             // output += $"\n\t\t-- > Disassembly: {dissasemblyPath}";
+
+            return output;
+        }
+    }
+
+    [System.Serializable]
+    public class OxideFunction
+    {
+        public string name { get; set; }   
+        public string offset { get; set; }
+        public string signature { get; set; }
+
+        public OxideFunction(string name, string offset, string signature)
+        {
+            this.name = name;
+            this.offset = offset;
+            this.signature = signature;
+        }
+
+        public override string ToString()
+        {
+            string output = $"Name: {name} || Offset: {offset} || Signature: {signature}";
 
             return output;
         }
@@ -260,103 +285,142 @@ namespace PUL
         } 
 
         // Return a list of binaries given a collection
-        public async Task<IList<OxideBinary>> GetBinaryListForCollection(OxideCollection collection)
+        // Build and store them in the given collection, if not already there
+        // This really should be a member function of the OxideCollection class but "get" functions can't be async
+        public async Task<IList<OxideBinary>> GetBinaryListForColleciton(OxideCollection collection)
         {
-            // This async method courtesy of https://stackoverflow.com/questions/25295166/async-method-is-blocking-ui-thread-on-which-it-is-executing
+            // This async approach courtesy of https://stackoverflow.com/questions/25295166/async-method-is-blocking-ui-thread-on-which-it-is-executing
             return await Task.Run<IList<OxideBinary>>(async () =>
             {
-                // -> Get OIDs
-                string oidListJson = await NexusSyncTask($"[\"oxide_get_oids_with_cid\", \"{collection.collectionId}\"]");
-                // Debug.Log($"OID_pull (Collection: {cid}): {oidPull}");
-                // -> Format OIDs
-                IList<string> oidList = JsonConvert.DeserializeObject<IList<string>>(oidListJson);
-                IList<OxideBinary> binaryList = new List<OxideBinary>();
-                // Roll through each OID found, assign information
-                foreach (string oid in oidList)
+                if (collection.binaryList == null)
                 {
-                    // -> Grab binary name for OID
-                    string binaryNameListJson = await NexusSyncTask($"[\"oxide_get_names_from_oid\", \"{oid}\"]");
-                    IList<string> binaryNameList = JsonConvert.DeserializeObject<IList<string>>(binaryNameListJson);
-                    // --> Make sure binaryNameList has contents
-                    if (binaryNameList.Count <= 0)
-                        binaryNameList.Add("Nameless Binary");
-                    //Debug.Log($"BINARY NAME: {binaryNameList[0]}");
-
-                    // -> Grab OID paths
-                    // IList<string> paths = new List<string>();
-
-                    // -> Grab OID size
-                    string size = await NexusSyncTask($"[\"oxide_get_oid_file_size\", \"{oid}\"]");
-
-                    // DGB: Skip this version of obtaining disassembly for now.
-                    // Call GetDisassemblyText on demand instead.
-                    // Open up a file stream
-                    // StreamWriter sw = null;
-                    // // -> Get disassembly via Nexus
-                    // string disasm = await NexusSyncTask("[\"oxide_get_disassembly\", \"" + oid + "\"]");
-                    // if (disasm == null) disasm = "null... Check for 500 error.";
-                    // // Debug.Log("DISASM: " + disasm);
-                    // // Chop out unnessesary information
-                    // int startIndex = disasm.IndexOf("\"instructions\"") + 16;
-                    // disasm = disasm.Substring(startIndex, disasm.Length - 2 - startIndex);
-                    // // IList<string> dissasmPull = JsonConvert.DeserializeObject<IList<string>>(dissasm);
-                    // // -> Store disassem in a file
-                    // // storedData/collectionID/objectID.txt
-                    // // Application.persistentDataPath should be something like C:\Users\<you>\AppData\LocalLow\DefaultCompany\cogbre\storedData
-                    // string disamDirectory = Application.persistentDataPath + $"/storedData/{cid}";
-                    // string fileName = $"{oid}.json";
-                    // // If directory does not exist, create one
-                    // if (!Directory.Exists(disamDirectory))
-                    //     Directory.CreateDirectory(disamDirectory);
-                    // // Write info to file
-                    // sw = new StreamWriter(disamDirectory + "/" + fileName);
-                    // await sw.WriteAsync(disasm);
-                    // // Compile information together into a new OID object
-                    // // -> Create oid
-                    // OxideBinary finalOID = new OxideBinary(oid, oName[0], paths, disamDirectory + "/" + fileName, size);
-                    // // -> Format the information within the oid
-                    // sw.Close();
-                    // gameManager.disassemblyFormatter.ParseDisassembly(finalOID);
-
-                    OxideBinary binary = new OxideBinary(oid, binaryNameList[0], size);                    
-                    // -> Log binary
-                    binaryList.Add(binary);
-                }
-
-                return binaryList;
-            });
-        }
-
-        // Return a string containing the human-readable disassembly of the given binary
-        public async Task<string> GetDisassemblyTextForBinary(OxideBinary binary)
-        {
-            // This async method courtesy of https://stackoverflow.com/questions/25295166/async-method-is-blocking-ui-thread-on-which-it-is-executing
-            return await Task.Run<string>(async () =>
-            {
-                string disasmJson = await NexusSyncTask("[\"oxide_get_disassembly_strings_only\", \"" + binary.oid + "\"]");
-                string returnText = $"Disassembly for {binary.name}\n";
-                if (disasmJson != null) 
-                {
-                    JsonData instructions = JsonMapper.ToObject(disasmJson)[binary.oid]["instructions"];
-                    int arbitraryLimit = 50; // This limit is TEMPORARY and used for troubleshooting
-                    int count = 0;
-                    foreach (KeyValuePair<string, JsonData> item in instructions)
+                    // -> Get OIDs
+                    string oidListJson = await NexusSyncTask($"[\"oxide_get_oids_with_cid\", \"{collection.collectionId}\"]");
+                    // Debug.Log($"OID_pull (Collection: {cid}): {oidPull}");
+                    // -> Format OIDs
+                    IList<string> oidList = JsonConvert.DeserializeObject<IList<string>>(oidListJson);
+                    IList<OxideBinary> binaryList = new List<OxideBinary>();
+                    // Roll through each OID found, assign information
+                    foreach (string oid in oidList)
                     {
-                        returnText += item.Key + " " + item.Value["str"] + "\n";
-                        if (++count > arbitraryLimit) break;
+                        // -> Grab binary name for OID
+                        string binaryNameListJson = await NexusSyncTask($"[\"oxide_get_names_from_oid\", \"{oid}\"]");
+                        IList<string> binaryNameList = JsonConvert.DeserializeObject<IList<string>>(binaryNameListJson);
+                        // --> Make sure binaryNameList has contents
+                        if (binaryNameList.Count <= 0)
+                            binaryNameList.Add("Nameless Binary");
+                        //Debug.Log($"BINARY NAME: {binaryNameList[0]}");
+
+                        // -> Grab OID paths
+                        // IList<string> paths = new List<string>();
+
+                        // -> Grab binary size
+                        string size = await NexusSyncTask($"[\"oxide_get_oid_file_size\", \"{oid}\"]");
+
+                        // DGB: Skip this version of obtaining disassembly for now.
+                        // Call GetDisassemblyText on demand instead.
+                        // Open up a file stream
+                        // StreamWriter sw = null;
+                        // // -> Get disassembly via Nexus
+                        // string disasm = await NexusSyncTask("[\"oxide_get_disassembly\", \"" + oid + "\"]");
+                        // if (disasm == null) disasm = "null... Check for 500 error.";
+                        // // Debug.Log("DISASM: " + disasm);
+                        // // Chop out unnessesary information
+                        // int startIndex = disasm.IndexOf("\"instructions\"") + 16;
+                        // disasm = disasm.Substring(startIndex, disasm.Length - 2 - startIndex);
+                        // // IList<string> dissasmPull = JsonConvert.DeserializeObject<IList<string>>(dissasm);
+                        // // -> Store disassem in a file
+                        // // storedData/collectionID/objectID.txt
+                        // // Application.persistentDataPath should be something like C:\Users\<you>\AppData\LocalLow\DefaultCompany\cogbre\storedData
+                        // string disamDirectory = Application.persistentDataPath + $"/storedData/{cid}";
+                        // string fileName = $"{oid}.json";
+                        // // If directory does not exist, create one
+                        // if (!Directory.Exists(disamDirectory))
+                        //     Directory.CreateDirectory(disamDirectory);
+                        // // Write info to file
+                        // sw = new StreamWriter(disamDirectory + "/" + fileName);
+                        // await sw.WriteAsync(disasm);
+                        // // Compile information together into a new OID object
+                        // // -> Create oid
+                        // OxideBinary finalOID = new OxideBinary(oid, oName[0], paths, disamDirectory + "/" + fileName, size);
+                        // // -> Format the information within the oid
+                        // sw.Close();
+                        // gameManager.disassemblyFormatter.ParseDisassembly(finalOID);
+
+                        OxideBinary binary = new OxideBinary(oid, binaryNameList[0], size, null, null);                    
+                        // -> Log binary
+                        binaryList.Add(binary);
                     }
+                    collection.binaryList = binaryList;
                 }
-                else 
-                {
-                    returnText += "null... Check for 500 error.";
-                }
-
-                // TODO: Fill in the disassembly dictionary in the object 
-
-                return returnText;
+                return collection.binaryList;
             });
         }
 
+        // Return a Dict of human-readable strings of the disassembly of the given binary
+        // Build and store them in the given binary, if not already there
+        // This really should be a member function of the OxideBinary class but "get" functions can't be async
+        public async Task<Dictionary<string, string>> GetDisassemblyStringDictForBinary(OxideBinary binary)
+        {
+            // This async approach courtesy of https://stackoverflow.com/questions/25295166/async-method-is-blocking-ui-thread-on-which-it-is-executing
+            return await Task.Run<Dictionary<string, string>>(async () =>
+            {
+                Dictionary<string, string> disassemblyStringDict = binary.disassemblyStringDict;
+                if (disassemblyStringDict == null)
+                {
+                    disassemblyStringDict = new Dictionary<string, string>();
+                    string disassemblyJson = await NexusSyncTask("[\"oxide_get_disassembly_strings_only\", \"" + binary.oid + "\"]");
+                    if (disassemblyJson != null) 
+                    {
+                        JsonData instructions = JsonMapper.ToObject(disassemblyJson)[binary.oid]["instructions"];
+                        foreach (KeyValuePair<string, JsonData> item in instructions)
+                        {
+                            disassemblyStringDict[(string)(item.Key)] = (string)(item.Value["str"]);
+                        }
+                    }
+                    else 
+                    {
+                        disassemblyStringDict["0"] = "null... Check for 500 error.";
+                    }
+                    binary.disassemblyStringDict = disassemblyStringDict;
+                }
+                return disassemblyStringDict; 
+            });
+        }
+
+        // Return a List of function objects for the given binary
+        // Build and store them in the given binary, if not already there
+        // This really should be a member function of the OxideBinary class but "get" functions can't be async
+        public async Task<IList<OxideFunction>> GetFunctionListForBinary(OxideBinary binary)
+        {
+            // This async approach courtesy of https://stackoverflow.com/questions/25295166/async-method-is-blocking-ui-thread-on-which-it-is-executing
+            return await Task.Run<IList<OxideFunction>>(async () =>
+            {
+                IList<OxideFunction> functionList = binary.functionList;
+                if (functionList == null)
+                {
+                    functionList = new List<OxideFunction>();
+                    string functionListJson = await NexusSyncTask("[\"oxide_get_function_info\", \"" + binary.oid + "\"]");
+                    if (functionListJson != null) 
+                    {
+                        JsonData functions = JsonMapper.ToObject(functionListJson)[binary.oid];
+                        foreach (KeyValuePair<string, JsonData> item in functions)
+                        {
+                            string name = (string)(item.Key);
+                            string offset = $"{item.Value["offset"]}";
+                            string signature = (string)(item.Value["signature"]);
+                            functionList.Add(new OxideFunction(name, offset, signature));
+                        }
+                    }
+                    else 
+                    {
+                        functionList.Add(new OxideFunction("null... Check for 500 error.", "", ""));
+                    }
+                    binary.functionList = functionList;
+                }
+                return functionList;
+            });
+        }
 
     }
 }
