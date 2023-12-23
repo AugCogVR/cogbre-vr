@@ -68,13 +68,13 @@ namespace PUL
         public async void BuildButton(OxideCollection collection)
         {
             // Get binary list for this collection. Must use this method instead of a normal getter due to ... reasons.
-            IList<OxideBinary> binaryList = await GameManager.nexusClient.GetBinaryListForColleciton(collection);
+            collection = await GameManager.nexusClient.EnsureCollectionInfo(collection);
 
-            // // Resets oid information
+            // Resets oid information  // ???
             // ResetBinaryInformation();
 
             // Builds Button
-            StartCoroutine(BuildButtonEnum(binaryList));
+            StartCoroutine(BuildButtonEnum(collection.binaryList));
         }
 
         // Function that creates the objects that are associated with given collection
@@ -119,16 +119,13 @@ namespace PUL
         // Sets information about an oid and builds a graph
         public async void SetBinaryInformation(OxideBinary binary)
         {
-            // // Reset OID information
+            // // Reset OID information  // ???
             // ResetBinaryInformation();
 
+            // DGB: Commented out for now -- we'll re-look at 2D or 3D graphs later
             // Builds a graph based on information contained
             // -> NOTE! CURRENTLY GENERATES A RANDOM GRAPH
-            // DGB: Commented out for now -- we'll re-look at 2D or 3D graphs later
             // graphManager.CreateGraph(binary);
-
-            // DGB: Commented out this approach for now
-            // disasmContainer.text = binary.dissasemblyOut;
 
             // Tell the user we're doing something that won't happen instantaneously
             disasmContainer.text = $"Retrieving disassembly for {binary.name}";
@@ -162,7 +159,6 @@ namespace PUL
             }
             // disasmContainer.text = sb.ToString();
         }
-
 
         // void ResetBinaryInformation()
         // {

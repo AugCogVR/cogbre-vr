@@ -18,24 +18,16 @@ namespace PUL
     public class NexusClient : MonoBehaviour
     {
         GameManager gameManager;
-
         public int pacingCounter; // braindead dumb mechanism to throttle polling
-
         private string userId;
-
         public OxideData oxideData;
-        
 
         public NexusClient(GameManager gameManager)
         {
             //Debug.Log("NexusClient Constructor");
-
             this.gameManager = gameManager;
-
             pacingCounter = 0;
-
             userId = "User123"; // LATER: allow for multiple user IDs when we have multiple users!
-
             NexusSessionInit();
         }
 
@@ -68,6 +60,8 @@ namespace PUL
             {
                 string collectionId = await NexusSyncTask($"[\"oxide_get_cid_from_name\", \"{collectionName}\"]");
                 collectionId = collectionId.Replace("\"", ""); // remove extraneous quotes 
+                // Build collection object with missing info. We'll fill it in 
+                // if user ever selects this collection.
                 oxideData.collectionList.Add(new OxideCollection(collectionId, collectionName, null, null));
             }
             gameManager.menuManager.oxideData = oxideData;
@@ -121,10 +115,10 @@ namespace PUL
         // Return a list of binaries given a collection
         // Build and store them in the given collection, if not already there
         // This really should be a member function of the OxideCollection class but "get" functions can't be async
-        public async Task<IList<OxideBinary>> GetBinaryListForColleciton(OxideCollection collection)
+        public async Task<OxideCollection> EnsureCollectionInfo(OxideCollection collection)
         {
             // This async approach courtesy of https://stackoverflow.com/questions/25295166/async-method-is-blocking-ui-thread-on-which-it-is-executing
-            return await Task.Run<IList<OxideBinary>>(async () =>
+            return await Task.Run<OxideCollection>(async () =>
             {
                 if (collection.binaryList == null)
                 {
@@ -148,50 +142,21 @@ namespace PUL
                         // -> Grab binary size
                         string size = await NexusSyncTask($"[\"oxide_get_oid_file_size\", \"{oid}\"]");
 
-                        // DGB: Skip this version of obtaining disassembly for now.
-                        // -> Grab OID paths
-                        // IList<string> paths = new List<string>();
-                        // Call GetDisassemblyText on demand instead.
-                        // Open up a file stream
-                        // StreamWriter sw = null;
-                        // // -> Get disassembly via Nexus
-                        // string disasm = await NexusSyncTask("[\"oxide_get_disassembly\", \"" + oid + "\"]");
-                        // if (disasm == null) disasm = "null... Check for 500 error.";
-                        // // Debug.Log("DISASM: " + disasm);
-                        // // Chop out unnessesary information
-                        // int startIndex = disasm.IndexOf("\"instructions\"") + 16;
-                        // disasm = disasm.Substring(startIndex, disasm.Length - 2 - startIndex);
-                        // // IList<string> dissasmPull = JsonConvert.DeserializeObject<IList<string>>(dissasm);
-                        // // -> Store disassem in a file
-                        // // storedData/collectionID/objectID.txt
-                        // // Application.persistentDataPath should be something like C:\Users\<you>\AppData\LocalLow\DefaultCompany\cogbre\storedData
-                        // string disamDirectory = Application.persistentDataPath + $"/storedData/{cid}";
-                        // string fileName = $"{oid}.json";
-                        // // If directory does not exist, create one
-                        // if (!Directory.Exists(disamDirectory))
-                        //     Directory.CreateDirectory(disamDirectory);
-                        // // Write info to file
-                        // sw = new StreamWriter(disamDirectory + "/" + fileName);
-                        // await sw.WriteAsync(disasm);
-                        // // Compile information together into a new OID object
-                        // // -> Create oid
-                        // OxideBinary finalOID = new OxideBinary(oid, oName[0], paths, disamDirectory + "/" + fileName, size);
-                        // // -> Format the information within the oid
-                        // sw.Close();
-                        // gameManager.disassemblyFormatter.ParseDisassembly(finalOID);
-
+                        // Build binary object with missing info. We'll fill it in 
+                        // if user ever selects this binary.
                         OxideBinary binary = new OxideBinary(oid, binaryNameList[0], size, null, null, null);                    
                         // -> Log binary
                         binaryList.Add(binary);
                     }
                     collection.binaryList = binaryList;
                 }
-                return collection.binaryList;
+                Debug.Log($"=== For collection {collection.name}: {collection.binaryList.Count} binaries.");
+                return collection;
             });
         }
 
         // Pull all the info for a binary from Oxide if not already populated. 
-        // This approach lets us pull the info  on an as-needed basis 
+        // This approach lets us pull the info on an as-needed basis 
         // (we'll never pull it for a binary no one selects).
         public async Task<OxideBinary> EnsureBinaryInfo(OxideBinary binary)
         {
@@ -271,107 +236,5 @@ namespace PUL
                 return binary; 
             });
         }
-
-
-        // // Return a Dict of human-readable strings of the disassembly of the given binary
-        // // Build and store them in the given binary, if not already there
-        // // This really should be a member function of the OxideBinary class but "get" functions can't be async
-        // public async Task<Dictionary<string, OxideInstruction>> GetInstructionDictForBinary(OxideBinary binary)
-        // {
-        //     // This async approach courtesy of https://stackoverflow.com/questions/25295166/async-method-is-blocking-ui-thread-on-which-it-is-executing
-        //     return await Task.Run<Dictionary<string, OxideInstruction>>(async () =>
-        //     {
-        //         // Pull the disassembly into a dict of instructions, keyed by offset
-        //         if (binary.instructionDict == null)
-        //         {
-        //             binary.instructionDict = new Dictionary<string, OxideInstruction>();
-        //             string disassemblyJsonString = await NexusSyncTask("[\"oxide_get_disassembly_strings_only\", \"" + binary.oid + "\"]");
-        //             if (disassemblyJsonString != null) 
-        //             {
-        //                 JsonData disassemblyJson = JsonMapper.ToObject(disassemblyJsonString)[binary.oid]["instructions"];
-        //                 foreach (KeyValuePair<string, JsonData> item in disassemblyJson)
-        //                 {
-        //                     binary.instructionDict[(string)(item.Key)] = new OxideInstruction((string)(item.Key), (string)(item.Value["str"]));
-        //                 }
-        //             }
-        //             else 
-        //             {
-        //                 binary.instructionDict["0"] = new OxideInstruction("0", "null... Check for 500 error.");
-        //             }
-        //         }
-        //         return binary.instructionDict; 
-        //     });
-        // }
-
-        // // Return a List of function objects for the given binary
-        // // Build and store them in the given binary, if not already there
-        // // This really should be a member function of the OxideBinary class but "get" functions can't be async
-        // public async Task<IList<OxideFunction>> GetFunctionListForBinary(OxideBinary binary)
-        // {
-        //     // This async approach courtesy of https://stackoverflow.com/questions/25295166/async-method-is-blocking-ui-thread-on-which-it-is-executing
-        //     return await Task.Run<IList<OxideFunction>>(async () =>
-        //     {
-        //         if (binary.functionList == null)
-        //         {
-        //             binary.functionList = new List<OxideFunction>();
-        //             string functionsJsonString = await NexusSyncTask("[\"oxide_get_function_info\", \"" + binary.oid + "\"]");
-        //             if (functionsJsonString != null) 
-        //             {
-        //                 JsonData functionsJson = JsonMapper.ToObject(functionsJsonString)[binary.oid];
-        //                 foreach (KeyValuePair<string, JsonData> item in functionsJson)
-        //                 {
-        //                     string name = (string)(item.Key);
-        //                     string offset = $"{item.Value["offset"]}";
-        //                     string signature = (string)(item.Value["signature"]);
-        //                     binary.functionList.Add(new OxideFunction(name, offset, signature, null));
-        //                 }
-        //             }
-        //             else 
-        //             {
-        //                 binary.functionList.Add(new OxideFunction("null... Check for 500 error.", "", "", null));
-        //             }
-        //         }
-        //         return binary.functionList;
-        //     });
-        // }
-
-        // // Return a List of basic block objects for the given binary
-        // // Build and store them in the given binary, if not already there
-        // // This really should be a member function of the OxideBinary class but "get" functions can't be async
-        // public async Task<IList<OxideBasicBlock>> GetBasicBlockListForBinary(OxideBinary binary)
-        // {
-        //     // This async approach courtesy of https://stackoverflow.com/questions/25295166/async-method-is-blocking-ui-thread-on-which-it-is-executing
-        //     return await Task.Run<IList<OxideBasicBlock>>(async () =>
-        //     {
-        //         if (binary.basicBlockList == null)
-        //         {
-        //             binary.basicBlockList = new List<OxideBasicBlock>();
-        //             string basicBlocksJsonString = await NexusSyncTask("[\"oxide_get_basic_blocks\", \"" + binary.oid + "\"]");
-        //             if (basicBlocksJsonString != null) 
-        //             {
-        //                 JsonData basicBlocksJson = JsonMapper.ToObject(basicBlocksJsonString)[binary.oid];
-        //                 foreach (KeyValuePair<string, JsonData> item in basicBlocksJson)
-        //                 {
-        //                     List<string> instructionAddressList = new List<string>();
-        //                     foreach (JsonData addr in item.Value["members"])
-        //                     {
-        //                         instructionAddressList.Add($"{addr}");
-        //                     }
-        //                     List<string> destinationAddressList = new List<string>();
-        //                     foreach (JsonData addr in item.Value["dests"])
-        //                     {
-        //                         destinationAddressList.Add($"{addr}");
-        //                     }
-        //                     binary.basicBlockList.Add(new OxideBasicBlock(item.Key, instructionAddressList, destinationAddressList));
-        //                 }
-        //             }
-        //             else 
-        //             {
-        //                 binary.basicBlockList.Add(new OxideBasicBlock("null... Check for 500 error.", null, null));
-        //             }
-        //         }
-        //         return binary.basicBlockList;
-        //     });
-        // }
     }
 }

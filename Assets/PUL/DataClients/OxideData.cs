@@ -70,43 +70,6 @@ namespace PUL
         }
     }
 
-    // [System.Serializable]
-    // public class Operand
-    // {
-    //     public class OperandMemory
-    //     {
-    //         public string memoryBase;
-    //         public string displacement;
-    //     }
-
-    //     public string type_reg;
-    //     public OperandMemory type_mem;
-    //     public string type_imm;
-    //     public int size;
-    //     public string access;
-    // }
-
-    // [System.Serializable]
-    // public class NexusValue
-    // {
-    //     public int id;
-    //     public string mnemonic;
-    //     public int address;
-    //     public string op_str;
-    //     public int size;
-    //     public string str;
-    //     public string[] groups;
-    //     public string[] regs_read;
-    //     public string[] regs_write;
-    //     public List<List<string>> regs_access;
-    //     public int[] prefix;
-    //     public int[] opcode;
-    //     public int rex;
-    //     public int operand_size;
-    //     public int modrm;
-    //     public List<Operand> operands;
-    // }
-
     [System.Serializable]
     public class OxideBinary
     {
@@ -117,16 +80,15 @@ namespace PUL
         public IList<OxideFunction> functionList { get; set; }
         public IList<OxideBasicBlock> basicBlockList { get; set; }
 
-        // Keep the next fields so that DisassemblyFormatter will compile. Not currently in use.
+        // Fields used by DisassemblyFormatter. Not currently in use.
         // public IList<string> originalPaths { get; set; }
-        public string dissasemblyPath { get; set; }
-        public Dictionary<string, string> dissasembly { get; set; }
-        public string dissasemblyOut { get; set; }
+        // public string dissasemblyPath { get; set; }
+        // public Dictionary<string, string> dissasembly { get; set; }
+        // public string dissasemblyOut { get; set; }
 
         public OxideBinary(string oid, string name, string size, 
         Dictionary<string, OxideInstruction> instructionDict, 
-        IList<OxideFunction> functionList, IList<OxideBasicBlock> basicBlockList
-        /*IList<string> originalPaths, string dissasemblyPath,*/)
+        IList<OxideFunction> functionList, IList<OxideBasicBlock> basicBlockList)
         {
             this.oid = oid;
             this.name = name;
@@ -134,10 +96,6 @@ namespace PUL
             this.instructionDict = instructionDict;
             this.functionList = functionList;
             this.basicBlockList = basicBlockList;
-
-            // this.originalPaths = originalPaths;
-            // this.dissasemblyPath = dissasemblyPath;
-            // dissasembly = new Dictionary<string, string>();
         }
 
         public override string ToString()
@@ -145,14 +103,6 @@ namespace PUL
             string output = $"OID: {oid} || Name: {name} || Size: {size}";
 
             // TODO: add meaningful output for remaining fields
-
-            // if(originalPaths.Count > 0) output += "\n\t\t-- > Original Paths\n";
-            // // print out original paths
-            // foreach (string path in originalPaths)
-            // {
-            //     output += "\t\t\t" + path + "\n";
-            // }
-            // output += $"\n\t\t-- > Disassembly: {dissasemblyPath}";
 
             return output;
         }
@@ -214,7 +164,7 @@ namespace PUL
         public string offset { get; set; }   
         public string instructionString { get; set; }   
 
-        // TODO: Add more fields as needed! 
+        // TODO: Add more fields as needed! See commented-out code below.
 
         public OxideInstruction(string offset, string instructionString)
         {
@@ -229,5 +179,38 @@ namespace PUL
         }
     }
 
-
+    // [System.Serializable]
+    // public class Operand
+    // {
+    //     public class OperandMemory
+    //     {
+    //         public string memoryBase;
+    //         public string displacement;
+    //     }
+    //     public string type_reg;
+    //     public OperandMemory type_mem;
+    //     public string type_imm;
+    //     public int size;
+    //     public string access;
+    // }
+    // [System.Serializable]
+    // public class NexusValue
+    // {
+    //     public int id;
+    //     public string mnemonic;
+    //     public int address;
+    //     public string op_str;
+    //     public int size;
+    //     public string str;
+    //     public string[] groups;
+    //     public string[] regs_read;
+    //     public string[] regs_write;
+    //     public List<List<string>> regs_access;
+    //     public int[] prefix;
+    //     public int[] opcode;
+    //     public int rex;
+    //     public int operand_size;
+    //     public int modrm;
+    //     public List<Operand> operands;
+    // }
 }
