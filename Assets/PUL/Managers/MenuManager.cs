@@ -130,9 +130,15 @@ namespace PUL
             // DGB: Commented out this approach for now
             // disasmContainer.text = binary.dissasemblyOut;
 
+            // Pull function info
             IList<OxideFunction> functionList = await GameManager.nexusClient.GetFunctionListForBinary(binary);
             Debug.Log($"=============== FUNCTIONS FOUND: {functionList.Count}");
 
+            // Pull basic block info
+            IList<OxideBasicBlock> basicBlockList = await GameManager.nexusClient.GetBasicBlockListForBinary(binary);
+            Debug.Log($"=============== BASIC BLOCKS FOUND: {basicBlockList.Count}");
+
+            // Pull disassembly
             disasmContainer.text = $"Retrieving disassembly for {binary.name}";
             // Get disasm string dict this binary. Must use this method instead of a normal getter due to ... reasons.
             Dictionary<string, string> disassemblyStringDict = await GameManager.nexusClient.GetDisassemblyStringDictForBinary(binary);

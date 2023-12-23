@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using Unity.VisualScripting;
 using System.Globalization;
@@ -121,21 +122,26 @@ namespace PUL
         public string name { get; set; }
         public string size { get; set; }
         public Dictionary<string, string> disassemblyStringDict { get; set; }
-        public IList<OxideFunction> functionList {get; set; }
+        public IList<OxideFunction> functionList { get; set; }
+        public IList<OxideBasicBlock> basicBlockList { get; set; }
 
+        // Keep the next fields so that DisassemblyFormatter will compile. Not currently in use.
         // public IList<string> originalPaths { get; set; }
-        // Keep the next fields so that DisassemblyFormatter will compile
         public string dissasemblyPath { get; set; }
         public Dictionary<string, string> dissasembly { get; set; }
         public string dissasemblyOut { get; set; }
 
-        public OxideBinary(string oid, string name, string size, Dictionary<string, string> disassemblyStringDict, IList<OxideFunction> functionList /*IList<string> originalPaths, string dissasemblyPath,*/)
+        public OxideBinary(string oid, string name, string size, 
+        Dictionary<string, string> disassemblyStringDict, 
+        IList<OxideFunction> functionList, IList<OxideBasicBlock> basicBlocklist
+        /*IList<string> originalPaths, string dissasemblyPath,*/)
         {
             this.oid = oid;
             this.name = name;
             this.size = size;
             this.disassemblyStringDict = disassemblyStringDict;
             this.functionList = functionList;
+            this.basicBlockList = basicBlockList;
 
             // this.originalPaths = originalPaths;
             // this.dissasemblyPath = dissasemblyPath;
@@ -145,6 +151,8 @@ namespace PUL
         public override string ToString()
         {
             string output = $"OID: {oid} || Name: {name} || Size: {size}";
+
+            // TODO: add meaningful output for remaining fields
 
             // if(originalPaths.Count > 0) output += "\n\t\t-- > Original Paths\n";
             // // print out original paths
@@ -164,17 +172,45 @@ namespace PUL
         public string name { get; set; }   
         public string offset { get; set; }
         public string signature { get; set; }
+        public IList<OxideBasicBlock> basicBlockList { get; set; }
 
-        public OxideFunction(string name, string offset, string signature)
+        public OxideFunction(string name, string offset, string signature, IList<OxideBasicBlock> basicBlockList)
         {
             this.name = name;
             this.offset = offset;
             this.signature = signature;
+            this.basicBlockList = basicBlockList;
         }
 
         public override string ToString()
         {
             string output = $"Name: {name} || Offset: {offset} || Signature: {signature}";
+
+            // TODO: add meaningful output for remaining fields
+
+            return output;
+        }
+    }
+
+    [System.Serializable]
+    public class OxideBasicBlock
+    {
+        public string offset { get; set; }   
+        public IList<string> instructionAddressList { get; set; }   
+        public IList<string> destinationAddressList { get; set; }
+
+        public OxideBasicBlock(string offset, IList<string> instructionAddressList, IList<string> destinationAddressList)
+        {
+            this.offset = offset;
+            this.instructionAddressList = instructionAddressList;
+            this.destinationAddressList = destinationAddressList;
+        }
+
+        public override string ToString()
+        {
+            string output = $"Offset: {offset}";
+
+            // TODO: add meaningful output for remaining fields
 
             return output;
         }
@@ -185,7 +221,7 @@ namespace PUL
     {
         GameManager gameManager;
 
-        public int pacingCounter;
+        public int pacingCounter; // braindead dumb mechanism to throttle polling
 
         private string userId;
 
@@ -200,7 +236,7 @@ namespace PUL
 
             pacingCounter = 0;
 
-            userId = "User123";
+            userId = "User123"; // LATER: allow for multiple user IDs when we have multiple users!
 
             NexusSessionInit();
         }
@@ -347,7 +383,7 @@ namespace PUL
                         // sw.Close();
                         // gameManager.disassemblyFormatter.ParseDisassembly(finalOID);
 
-                        OxideBinary binary = new OxideBinary(oid, binaryNameList[0], size, null, null);                    
+                        OxideBinary binary = new OxideBinary(oid, binaryNameList[0], size, null, null, null);                    
                         // -> Log binary
                         binaryList.Add(binary);
                     }
@@ -369,11 +405,11 @@ namespace PUL
                 if (disassemblyStringDict == null)
                 {
                     disassemblyStringDict = new Dictionary<string, string>();
-                    string disassemblyJson = await NexusSyncTask("[\"oxide_get_disassembly_strings_only\", \"" + binary.oid + "\"]");
-                    if (disassemblyJson != null) 
+                    string disassemblyJsonString = await NexusSyncTask("[\"oxide_get_disassembly_strings_only\", \"" + binary.oid + "\"]");
+                    if (disassemblyJsonString != null) 
                     {
-                        JsonData instructions = JsonMapper.ToObject(disassemblyJson)[binary.oid]["instructions"];
-                        foreach (KeyValuePair<string, JsonData> item in instructions)
+                        JsonData disassemblyJson = JsonMapper.ToObject(disassemblyJsonString)[binary.oid]["instructions"];
+                        foreach (KeyValuePair<string, JsonData> item in disassemblyJson)
                         {
                             disassemblyStringDict[(string)(item.Key)] = (string)(item.Value["str"]);
                         }
@@ -400,21 +436,21 @@ namespace PUL
                 if (functionList == null)
                 {
                     functionList = new List<OxideFunction>();
-                    string functionListJson = await NexusSyncTask("[\"oxide_get_function_info\", \"" + binary.oid + "\"]");
-                    if (functionListJson != null) 
+                    string functionsJsonString = await NexusSyncTask("[\"oxide_get_function_info\", \"" + binary.oid + "\"]");
+                    if (functionsJsonString != null) 
                     {
-                        JsonData functions = JsonMapper.ToObject(functionListJson)[binary.oid];
-                        foreach (KeyValuePair<string, JsonData> item in functions)
+                        JsonData functionsJson = JsonMapper.ToObject(functionsJsonString)[binary.oid];
+                        foreach (KeyValuePair<string, JsonData> item in functionsJson)
                         {
                             string name = (string)(item.Key);
                             string offset = $"{item.Value["offset"]}";
                             string signature = (string)(item.Value["signature"]);
-                            functionList.Add(new OxideFunction(name, offset, signature));
+                            functionList.Add(new OxideFunction(name, offset, signature, null));
                         }
                     }
                     else 
                     {
-                        functionList.Add(new OxideFunction("null... Check for 500 error.", "", ""));
+                        functionList.Add(new OxideFunction("null... Check for 500 error.", "", "", null));
                     }
                     binary.functionList = functionList;
                 }
@@ -422,5 +458,45 @@ namespace PUL
             });
         }
 
+        // Return a List of basic block objects for the given binary
+        // Build and store them in the given binary, if not already there
+        // This really should be a member function of the OxideBinary class but "get" functions can't be async
+        public async Task<IList<OxideBasicBlock>> GetBasicBlockListForBinary(OxideBinary binary)
+        {
+            // This async approach courtesy of https://stackoverflow.com/questions/25295166/async-method-is-blocking-ui-thread-on-which-it-is-executing
+            return await Task.Run<IList<OxideBasicBlock>>(async () =>
+            {
+                IList<OxideBasicBlock> basicBlockList = binary.basicBlockList;
+                if (basicBlockList == null)
+                {
+                    basicBlockList = new List<OxideBasicBlock>();
+                    string basicBlocksJsonString = await NexusSyncTask("[\"oxide_get_basic_blocks\", \"" + binary.oid + "\"]");
+                    if (basicBlocksJsonString != null) 
+                    {
+                        JsonData basicBlocksJson = JsonMapper.ToObject(basicBlocksJsonString)[binary.oid];
+                        foreach (KeyValuePair<string, JsonData> item in basicBlocksJson)
+                        {
+                            List<string> instructionAddressList = new List<string>();
+                            foreach (JsonData addr in item.Value["members"])
+                            {
+                                instructionAddressList.Add($"{addr}");
+                            }
+                            List<string> destinationAddressList = new List<string>();
+                            foreach (JsonData addr in item.Value["dests"])
+                            {
+                                destinationAddressList.Add($"{addr}");
+                            }
+                            basicBlockList.Add(new OxideBasicBlock(item.Key, instructionAddressList, destinationAddressList));
+                        }
+                    }
+                    else 
+                    {
+                        basicBlockList.Add(new OxideBasicBlock("null... Check for 500 error.", null, null));
+                    }
+                    binary.basicBlockList = basicBlockList;
+                }
+                return basicBlockList;
+            });
+        }
     }
 }
