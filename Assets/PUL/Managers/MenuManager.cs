@@ -137,17 +137,21 @@ namespace PUL
             StartCoroutine(SetAllDisassemblyText(binary.instructionDict));
         }
 
-        IEnumerator SetAllDisassemblyText(Dictionary<string, OxideInstruction> instructionDict)
+        // Coroutine to put the disassembly text into the container. Out of all the data
+        // pulling and moving and processing going on here, THIS is what takes the longest. 
+        // It goes faster using StringBuilder BUT!!! the whole UI locks up for a couple of seconds
+        // during that final "sb.ToString()" operation. Ugh! 
+        IEnumerator SetAllDisassemblyText(SortedDictionary<int, OxideInstruction> instructionDict)
         {
             // var sb = new System.Text.StringBuilder(); // StringBuilder approach is commented out but left for reference
             disasmContainer.text = "";
             if (instructionDict != null)
             {
                 int count = 0;
-                foreach (KeyValuePair<string, OxideInstruction> item in instructionDict)
+                foreach (KeyValuePair<int, OxideInstruction> item in instructionDict)
                 {
                     // sb.AppendLine(item.Key + " " + item.Value);
-                    disasmContainer.text += item.Key + " " + item.Value.instructionString + "\n";
+                    disasmContainer.text += $"{item.Key} {item.Value.instructionString}\n";
                     if (++count > 100) break;  // ONLY USE SOME INSTRUCTIONS TO MAKE TESTING BEARABLE
                     yield return new WaitForEndOfFrame();
                 }

@@ -76,9 +76,9 @@ namespace PUL
         public string oid { get; set; }
         public string name { get; set; }
         public string size { get; set; }
-        public Dictionary<string, OxideInstruction> instructionDict { get; set; }
-        public IList<OxideFunction> functionList { get; set; }
-        public IList<OxideBasicBlock> basicBlockList { get; set; }
+        public SortedDictionary<int, OxideInstruction> instructionDict { get; set; }
+        public SortedDictionary<int, OxideFunction> functionDict { get; set; }
+        public SortedDictionary<int, OxideBasicBlock> basicBlockDict { get; set; }
 
         // Fields used by DisassemblyFormatter. Not currently in use.
         // public IList<string> originalPaths { get; set; }
@@ -87,15 +87,16 @@ namespace PUL
         // public string dissasemblyOut { get; set; }
 
         public OxideBinary(string oid, string name, string size, 
-        Dictionary<string, OxideInstruction> instructionDict, 
-        IList<OxideFunction> functionList, IList<OxideBasicBlock> basicBlockList)
+        SortedDictionary<int, OxideInstruction> instructionDict, 
+        SortedDictionary<int, OxideFunction> functionDict, 
+        SortedDictionary<int, OxideBasicBlock> basicBlockDict)
         {
             this.oid = oid;
             this.name = name;
             this.size = size;
             this.instructionDict = instructionDict;
-            this.functionList = functionList;
-            this.basicBlockList = basicBlockList;
+            this.functionDict = functionDict;
+            this.basicBlockDict = basicBlockDict;
         }
 
         public override string ToString()
@@ -114,14 +115,15 @@ namespace PUL
         public string name { get; set; }   
         public string offset { get; set; }
         public string signature { get; set; }
-        public IList<OxideBasicBlock> basicBlockList { get; set; }
+        public SortedDictionary<int, OxideBasicBlock> basicBlockDict { get; set; }
 
-        public OxideFunction(string name, string offset, string signature, IList<OxideBasicBlock> basicBlockList)
+        public OxideFunction(string name, string offset, string signature, 
+        SortedDictionary<int, OxideBasicBlock> basicBlockDict)
         {
             this.name = name;
             this.offset = offset;
             this.signature = signature;
-            this.basicBlockList = basicBlockList;
+            this.basicBlockDict = basicBlockDict;
         }
 
         public override string ToString()
