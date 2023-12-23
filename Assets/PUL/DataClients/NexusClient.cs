@@ -145,13 +145,12 @@ namespace PUL
                             binaryNameList.Add("Nameless Binary");
                         //Debug.Log($"BINARY NAME: {binaryNameList[0]}");
 
-                        // -> Grab OID paths
-                        // IList<string> paths = new List<string>();
-
                         // -> Grab binary size
                         string size = await NexusSyncTask($"[\"oxide_get_oid_file_size\", \"{oid}\"]");
 
                         // DGB: Skip this version of obtaining disassembly for now.
+                        // -> Grab OID paths
+                        // IList<string> paths = new List<string>();
                         // Call GetDisassemblyText on demand instead.
                         // Open up a file stream
                         // StreamWriter sw = null;
@@ -191,49 +190,37 @@ namespace PUL
             });
         }
 
-        // Return a Dict of human-readable strings of the disassembly of the given binary
-        // Build and store them in the given binary, if not already there
-        // This really should be a member function of the OxideBinary class but "get" functions can't be async
-        public async Task<Dictionary<string, string>> GetDisassemblyStringDictForBinary(OxideBinary binary)
+        // Pull all the info for a binary from Oxide if not already populated. 
+        // This approach lets us pull the info  on an as-needed basis 
+        // (we'll never pull it for a binary no one selects).
+        public async Task<OxideBinary> EnsureBinaryInfo(OxideBinary binary)
         {
             // This async approach courtesy of https://stackoverflow.com/questions/25295166/async-method-is-blocking-ui-thread-on-which-it-is-executing
-            return await Task.Run<Dictionary<string, string>>(async () =>
+            return await Task.Run<OxideBinary>(async () =>
             {
-                Dictionary<string, string> disassemblyStringDict = binary.disassemblyStringDict;
-                if (disassemblyStringDict == null)
+                // Pull the disassembly into a dict of instructions, keyed by offset
+                if (binary.instructionDict == null)
                 {
-                    disassemblyStringDict = new Dictionary<string, string>();
+                    binary.instructionDict = new Dictionary<string, OxideInstruction>();
                     string disassemblyJsonString = await NexusSyncTask("[\"oxide_get_disassembly_strings_only\", \"" + binary.oid + "\"]");
                     if (disassemblyJsonString != null) 
                     {
                         JsonData disassemblyJson = JsonMapper.ToObject(disassemblyJsonString)[binary.oid]["instructions"];
                         foreach (KeyValuePair<string, JsonData> item in disassemblyJson)
                         {
-                            disassemblyStringDict[(string)(item.Key)] = (string)(item.Value["str"]);
+                            binary.instructionDict[(string)(item.Key)] = new OxideInstruction((string)(item.Key), (string)(item.Value["str"]));
                         }
                     }
                     else 
                     {
-                        disassemblyStringDict["0"] = "null... Check for 500 error.";
+                        binary.instructionDict["0"] = new OxideInstruction("0", "null... Check for 500 error.");
                     }
-                    binary.disassemblyStringDict = disassemblyStringDict;
                 }
-                return disassemblyStringDict; 
-            });
-        }
 
-        // Return a List of function objects for the given binary
-        // Build and store them in the given binary, if not already there
-        // This really should be a member function of the OxideBinary class but "get" functions can't be async
-        public async Task<IList<OxideFunction>> GetFunctionListForBinary(OxideBinary binary)
-        {
-            // This async approach courtesy of https://stackoverflow.com/questions/25295166/async-method-is-blocking-ui-thread-on-which-it-is-executing
-            return await Task.Run<IList<OxideFunction>>(async () =>
-            {
-                IList<OxideFunction> functionList = binary.functionList;
-                if (functionList == null)
+                // Pull the function info
+                if (binary.functionList == null)
                 {
-                    functionList = new List<OxideFunction>();
+                    binary.functionList = new List<OxideFunction>();
                     string functionsJsonString = await NexusSyncTask("[\"oxide_get_function_info\", \"" + binary.oid + "\"]");
                     if (functionsJsonString != null) 
                     {
@@ -243,31 +230,19 @@ namespace PUL
                             string name = (string)(item.Key);
                             string offset = $"{item.Value["offset"]}";
                             string signature = (string)(item.Value["signature"]);
-                            functionList.Add(new OxideFunction(name, offset, signature, null));
+                            binary.functionList.Add(new OxideFunction(name, offset, signature, null));
                         }
                     }
                     else 
                     {
-                        functionList.Add(new OxideFunction("null... Check for 500 error.", "", "", null));
+                        binary.functionList.Add(new OxideFunction("null... Check for 500 error.", "", "", null));
                     }
-                    binary.functionList = functionList;
                 }
-                return functionList;
-            });
-        }
 
-        // Return a List of basic block objects for the given binary
-        // Build and store them in the given binary, if not already there
-        // This really should be a member function of the OxideBinary class but "get" functions can't be async
-        public async Task<IList<OxideBasicBlock>> GetBasicBlockListForBinary(OxideBinary binary)
-        {
-            // This async approach courtesy of https://stackoverflow.com/questions/25295166/async-method-is-blocking-ui-thread-on-which-it-is-executing
-            return await Task.Run<IList<OxideBasicBlock>>(async () =>
-            {
-                IList<OxideBasicBlock> basicBlockList = binary.basicBlockList;
-                if (basicBlockList == null)
+                // Pull the basic block info
+                if (binary.basicBlockList == null)
                 {
-                    basicBlockList = new List<OxideBasicBlock>();
+                    binary.basicBlockList = new List<OxideBasicBlock>();
                     string basicBlocksJsonString = await NexusSyncTask("[\"oxide_get_basic_blocks\", \"" + binary.oid + "\"]");
                     if (basicBlocksJsonString != null) 
                     {
@@ -284,17 +259,119 @@ namespace PUL
                             {
                                 destinationAddressList.Add($"{addr}");
                             }
-                            basicBlockList.Add(new OxideBasicBlock(item.Key, instructionAddressList, destinationAddressList));
+                            binary.basicBlockList.Add(new OxideBasicBlock(item.Key, instructionAddressList, destinationAddressList));
                         }
                     }
                     else 
                     {
-                        basicBlockList.Add(new OxideBasicBlock("null... Check for 500 error.", null, null));
+                        binary.basicBlockList.Add(new OxideBasicBlock("null... Check for 500 error.", null, null));
                     }
-                    binary.basicBlockList = basicBlockList;
                 }
-                return basicBlockList;
+                Debug.Log($"=== For binary {binary.name}: {binary.functionList.Count} functions, {binary.basicBlockList.Count} basic blocks, {binary.instructionDict.Keys.Count} instructions.");
+                return binary; 
             });
         }
+
+
+        // // Return a Dict of human-readable strings of the disassembly of the given binary
+        // // Build and store them in the given binary, if not already there
+        // // This really should be a member function of the OxideBinary class but "get" functions can't be async
+        // public async Task<Dictionary<string, OxideInstruction>> GetInstructionDictForBinary(OxideBinary binary)
+        // {
+        //     // This async approach courtesy of https://stackoverflow.com/questions/25295166/async-method-is-blocking-ui-thread-on-which-it-is-executing
+        //     return await Task.Run<Dictionary<string, OxideInstruction>>(async () =>
+        //     {
+        //         // Pull the disassembly into a dict of instructions, keyed by offset
+        //         if (binary.instructionDict == null)
+        //         {
+        //             binary.instructionDict = new Dictionary<string, OxideInstruction>();
+        //             string disassemblyJsonString = await NexusSyncTask("[\"oxide_get_disassembly_strings_only\", \"" + binary.oid + "\"]");
+        //             if (disassemblyJsonString != null) 
+        //             {
+        //                 JsonData disassemblyJson = JsonMapper.ToObject(disassemblyJsonString)[binary.oid]["instructions"];
+        //                 foreach (KeyValuePair<string, JsonData> item in disassemblyJson)
+        //                 {
+        //                     binary.instructionDict[(string)(item.Key)] = new OxideInstruction((string)(item.Key), (string)(item.Value["str"]));
+        //                 }
+        //             }
+        //             else 
+        //             {
+        //                 binary.instructionDict["0"] = new OxideInstruction("0", "null... Check for 500 error.");
+        //             }
+        //         }
+        //         return binary.instructionDict; 
+        //     });
+        // }
+
+        // // Return a List of function objects for the given binary
+        // // Build and store them in the given binary, if not already there
+        // // This really should be a member function of the OxideBinary class but "get" functions can't be async
+        // public async Task<IList<OxideFunction>> GetFunctionListForBinary(OxideBinary binary)
+        // {
+        //     // This async approach courtesy of https://stackoverflow.com/questions/25295166/async-method-is-blocking-ui-thread-on-which-it-is-executing
+        //     return await Task.Run<IList<OxideFunction>>(async () =>
+        //     {
+        //         if (binary.functionList == null)
+        //         {
+        //             binary.functionList = new List<OxideFunction>();
+        //             string functionsJsonString = await NexusSyncTask("[\"oxide_get_function_info\", \"" + binary.oid + "\"]");
+        //             if (functionsJsonString != null) 
+        //             {
+        //                 JsonData functionsJson = JsonMapper.ToObject(functionsJsonString)[binary.oid];
+        //                 foreach (KeyValuePair<string, JsonData> item in functionsJson)
+        //                 {
+        //                     string name = (string)(item.Key);
+        //                     string offset = $"{item.Value["offset"]}";
+        //                     string signature = (string)(item.Value["signature"]);
+        //                     binary.functionList.Add(new OxideFunction(name, offset, signature, null));
+        //                 }
+        //             }
+        //             else 
+        //             {
+        //                 binary.functionList.Add(new OxideFunction("null... Check for 500 error.", "", "", null));
+        //             }
+        //         }
+        //         return binary.functionList;
+        //     });
+        // }
+
+        // // Return a List of basic block objects for the given binary
+        // // Build and store them in the given binary, if not already there
+        // // This really should be a member function of the OxideBinary class but "get" functions can't be async
+        // public async Task<IList<OxideBasicBlock>> GetBasicBlockListForBinary(OxideBinary binary)
+        // {
+        //     // This async approach courtesy of https://stackoverflow.com/questions/25295166/async-method-is-blocking-ui-thread-on-which-it-is-executing
+        //     return await Task.Run<IList<OxideBasicBlock>>(async () =>
+        //     {
+        //         if (binary.basicBlockList == null)
+        //         {
+        //             binary.basicBlockList = new List<OxideBasicBlock>();
+        //             string basicBlocksJsonString = await NexusSyncTask("[\"oxide_get_basic_blocks\", \"" + binary.oid + "\"]");
+        //             if (basicBlocksJsonString != null) 
+        //             {
+        //                 JsonData basicBlocksJson = JsonMapper.ToObject(basicBlocksJsonString)[binary.oid];
+        //                 foreach (KeyValuePair<string, JsonData> item in basicBlocksJson)
+        //                 {
+        //                     List<string> instructionAddressList = new List<string>();
+        //                     foreach (JsonData addr in item.Value["members"])
+        //                     {
+        //                         instructionAddressList.Add($"{addr}");
+        //                     }
+        //                     List<string> destinationAddressList = new List<string>();
+        //                     foreach (JsonData addr in item.Value["dests"])
+        //                     {
+        //                         destinationAddressList.Add($"{addr}");
+        //                     }
+        //                     binary.basicBlockList.Add(new OxideBasicBlock(item.Key, instructionAddressList, destinationAddressList));
+        //                 }
+        //             }
+        //             else 
+        //             {
+        //                 binary.basicBlockList.Add(new OxideBasicBlock("null... Check for 500 error.", null, null));
+        //             }
+        //         }
+        //         return binary.basicBlockList;
+        //     });
+        // }
     }
 }

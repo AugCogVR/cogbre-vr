@@ -130,33 +130,27 @@ namespace PUL
             // DGB: Commented out this approach for now
             // disasmContainer.text = binary.dissasemblyOut;
 
-            // Pull function info
-            IList<OxideFunction> functionList = await GameManager.nexusClient.GetFunctionListForBinary(binary);
-            Debug.Log($"=============== FUNCTIONS FOUND: {functionList.Count}");
-
-            // Pull basic block info
-            IList<OxideBasicBlock> basicBlockList = await GameManager.nexusClient.GetBasicBlockListForBinary(binary);
-            Debug.Log($"=============== BASIC BLOCKS FOUND: {basicBlockList.Count}");
-
-            // Pull disassembly
+            // Tell the user we're doing something that won't happen instantaneously
             disasmContainer.text = $"Retrieving disassembly for {binary.name}";
-            // Get disasm string dict this binary. Must use this method instead of a normal getter due to ... reasons.
-            Dictionary<string, string> disassemblyStringDict = await GameManager.nexusClient.GetDisassemblyStringDictForBinary(binary);
-            // Put text into container
-            StartCoroutine(SetAllDisassemblyText(disassemblyStringDict));
+
+            // Ensure we have all the info for this binary. 
+            binary = await GameManager.nexusClient.EnsureBinaryInfo(binary);
+
+            // Set the text. This is SLOW so make it a coroutine. 
+            StartCoroutine(SetAllDisassemblyText(binary.instructionDict));
         }
 
-        IEnumerator SetAllDisassemblyText(Dictionary<string, string> disassemblyStringDict)
+        IEnumerator SetAllDisassemblyText(Dictionary<string, OxideInstruction> instructionDict)
         {
-            // var sb = new System.Text.StringBuilder();
+            // var sb = new System.Text.StringBuilder(); // StringBuilder approach is commented out but left for reference
             disasmContainer.text = "";
-            if (disassemblyStringDict != null)
+            if (instructionDict != null)
             {
                 int count = 0;
-                foreach (KeyValuePair<string, string> item in disassemblyStringDict)
+                foreach (KeyValuePair<string, OxideInstruction> item in instructionDict)
                 {
                     // sb.AppendLine(item.Key + " " + item.Value);
-                    disasmContainer.text += item.Key + " " + item.Value + "\n";
+                    disasmContainer.text += item.Key + " " + item.Value.instructionString + "\n";
                     if (++count > 100) break;  // ONLY USE SOME INSTRUCTIONS TO MAKE TESTING BEARABLE
                     yield return new WaitForEndOfFrame();
                 }

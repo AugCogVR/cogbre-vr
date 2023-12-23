@@ -113,7 +113,7 @@ namespace PUL
         public string oid { get; set; }
         public string name { get; set; }
         public string size { get; set; }
-        public Dictionary<string, string> disassemblyStringDict { get; set; }
+        public Dictionary<string, OxideInstruction> instructionDict { get; set; }
         public IList<OxideFunction> functionList { get; set; }
         public IList<OxideBasicBlock> basicBlockList { get; set; }
 
@@ -124,14 +124,14 @@ namespace PUL
         public string dissasemblyOut { get; set; }
 
         public OxideBinary(string oid, string name, string size, 
-        Dictionary<string, string> disassemblyStringDict, 
-        IList<OxideFunction> functionList, IList<OxideBasicBlock> basicBlocklist
+        Dictionary<string, OxideInstruction> instructionDict, 
+        IList<OxideFunction> functionList, IList<OxideBasicBlock> basicBlockList
         /*IList<string> originalPaths, string dissasemblyPath,*/)
         {
             this.oid = oid;
             this.name = name;
             this.size = size;
-            this.disassemblyStringDict = disassemblyStringDict;
+            this.instructionDict = instructionDict;
             this.functionList = functionList;
             this.basicBlockList = basicBlockList;
 
@@ -207,4 +207,27 @@ namespace PUL
             return output;
         }
     }
+
+    [System.Serializable]
+    public class OxideInstruction
+    {
+        public string offset { get; set; }   
+        public string instructionString { get; set; }   
+
+        // TODO: Add more fields as needed! 
+
+        public OxideInstruction(string offset, string instructionString)
+        {
+            this.offset = offset;
+            this.instructionString = instructionString;
+        }
+
+        public override string ToString()
+        {
+            string output = $"Offset: {offset} || Instruction: {instructionString}";
+            return output;
+        }
+    }
+
+
 }
