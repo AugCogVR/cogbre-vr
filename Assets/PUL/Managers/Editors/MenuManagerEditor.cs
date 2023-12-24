@@ -51,7 +51,7 @@ public class MenuManagerEditor : Editor
             }
 
             // -> Build first button
-            mm.BuildButton(GameManager.Instance.nexusClient.oxideData.collectionList[cidIndex]);
+            mm.CollectionButtonCallback(GameManager.Instance.nexusClient.oxideData.collectionList[cidIndex]);
 
             // -> Set current OIDs
             currentOIDs = new List<OxideBinary>(GameManager.Instance.nexusClient.oxideData.collectionList[cidIndex].binaryList);
@@ -70,7 +70,7 @@ public class MenuManagerEditor : Editor
             if (GUILayout.Button($"Spawn OID[{oidIndex}] graph"))
             {
                 // -> Build Graph
-                mm.SetBinaryInformation(currentOIDs[oidIndex]);
+                mm.BinaryButtonCallback(currentOIDs[oidIndex]);
             }
         }
     }
