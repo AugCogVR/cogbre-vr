@@ -167,19 +167,23 @@ namespace PUL
                 if (binary.instructionDict == null)
                 {
                     binary.instructionDict = new SortedDictionary<int, OxideInstruction>();
-                    string disassemblyJsonString = await NexusSyncTask("[\"oxide_get_disassembly_strings_only\", \"" + binary.oid + "\"]");
+                    string disassemblyJsonString = await NexusSyncTask("[\"oxide_get_disassembly\", \"" + binary.oid + "\"]");
                     if (disassemblyJsonString != null) 
                     {
                         JsonData disassemblyJson = JsonMapper.ToObject(disassemblyJsonString)[binary.oid]["instructions"];
                         foreach (KeyValuePair<string, JsonData> item in disassemblyJson)
                         {
+                            OxideInstruction oxideInstruction = new OxideInstruction((string)(item.Key));
+                            oxideInstruction.mnemonic = (string)(item.Value["mnemonic"]);
+                            oxideInstruction.op_str = (string)(item.Value["op_str"]);
+                            oxideInstruction.str = (string)(item.Value["str"]);
                             int key = Int32.Parse(item.Key);
-                            binary.instructionDict[key] = new OxideInstruction((string)(item.Key), (string)(item.Value["str"]));
+                            binary.instructionDict[key] = oxideInstruction;
                         }
                     }
                     else 
                     {
-                        binary.instructionDict[0] = new OxideInstruction("0", "ERROR");
+                        binary.instructionDict[0] = new OxideInstruction("0");
                     }
                 }
 

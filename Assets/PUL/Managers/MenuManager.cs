@@ -250,7 +250,7 @@ namespace PUL
                 {
                     int addr = Int32.Parse(instructionAddress);
                     OxideInstruction insn = binary.instructionDict[addr];
-                    disasmContainer.text += $"<color=#777777>{insn.offset} <color=#FFFFFF>{insn.instructionString}\n";
+                    disasmContainer.text += $"<color=#777777>{insn.offset} <color=#99FF99>{insn.mnemonic} <color=#FFFFFF>{insn.op_str}\n";
                     count++;
                 }
                 disasmContainer.text += $"------------------------------------\n"; // separate blocks

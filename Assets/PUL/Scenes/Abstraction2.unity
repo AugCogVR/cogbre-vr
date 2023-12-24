@@ -6575,7 +6575,7 @@ GameObject:
   - component: {fileID: 967225010}
   - component: {fileID: 967225009}
   m_Layer: 0
-  m_Name: Functions
+  m_Name: FunctionsLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11445,7 +11445,7 @@ GameObject:
   - component: {fileID: 1576555293}
   - component: {fileID: 1576555292}
   m_Layer: 0
-  m_Name: Collections
+  m_Name: CollectionsLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11739,7 +11739,7 @@ GameObject:
   - component: {fileID: 1623679294}
   - component: {fileID: 1623679293}
   m_Layer: 0
-  m_Name: Binaries
+  m_Name: BinariesLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -164,19 +164,23 @@ namespace PUL
     public class OxideInstruction
     {
         public string offset { get; set; }   
-        public string instructionString { get; set; }   
-
+        public string str { get; set; }   
+        public string mnemonic { get; set; }
+        public string op_str { get; set; }
         // TODO: Add more fields as needed! See commented-out code below.
 
-        public OxideInstruction(string offset, string instructionString)
+        // Constructor only takes offset -- others fields will be set externally
+        public OxideInstruction(string offset)
         {
             this.offset = offset;
-            this.instructionString = instructionString;
         }
 
         public override string ToString()
         {
-            string output = $"Offset: {offset} || Instruction: {instructionString}";
+            string output = $"Offset: {offset} || Instruction: {str}";
+
+            // TODO: add meaningful output for remaining fields
+
             return output;
         }
     }
