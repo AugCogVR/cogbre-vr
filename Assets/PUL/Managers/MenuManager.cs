@@ -11,15 +11,14 @@ namespace PUL
 {
     public class MenuManager : MonoBehaviour
     {
-        // NOTE: The values of these fields are wired up in the Unity Editor -> MenuManager object
+        // ====================================
+        // NOTE: These values are wired up in the Unity Editor -> MenuManager object
 
-        //refers to the storage of the data actively being returned from Oxide.
-        public OxideData oxideData = null;
-        private bool isInitialized = false;
-        //refers to the (Oxide)Collection Grid Object Collection, stored inside the Scrolling Object Collection
+        // Holder for collection buttons
         public GridObjectCollection CollectionGridObjectCollection;
-        //refers to the same thing, but for binaries
+        // Holder for binary buttons
         public GridObjectCollection BinaryGridObjectCollection;
+        // Holder for function buttons
         public GridObjectCollection FunctionGridObjectCollection;
         //refers to the menu button prefabs that will be instantiated on the menu.
         public GameObject MenuButtonPrefab;
@@ -29,18 +28,35 @@ namespace PUL
         public Transform UIPanel;
         //refers to the graph manager
         public SpatialGraphManager graphManager;
+        public TextMeshPro statusText;
         public TextMeshPro disasmTitle;
         public TextMeshPro disasmContainer;
+
+        // ====================================
+
+        // refers to the storage of the data actively being returned from Oxide.
+        public OxideData oxideData = null;
+
+        // ???
+        public bool initialized = false;
 
         // Buttons for binaries will change based on collection selected, so 
         // store the active ones here so we can destroy them when a new collection is selected
         private List<GameObject> currentBinaryButtonList = new List<GameObject>();
 
-        // Buttons for functions will change based on function selected, so 
+        // Buttons for functions will change based on binary selected, so 
         // store the active ones here so we can destroy them when a new binary is selected
         private List<GameObject> currentFunctionButtonList = new List<GameObject>();
 
-        public bool initialized = false;
+        // Is the UI busy? (should we ignore button presses?)
+        private bool isBusy = false;
+
+        // Use this status text when nothing is happening
+        private string defaultStatusText = "Waiting for user activity";
+
+        // Use this status text when UI is busy
+        private string busyText = "<color=\"red\">PLEASE WAIT FOR CURRENT PROCESSING TO COMPLETE";
+
 
         public void MenuInit()
         {
@@ -67,13 +83,21 @@ namespace PUL
 
             disasmTitle.text = "";
             disasmContainer.text = "";
-
+            statusText.text = defaultStatusText;
+            isBusy = false;
             CollectionGridObjectCollection.UpdateCollection();
             initialized = true;
         }
 
         public async void CollectionButtonCallback(OxideCollection collection)
         {
+            if (isBusy)
+            {
+                statusText.text = busyText;
+                return;
+            }
+            isBusy = true;
+
             // Clear buttons and text display
             foreach (GameObject button in currentBinaryButtonList)
             {
@@ -89,6 +113,7 @@ namespace PUL
             currentFunctionButtonList = new List<GameObject>();
             disasmTitle.text = "";
             disasmContainer.text = "";
+            statusText.text = $"Loading binary info for collection {collection.name}";
 
             // Ensure the collection info is populated, now that it is selected
             collection = await GameManager.nexusClient.EnsureCollectionInfo(collection);
@@ -127,12 +152,20 @@ namespace PUL
 
                 yield return new WaitForEndOfFrame();
             }
-
             BinaryGridObjectCollection.UpdateCollection();
+            statusText.text = defaultStatusText;
+            isBusy = false;
         }
 
         public async void BinaryButtonCallback(OxideBinary binary)
         {
+            if (isBusy)
+            {
+                statusText.text = busyText;
+                return;
+            }
+            isBusy = true;
+
             // Clear buttons and text display
             foreach (GameObject button in currentFunctionButtonList)
             {
@@ -142,6 +175,7 @@ namespace PUL
             currentFunctionButtonList = new List<GameObject>();
             disasmTitle.text = "";
             disasmContainer.text = "";
+            statusText.text = $"Loading function info for binary {binary.name}";
 
             // Ensure the collection info is populated, now that it is selected
             binary = await GameManager.nexusClient.EnsureBinaryInfo(binary);
@@ -181,16 +215,24 @@ namespace PUL
 
                 if (++count > 10) break; // low limit for testing
             }
-
             FunctionGridObjectCollection.UpdateCollection();
+            statusText.text = defaultStatusText;
+            isBusy = false;
         }
 
         public async void FunctionButtonCallback(OxideBinary binary, OxideFunction function)
         {
+            if (isBusy)
+            {
+                statusText.text = busyText;
+                return;
+            }
+            isBusy = true;
+
             disasmTitle.text = $"{binary.name} / {function.name}\n{function.signature}";
 
             // Tell the user we're doing something that won't happen instantaneously
-            disasmContainer.text = $"Retrieving disassembly for {function.name}";
+            statusText.text = $"Retrieving disassembly for {binary.name} / {function.name}";
 
             // Build text without blocking the UI
             StartCoroutine(FunctionButtonCallbackCoroutine(binary, function));
@@ -215,6 +257,8 @@ namespace PUL
 
                 yield return new WaitForEndOfFrame(); // yield after each block instead of each instruction
             }
+            statusText.text = defaultStatusText;
+            isBusy = false;
         }
 
 
