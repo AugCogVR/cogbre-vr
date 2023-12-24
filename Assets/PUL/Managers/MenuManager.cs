@@ -250,9 +250,10 @@ namespace PUL
                 {
                     int addr = Int32.Parse(instructionAddress);
                     OxideInstruction insn = binary.instructionDict[addr];
-                    disasmContainer.text += $"{insn.offset} {insn.instructionString}\n";
+                    disasmContainer.text += $"<color=#777777>{insn.offset} <color=#FFFFFF>{insn.instructionString}\n";
                     count++;
                 }
+                disasmContainer.text += $"------------------------------------\n"; // separate blocks
                 if (count > 100) break;  // ONLY USE FIRST FEW INSTRUCTIONS TO MAKE TESTING BEARABLE
 
                 yield return new WaitForEndOfFrame(); // yield after each block instead of each instruction
