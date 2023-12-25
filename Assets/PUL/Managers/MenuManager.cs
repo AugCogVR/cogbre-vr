@@ -253,7 +253,7 @@ namespace PUL
                     disasmContainer.text += $"<color=#777777>{insn.offset} <color=#99FF99>{insn.mnemonic} <color=#FFFFFF>{insn.op_str}\n";
                     count++;
                 }
-                disasmContainer.text += $"------------------------------------\n"; // separate blocks
+                disasmContainer.text += $"<color=#000000>------------------------------------\n"; // separate blocks
                 if (count > 100) break;  // ONLY USE FIRST FEW INSTRUCTIONS TO MAKE TESTING BEARABLE
 
                 yield return new WaitForEndOfFrame(); // yield after each block instead of each instruction
