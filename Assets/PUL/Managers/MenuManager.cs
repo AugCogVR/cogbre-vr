@@ -29,10 +29,12 @@ namespace PUL
         //refers to the graph manager
         public SpatialGraphManager graphManager;
         public TextMeshPro statusText;
-        public TextMeshPro disasmTitle;
-        public TextMeshPro disasmContainer;
+        // The Slate prefeb we instantiate for function disassembly
+        public GameObject slatePrefab;
 
+        // END: These values are wired up in the Unity Editor -> MenuManager object
         // ====================================
+
 
         // refers to the storage of the data actively being returned from Oxide.
         public OxideData oxideData = null;
@@ -47,6 +49,9 @@ namespace PUL
         // Buttons for functions will change based on binary selected, so 
         // store the active ones here so we can destroy them when a new binary is selected
         private List<GameObject> currentFunctionButtonList = new List<GameObject>();
+
+        // Keep a list of instantiated Slates
+        private List<GameObject> slateList = new List<GameObject>();
 
         // Is the UI busy? (should we ignore button presses?)
         private bool isBusy = false;
@@ -81,8 +86,6 @@ namespace PUL
                 distanceInteract.OnClick.AddListener(() => CollectionButtonCallback(collection));
             }
 
-            disasmTitle.text = "";
-            disasmContainer.text = "";
             statusText.text = defaultStatusText;
             isBusy = false;
             CollectionGridObjectCollection.UpdateCollection();
@@ -111,8 +114,6 @@ namespace PUL
             FunctionGridObjectCollection.UpdateCollection();
             currentBinaryButtonList = new List<GameObject>();
             currentFunctionButtonList = new List<GameObject>();
-            disasmTitle.text = "";
-            disasmContainer.text = "";
             statusText.text = $"Loading binary info for collection {collection.name}";
 
             // Ensure the collection info is populated, now that it is selected
@@ -173,8 +174,6 @@ namespace PUL
             }
             FunctionGridObjectCollection.UpdateCollection();
             currentFunctionButtonList = new List<GameObject>();
-            disasmTitle.text = "";
-            disasmContainer.text = "";
             statusText.text = $"Loading function info for binary {binary.name}";
 
             // Ensure the collection info is populated, now that it is selected
@@ -229,8 +228,6 @@ namespace PUL
             }
             isBusy = true;
 
-            disasmTitle.text = $"{binary.name} / {function.name}\n{function.signature}";
-
             // Tell the user we're doing something that won't happen instantaneously
             statusText.text = $"Retrieving disassembly for {binary.name} / {function.name}";
 
@@ -240,6 +237,12 @@ namespace PUL
 
         IEnumerator FunctionButtonCallbackCoroutine(OxideBinary binary, OxideFunction function)
         {
+            // Make a new slate
+            GameObject slate = Instantiate(slatePrefab, new Vector3(0.82f, 0, 0.77f), Quaternion.identity);
+            slateList.Add(slate);
+            TextMeshPro disasmTitle = slate.transform.Find("TitleBar/DisasmTitle").gameObject.GetComponent<TextMeshPro>();
+            TextMeshPro disasmContainer = slate.transform.Find("Disasm").gameObject.GetComponent<TextMeshPro>();
+            disasmTitle.text = $"{binary.name} / {function.name}\n{function.signature}";
             disasmContainer.text = "";
 
             // Walk through each basic block for this function and add instructions to text display
@@ -263,6 +266,7 @@ namespace PUL
         }
 
 
+        // DGB: OLD DEAD CODE KEPT FOR REFERENCE ONLY
         // // Sets information about an oid and builds a graph
         // public async void BinaryButtonCallbackOLD(OxideBinary binary)
         // {
