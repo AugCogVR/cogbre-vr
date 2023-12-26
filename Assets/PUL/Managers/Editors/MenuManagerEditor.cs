@@ -51,7 +51,7 @@ public class MenuManagerEditor : Editor
             }
 
             // -> Build first button
-            mm.CollectionButtonCallback(GameManager.Instance.nexusClient.oxideData.collectionList[cidIndex]);
+            mm.CollectionButtonCallback(null/* DGB: FIX THIS LATER -- I AM SO SORRY */,  GameManager.Instance.nexusClient.oxideData.collectionList[cidIndex]);
 
             // -> Set current OIDs
             currentOIDs = new List<OxideBinary>(GameManager.Instance.nexusClient.oxideData.collectionList[cidIndex].binaryList);

@@ -42,6 +42,9 @@ namespace PUL
         // ???
         public bool initialized = false;
 
+        // Keep a list of the collection buttons we create
+        private Dictionary<OxideCollection, GameObject> collectionButtonDict = new Dictionary<OxideCollection, GameObject>();
+
         // Buttons for binaries will change based on collection selected, so 
         // store the active ones here so we can destroy them when a new collection is selected
         private List<GameObject> currentBinaryButtonList = new List<GameObject>();
@@ -69,6 +72,7 @@ namespace PUL
             {
                 // Instantiate the button prefab.
                 GameObject newButton = Instantiate(MenuButtonPrefab);
+                collectionButtonDict[collection] = newButton;
 
                 // Set the parent to the GridObjectCollection.
                 newButton.transform.parent = CollectionGridObjectCollection.transform;
@@ -80,10 +84,10 @@ namespace PUL
                 // Set button functions
                 // -> Physical Press
                 PressableButtonHoloLens2 buttonFunction = newButton.GetComponent<PressableButtonHoloLens2>();
-                buttonFunction.TouchBegin.AddListener(() => CollectionButtonCallback(collection));
+                buttonFunction.TouchBegin.AddListener(() => CollectionButtonCallback(newButton, collection));
                 // -> Ray Press
                 Interactable distanceInteract = newButton.GetComponent<Interactable>();
-                distanceInteract.OnClick.AddListener(() => CollectionButtonCallback(collection));
+                distanceInteract.OnClick.AddListener(() => CollectionButtonCallback(newButton, collection));
             }
 
             statusText.text = defaultStatusText;
@@ -92,7 +96,7 @@ namespace PUL
             initialized = true;
         }
 
-        public async void CollectionButtonCallback(OxideCollection collection)
+        public async void CollectionButtonCallback(GameObject collectionButton, OxideCollection collection)
         {
             if (isBusy)
             {
@@ -100,6 +104,16 @@ namespace PUL
                 return;
             }
             isBusy = true;
+
+            // Remove highlights from all Collection buttons and hightlight the selected button
+            foreach (KeyValuePair<OxideCollection, GameObject> buttonPair in collectionButtonDict)
+            {
+                buttonPair.Value.GetComponentInChildren<TextMeshPro>().text = $"{buttonPair.Key.name}";
+            }
+            collectionButton.GetComponentInChildren<TextMeshPro>().text = $"<size=125%><color=#FFFF00>{collection.name}";
+            // // DGB: This code changes the color of the button's backplate but only for a few frames
+            // GameObject crap = collectionButton.transform.Find("BackPlate/Quad").gameObject;
+            // crap.GetComponent<Renderer>().material.color = Color.red;
 
             // Clear buttons and text display
             foreach (GameObject button in currentBinaryButtonList)
