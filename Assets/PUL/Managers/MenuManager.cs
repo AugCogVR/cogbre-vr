@@ -14,23 +14,34 @@ namespace PUL
         // ====================================
         // NOTE: These values are wired up in the Unity Editor -> MenuManager object
 
+        public GameManager GameManager;
+
         // Holder for collection buttons
         public GridObjectCollection CollectionGridObjectCollection;
+
         // Holder for binary buttons
         public GridObjectCollection BinaryGridObjectCollection;
+
         // Holder for function buttons
         public GridObjectCollection FunctionGridObjectCollection;
+
         //refers to the menu button prefabs that will be instantiated on the menu.
-        public GameObject MenuButtonPrefab;
-        public GameObject ObjectButtonPrefab;
-        public GameManager GameManager;
-        //refers to the transform of the UI panel
-        public Transform UIPanel;
-        //refers to the graph manager
-        public SpatialGraphManager graphManager;
+        public GameObject functionDisassemblyButton;
+
         public TextMeshPro statusText;
+
+        public GameObject MenuButtonPrefab;
+
+        public GameObject ObjectButtonPrefab;
+
         // The Slate prefeb we instantiate for function disassembly
         public GameObject slatePrefab;
+
+        //refers to the transform of the UI panel
+        public Transform UIPanel;
+
+        //refers to the graph manager
+        public SpatialGraphManager graphManager;
 
         // END: These values are wired up in the Unity Editor -> MenuManager object
         // ====================================
@@ -54,6 +65,15 @@ namespace PUL
         // Keep a list of instantiated Slates
         private List<GameObject> slateList = new List<GameObject>();
 
+        // Which Collection is selected?
+        private OxideCollection selectedCollection = null;
+
+        // Which Binary is selected?
+        private OxideBinary selectedBinary = null;
+
+        // Which Function is selected?
+        private OxideFunction selectedFunction = null;
+
         // Is the UI busy? (should we ignore button presses?)
         private bool isBusy = false;
 
@@ -62,6 +82,7 @@ namespace PUL
 
         // Use this status text when UI is busy
         private string busyText = "<color=\"red\">PLEASE WAIT FOR CURRENT PROCESSING TO COMPLETE";
+
 
         private string createCollectionButtonText(OxideCollection collection)
         {
@@ -80,6 +101,7 @@ namespace PUL
 
         public void MenuInit()
         {
+            // Build GridObjectCollection for the user to select an OxideCollection
             foreach (OxideCollection collection in oxideData.collectionList)
             {
                 // Instantiate the button prefab.
@@ -102,6 +124,14 @@ namespace PUL
                 distanceInteract.OnClick.AddListener(() => CollectionButtonCallback(collection, newButton));
             }
 
+            // Set Function Disassembly button callback
+            // -> Physical Press
+            PressableButtonHoloLens2 fdbuttonFunction = functionDisassemblyButton.GetComponent<PressableButtonHoloLens2>();
+            fdbuttonFunction.TouchBegin.AddListener(() => FunctionDisassemblyButtonCallback());
+            // -> Ray Press
+            Interactable fddistanceInteract = functionDisassemblyButton.GetComponent<Interactable>();
+            fddistanceInteract.OnClick.AddListener(() => FunctionDisassemblyButtonCallback());
+
             statusText.text = defaultStatusText;
             isBusy = false;
             CollectionGridObjectCollection.UpdateCollection();
@@ -116,6 +146,11 @@ namespace PUL
                 return;
             }
             isBusy = true;
+
+            // Set the selected collection, binary, function
+            selectedCollection = collection;
+            selectedBinary = null;
+            selectedFunction = null;
 
             // Remove highlights from all Collection buttons and hightlight the selected button
             foreach (KeyValuePair<OxideCollection, GameObject> buttonPair in collectionButtonDict)
@@ -195,6 +230,10 @@ namespace PUL
             }
             isBusy = true;
 
+            // Set the selected binary and function
+            selectedBinary = binary;
+            selectedFunction = null;
+
             // Remove highlights from all Binary buttons and hightlight the selected button
             foreach (KeyValuePair<OxideBinary, GameObject> buttonPair in binaryButtonDict)
             {
@@ -268,6 +307,9 @@ namespace PUL
             }
             isBusy = true;
 
+            // Set the selected function
+            selectedFunction = function;
+
             // Remove highlights from all Function buttons and hightlight the selected button
             foreach (KeyValuePair<OxideFunction, GameObject> buttonPair in functionButtonDict)
             {
@@ -277,14 +319,31 @@ namespace PUL
             }
             functionButton.GetComponentInChildren<TextMeshPro>().text = $"<color=#FFFF00>{createFunctionButtonText(function)}";
 
-            // Tell the user we're doing something that won't happen instantaneously
-            statusText.text = $"Retrieving disassembly for {binary.name} / {function.name}";
-
-            // Build text without blocking the UI
-            StartCoroutine(FunctionButtonCallbackCoroutine(binary, function));
+            isBusy = false;
         }
 
-        IEnumerator FunctionButtonCallbackCoroutine(OxideBinary binary, OxideFunction function)
+        public async void FunctionDisassemblyButtonCallback()
+        {
+            if (isBusy)
+            {
+                statusText.text = busyText;
+                return;
+            }
+            if (selectedFunction == null)
+            {
+                statusText.text = "<color=#FF0000>Please select a function first!";
+                return;
+            }
+            isBusy = true;
+
+            // Tell the user we're doing something that won't happen instantaneously
+            statusText.text = $"Retrieving disassembly for {selectedBinary.name} / {selectedFunction.name}";
+
+            // Build text without blocking the UI
+            StartCoroutine(FunctionDisassemblyButtonCallbackCoroutine(selectedBinary, selectedFunction));
+        }
+
+        IEnumerator FunctionDisassemblyButtonCallbackCoroutine(OxideBinary binary, OxideFunction function)
         {
             // Make a new slate
             GameObject slate = Instantiate(slatePrefab, new Vector3(0.82f, 0, 0.77f), Quaternion.identity);
