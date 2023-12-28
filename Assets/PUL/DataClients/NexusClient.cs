@@ -274,5 +274,18 @@ namespace PUL
                 return binary; 
             });
         }
+
+        // Given an Oxide module name and an OID, run the module on the OID and return the results as a string.
+        public async Task<string> RetrieveTextForArbitraryModule(string moduleName, string oid, string parameters)
+        {
+            string returnMe = "";
+
+            // This async approach courtesy of https://stackoverflow.com/questions/25295166/async-method-is-blocking-ui-thread-on-which-it-is-executing
+            return await Task.Run<string>(async () =>
+            {
+                returnMe = await NexusSyncTask($"[\"oxide_retrieve\", \"{moduleName}\", [\"{oid}\"], {parameters}]");
+                return returnMe;
+            });
+        }
     }
 }

@@ -25,11 +25,15 @@ namespace PUL
         // Holder for function buttons
         public GridObjectCollection FunctionGridObjectCollection;
 
-        //refers to the menu button prefabs that will be instantiated on the menu.
+        public GameObject binaryStringsButton;
+
+        public GameObject binaryFilestatsButton;
+
         public GameObject functionDisassemblyButton;
 
         public TextMeshPro statusText;
 
+        //refers to the menu button prefabs that will be instantiated on the menu.
         public GameObject MenuButtonPrefab;
 
         public GameObject ObjectButtonPrefab;
@@ -124,11 +128,17 @@ namespace PUL
                 distanceInteract.OnClick.AddListener(() => CollectionButtonCallback(collection, newButton));
             }
 
-            // Set Function Disassembly button callback
-            // -> Physical Press
+            // Set activity button callbacks
+            PressableButtonHoloLens2 bsbuttonFunction = binaryStringsButton.GetComponent<PressableButtonHoloLens2>();
+            bsbuttonFunction.TouchBegin.AddListener(() => BinaryStringsButtonCallback());
+            Interactable bsdistanceInteract = binaryStringsButton.GetComponent<Interactable>();
+            bsdistanceInteract.OnClick.AddListener(() => BinaryStringsButtonCallback());
+            PressableButtonHoloLens2 bfbuttonFunction = binaryFilestatsButton.GetComponent<PressableButtonHoloLens2>();
+            bfbuttonFunction.TouchBegin.AddListener(() => BinaryFilestatsButtonCallback());
+            Interactable bfdistanceInteract = binaryFilestatsButton.GetComponent<Interactable>();
+            bfdistanceInteract.OnClick.AddListener(() => BinaryFilestatsButtonCallback());
             PressableButtonHoloLens2 fdbuttonFunction = functionDisassemblyButton.GetComponent<PressableButtonHoloLens2>();
             fdbuttonFunction.TouchBegin.AddListener(() => FunctionDisassemblyButtonCallback());
-            // -> Ray Press
             Interactable fddistanceInteract = functionDisassemblyButton.GetComponent<Interactable>();
             fddistanceInteract.OnClick.AddListener(() => FunctionDisassemblyButtonCallback());
 
@@ -298,6 +308,70 @@ namespace PUL
             isBusy = false;
         }
 
+        public async void BinaryStringsButtonCallback()
+        {
+            if (isBusy)
+            {
+                statusText.text = busyText;
+                return;
+            }
+            if (selectedBinary == null)
+            {
+                statusText.text = "<color=#FF0000>Please select a binary first!";
+                return;
+            }
+            isBusy = true;
+
+            // Tell the user we're doing something that won't happen instantaneously
+            statusText.text = $"Retrieving strings for {selectedBinary.name}";
+
+            // Get the info
+            string contentString = await GameManager.nexusClient.RetrieveTextForArbitraryModule("strings", selectedBinary.oid, "{}");
+
+            // Make a new slate
+            GameObject slate = Instantiate(slatePrefab, new Vector3(0.82f, 0, 0.77f), Quaternion.identity);
+            slateList.Add(slate);
+            TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
+            TextMeshPro contentTMP = slate.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
+            titleBarTMP.text = $"Strings for {selectedBinary.name}";
+            contentTMP.text = contentString;
+
+            statusText.text = defaultStatusText;
+            isBusy = false;
+        }
+
+        public async void BinaryFilestatsButtonCallback()
+        {
+            if (isBusy)
+            {
+                statusText.text = busyText;
+                return;
+            }
+            if (selectedBinary == null)
+            {
+                statusText.text = "<color=#FF0000>Please select a binary first!";
+                return;
+            }
+            isBusy = true;
+
+            // Tell the user we're doing something that won't happen instantaneously
+            statusText.text = $"Retrieving file stats for {selectedBinary.name}";
+
+            // Get the info
+            string contentString = await GameManager.nexusClient.RetrieveTextForArbitraryModule("file_stats", selectedBinary.oid, "{}");
+
+            // Make a new slate
+            GameObject slate = Instantiate(slatePrefab, new Vector3(0.82f, 0, 0.77f), Quaternion.identity);
+            slateList.Add(slate);
+            TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
+            TextMeshPro contentTMP = slate.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
+            titleBarTMP.text = $"File stats for {selectedBinary.name}";
+            contentTMP.text = contentString;
+
+            statusText.text = defaultStatusText;
+            isBusy = false;
+        }
+
         public async void FunctionButtonCallback(OxideBinary binary, OxideFunction function, GameObject functionButton)
         {
             if (isBusy)
@@ -348,10 +422,10 @@ namespace PUL
             // Make a new slate
             GameObject slate = Instantiate(slatePrefab, new Vector3(0.82f, 0, 0.77f), Quaternion.identity);
             slateList.Add(slate);
-            TextMeshPro disasmTitle = slate.transform.Find("TitleBar/DisasmTitle").gameObject.GetComponent<TextMeshPro>();
-            TextMeshPro disasmContainer = slate.transform.Find("Disasm").gameObject.GetComponent<TextMeshPro>();
-            disasmTitle.text = $"{binary.name} / {function.name}\n{function.signature}";
-            disasmContainer.text = "";
+            TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
+            TextMeshPro contentTMP = slate.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
+            titleBarTMP.text = $"{binary.name} / {function.name}\n{function.signature}";
+            contentTMP.text = "";
 
             // Walk through each basic block for this function and add instructions to text display
             int count = 0;
@@ -361,10 +435,10 @@ namespace PUL
                 {
                     int addr = Int32.Parse(instructionAddress);
                     OxideInstruction insn = binary.instructionDict[addr];
-                    disasmContainer.text += $"<color=#777777>{insn.offset} <color=#99FF99>{insn.mnemonic} <color=#FFFFFF>{insn.op_str}\n";
+                    contentTMP.text += $"<color=#777777>{insn.offset} <color=#99FF99>{insn.mnemonic} <color=#FFFFFF>{insn.op_str}\n";
                     count++;
                 }
-                disasmContainer.text += $"<color=#000000>------------------------------------\n"; // separate blocks
+                contentTMP.text += $"<color=#000000>------------------------------------\n"; // separate blocks
                 if (count > 100) break;  // ONLY USE FIRST FEW INSTRUCTIONS TO MAKE TESTING BEARABLE
 
                 yield return new WaitForEndOfFrame(); // yield after each block instead of each instruction
@@ -387,7 +461,7 @@ namespace PUL
         //     // graphManager.CreateGraph(binary);
 
         //     // Tell the user we're doing something that won't happen instantaneously
-        //     disasmContainer.text = $"Retrieving disassembly for {binary.name}";
+        //     contentTMP.text = $"Retrieving disassembly for {binary.name}";
 
         //     // Ensure we have all the info for this binary. 
         //     binary = await GameManager.nexusClient.EnsureBinaryInfo(binary);
@@ -403,14 +477,14 @@ namespace PUL
         // IEnumerator BinaryButtonCallbackCoroutineOLD(SortedDictionary<int, OxideInstruction> instructionDict)
         // {
         //     // var sb = new System.Text.StringBuilder(); // StringBuilder approach is commented out but left for reference
-        //     disasmContainer.text = "";
+        //     contentTMP.text = "";
         //     if (instructionDict != null)
         //     {
         //         int count = 0;
         //         foreach (KeyValuePair<int, OxideInstruction> item in instructionDict)
         //         {
         //             // sb.AppendLine(item.Key + " " + item.Value);
-        //             disasmContainer.text += $"{item.Key} {item.Value.instructionString}\n";
+        //             contentTMP.text += $"{item.Key} {item.Value.instructionString}\n";
         //             if (++count > 100) break;  // ONLY USE SOME INSTRUCTIONS TO MAKE TESTING BEARABLE
         //             yield return new WaitForEndOfFrame();
         //         }
@@ -418,9 +492,9 @@ namespace PUL
         //     else 
         //     {
         //         // sb.AppendLine("null... Check for 500 error.");
-        //         disasmContainer.text += "null... Check for 500 error.";
+        //         contentTMP.text += "null... Check for 500 error.";
         //     }
-        //     // disasmContainer.text = sb.ToString();
+        //     // contentTMP.text = sb.ToString();
         // }
 
         // void ResetBinaryInformation()
