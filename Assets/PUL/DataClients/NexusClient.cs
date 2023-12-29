@@ -266,6 +266,7 @@ namespace PUL
                         {
                             func.basicBlockDict[blockItem.Key] = blockItem.Value;
                             // Debug.Log($"##### Func {func.offset}, {funcStart}, {funcEnd} has basic block {blockStart}");
+                            break;
                         }
                     }
                 }
