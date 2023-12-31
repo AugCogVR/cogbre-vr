@@ -268,6 +268,9 @@ namespace PUL
             // Ensure the collection info is populated, now that it is selected
             binary = await GameManager.nexusClient.EnsureBinaryInfo(binary);
 
+            // TEMPORARY!!!!  Force decompilation and grab info
+            binary = await GameManager.nexusClient.EnsureBinaryDecompilation(binary);
+
             // Build buttons without blocking the UI
             StartCoroutine(BinaryButtonCallbackCoroutine(binary));
         }
@@ -327,6 +330,7 @@ namespace PUL
 
             // Get the info
             string contentString = await GameManager.nexusClient.RetrieveTextForArbitraryModule("strings", selectedBinary.oid, "{}", true);
+            // string contentString = await GameManager.nexusClient.RetrieveTextForArbitraryModule("ghidra_decmap", selectedBinary.oid, "{}", false);
 
             // Make a new slate
             GameObject slate = Instantiate(slatePrefab, new Vector3(0.82f, 0, 0.77f), Quaternion.identity);

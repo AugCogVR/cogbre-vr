@@ -144,7 +144,7 @@ namespace PUL
 
                         // Build binary object with missing info. We'll fill it in 
                         // if user ever selects this binary.
-                        OxideBinary binary = new OxideBinary(oid, binaryNameList[0], size, null, null, null);                    
+                        OxideBinary binary = new OxideBinary(oid, binaryNameList[0], size, null, null, null, null);                    
                         // -> Log binary
                         binaryList.Add(binary);
                     }
@@ -156,6 +156,7 @@ namespace PUL
         }
 
         // Pull all the info for a binary from Oxide if not already populated. 
+        // Includes disassembly but NOT decompilation -- that's in another method.
         // This approach lets us pull the info on an as-needed basis 
         // (we'll never pull it for a binary no one selects).
         public async Task<OxideBinary> EnsureBinaryInfo(OxideBinary binary)
@@ -257,6 +258,49 @@ namespace PUL
                 }
 
                 Debug.Log($"=== For binary {binary.name}: {binary.functionDict.Keys.Count} functions, {binary.basicBlockDict.Keys.Count} basic blocks, {binary.instructionDict.Keys.Count} instructions.");
+                return binary; 
+            });
+        }
+
+        // Pull the decompilation for a binary from Oxide if not already populated. 
+        public async Task<OxideBinary> EnsureBinaryDecompilation(OxideBinary binary)
+        {
+            // Make sure we have populated this baseline data of this binary object. 
+            binary = await EnsureBinaryInfo(binary);
+
+            // This async approach courtesy of https://stackoverflow.com/questions/25295166/async-method-is-blocking-ui-thread-on-which-it-is-executing
+            return await Task.Run<OxideBinary>(async () =>
+            {
+                // Pull the decompilation into a dict of code lines, keyed by line number
+                if (binary.decompilationDict == null)
+                {
+                    binary.decompilationDict = new SortedDictionary<int, string>();
+                    string decompJsonString = await NexusSyncTask($"[\"oxide_retrieve\", \"ghidra_decmap\", [\"{binary.oid}\"], {{}}]");
+                    if (decompJsonString != null) 
+                    {
+                        JsonData decompJson = JsonMapper.ToObject(decompJsonString)["decompile"];
+                        foreach (KeyValuePair<string, JsonData> item in decompJson)
+                        {
+                            int offset = Int32.Parse(item.Key);
+                            for (int lineIdx = 0; lineIdx < item.Value["line"].Count; lineIdx++)
+                            {
+                                string line = (string)(item.Value["line"][lineIdx]);
+                                int split = line.IndexOf(": ");
+                                string lineNoStr = line.Substring(0, split);
+                                string code = line.Substring(split + 2);
+                                // Debug.Log($"LINE: {lineNoStr} || CODE: {code}");
+                                int lineNo = Int32.Parse(lineNoStr);
+                                binary.decompilationDict[lineNo] = code;
+                            }
+                        }
+                    }
+                    else 
+                    {
+                        binary.decompilationDict[0] = "ERROR";
+                    }
+                }
+ 
+                Debug.Log($"=== For binary {binary.name}: {binary.decompilationDict.Keys.Count} lines of decompiled code.");
                 return binary; 
             });
         }

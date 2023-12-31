@@ -79,6 +79,7 @@ namespace PUL
         public SortedDictionary<int, OxideInstruction> instructionDict { get; set; }
         public SortedDictionary<int, OxideFunction> functionDict { get; set; }
         public SortedDictionary<int, OxideBasicBlock> basicBlockDict { get; set; }
+        public SortedDictionary<int, string> decompilationDict  { get; set; }
 
         // Fields used by DisassemblyFormatter. Not currently in use.
         // public IList<string> originalPaths { get; set; }
@@ -89,7 +90,8 @@ namespace PUL
         public OxideBinary(string oid, string name, string size, 
         SortedDictionary<int, OxideInstruction> instructionDict, 
         SortedDictionary<int, OxideFunction> functionDict, 
-        SortedDictionary<int, OxideBasicBlock> basicBlockDict)
+        SortedDictionary<int, OxideBasicBlock> basicBlockDict,
+        SortedDictionary<int, string> decompilationDict)
         {
             this.oid = oid;
             this.name = name;
@@ -97,6 +99,7 @@ namespace PUL
             this.instructionDict = instructionDict;
             this.functionDict = functionDict;
             this.basicBlockDict = basicBlockDict;
+            this.decompilationDict = decompilationDict;
         }
 
         public override string ToString()
