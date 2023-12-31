@@ -187,25 +187,6 @@ namespace PUL
                     }
                 }
 
-                // Pull the function info
-                if (binary.functionDict == null)
-                {
-                    binary.functionDict = new SortedDictionary<int, OxideFunction>();
-                    string functionsJsonString = await NexusSyncTask("[\"oxide_get_function_info\", \"" + binary.oid + "\"]");
-                    if (functionsJsonString != null) 
-                    {
-                        JsonData functionsJson = JsonMapper.ToObject(functionsJsonString)[binary.oid];
-                        foreach (KeyValuePair<string, JsonData> item in functionsJson)
-                        {
-                            int key = (int)(item.Value["offset"]);
-                            string name = (string)(item.Key);
-                            string offset = $"{item.Value["offset"]}";
-                            string signature = (string)(item.Value["signature"]);
-                            binary.functionDict[key] = new OxideFunction(name, offset, signature, null);
-                        }
-                    }
-                }
-
                 // Pull the basic block info
                 if (binary.basicBlockDict == null)
                 {
@@ -232,41 +213,45 @@ namespace PUL
                     }
                 }
 
-                // Annotate which basic blocks belong to which functions
-                // First, find at which addresses each function starts and (notionally) ends.
-                // Build a temporary Dictionary with this info
-                // TODO: (maybe) save this info in the binary object 
-                Dictionary<OxideFunction, IList<int>> funcStartEndDict = new Dictionary<OxideFunction, IList<int>>();
-                List<OxideFunction> tmpFuncList = new List<OxideFunction>(binary.functionDict.Values);
-                int numFuncs = tmpFuncList.Count;
-                for (int currFunc = 0; currFunc < numFuncs; currFunc++)
+                // Pull the function info
+                if (binary.functionDict == null)
                 {
-                    OxideFunction func = tmpFuncList[currFunc];
-                    func.basicBlockDict = new SortedDictionary<int, OxideBasicBlock>();
-                    int funcStart = Int32.Parse(func.offset);
-                    int funcEnd = Int32.MaxValue;
-                    if (currFunc < (numFuncs - 1))
+                    binary.functionDict = new SortedDictionary<int, OxideFunction>();
+                    string functionsJsonString = await NexusSyncTask($"[\"oxide_retrieve\", \"function_extract\", [\"{binary.oid}\"], {{}}]");
+                    if (functionsJsonString != null) 
                     {
-                        funcEnd = Int32.Parse(tmpFuncList[currFunc + 1].offset) - 1;
-                    }
-                    funcStartEndDict[func] = new List<int>(){ funcStart, funcEnd };
-                    // Debug.Log($"##### Func {func.offset}: {funcStart}, {funcEnd}");
-                }
-                // Next, find which basic blocks fit within each function and record in func objects
-                // using a terrible double loop (at least the inner loop is the smaller one!)
-                foreach (KeyValuePair<int, OxideBasicBlock> blockItem in binary.basicBlockDict)
-                {
-                    int blockStart = blockItem.Key;
-                    foreach (KeyValuePair<OxideFunction, IList<int>> funcItem in funcStartEndDict)
-                    {
-                        OxideFunction func = funcItem.Key;
-                        int funcStart = funcItem.Value[0];
-                        int funcEnd = funcItem.Value[1];
-                        if ((funcStart <= blockStart) && (blockStart <= funcEnd))
+                        JsonData functionsJson = JsonMapper.ToObject(functionsJsonString);
+                        foreach (KeyValuePair<string, JsonData> item in functionsJson)
                         {
-                            func.basicBlockDict[blockItem.Key] = blockItem.Value;
-                            // Debug.Log($"##### Func {func.offset}, {funcStart}, {funcEnd} has basic block {blockStart}");
-                            break;
+                            // TODO: Skip functions with null starting offset for now;
+                            // figure out later what to do with them... (have to move away from
+                            // indexing functions by offset).
+                            // This is common in ELF binaries.
+                            if (item.Value["start"] == null) continue;
+
+                            int functionDictKey = (int)(item.Value["start"]); // offset ("start") is the dict key
+                            string name = (string)(item.Key);
+                            string offset = $"{item.Value["start"]}";
+                            string vaddr = (string)(item.Value["vaddr"]);
+                            string retType = (string)(item.Value["retType"]);
+                            string signature = (string)(item.Value["signature"]);
+                            bool returning = ((string)(item.Value["returning"]) == "true");
+
+                            SortedDictionary<int, OxideBasicBlock> basicBlockDict = new SortedDictionary<int, OxideBasicBlock>();
+                            for (int blockIdx = 0; blockIdx < item.Value["blocks"].Count; blockIdx++)
+                            {
+                                int blockOffset = (int)item.Value["blocks"][blockIdx];
+                                OxideBasicBlock oxideBasicBlock = binary.basicBlockDict[blockOffset];
+                                basicBlockDict[blockOffset] = oxideBasicBlock;
+                            }
+
+                            IList<string> paramsList = new List<string>();
+                            for (int parmIdx = 0; parmIdx < item.Value["params"].Count; parmIdx++)
+                            {
+                                paramsList.Add((string)item.Value["params"][parmIdx]);
+                            }
+
+                            binary.functionDict[functionDictKey] = new OxideFunction(name, offset, vaddr, basicBlockDict, paramsList, retType, signature, returning);
                         }
                     }
                 }

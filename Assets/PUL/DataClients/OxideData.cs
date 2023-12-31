@@ -113,17 +113,26 @@ namespace PUL
     public class OxideFunction
     {
         public string name { get; set; }   
-        public string offset { get; set; }
-        public string signature { get; set; }
+        public string offset { get; set; }  // aka "start" 
+        public string vaddr { get; set; }   
         public SortedDictionary<int, OxideBasicBlock> basicBlockDict { get; set; }
+        public IList<string> paramsList { get; set; } // aka "params" but that's a keyword in C#
+        public string retType { get; set; }   
+        public string signature { get; set; }
+        public bool returning { get; set; }
 
-        public OxideFunction(string name, string offset, string signature, 
-        SortedDictionary<int, OxideBasicBlock> basicBlockDict)
+        public OxideFunction(string name, string offset, string vaddr, 
+        SortedDictionary<int, OxideBasicBlock> basicBlockDict, IList<string> paramsList,
+        string retType, string signature, bool returning)
         {
             this.name = name;
             this.offset = offset;
-            this.signature = signature;
+            this.vaddr = vaddr;
             this.basicBlockDict = basicBlockDict;
+            this.paramsList = paramsList;
+            this.retType = retType;
+            this.signature = signature;
+            this.returning = returning;
         }
 
         public override string ToString()
