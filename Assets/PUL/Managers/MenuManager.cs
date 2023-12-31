@@ -326,7 +326,7 @@ namespace PUL
             statusText.text = $"Retrieving strings for {selectedBinary.name}";
 
             // Get the info
-            string contentString = await GameManager.nexusClient.RetrieveTextForArbitraryModule("strings", selectedBinary.oid, "{}");
+            string contentString = await GameManager.nexusClient.RetrieveTextForArbitraryModule("strings", selectedBinary.oid, "{}", true);
 
             // Make a new slate
             GameObject slate = Instantiate(slatePrefab, new Vector3(0.82f, 0, 0.77f), Quaternion.identity);
@@ -358,7 +358,7 @@ namespace PUL
             statusText.text = $"Retrieving file stats for {selectedBinary.name}";
 
             // Get the info
-            string contentString = await GameManager.nexusClient.RetrieveTextForArbitraryModule("file_stats", selectedBinary.oid, "{}");
+            string contentString = await GameManager.nexusClient.RetrieveTextForArbitraryModule("file_stats", selectedBinary.oid, "{}", true);
 
             // Make a new slate
             GameObject slate = Instantiate(slatePrefab, new Vector3(0.82f, 0, 0.77f), Quaternion.identity);

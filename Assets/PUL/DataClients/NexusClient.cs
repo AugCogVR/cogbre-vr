@@ -277,7 +277,7 @@ namespace PUL
         }
 
         // Given an Oxide module name and an OID, run the module on the OID and return the results as a string.
-        public async Task<string> RetrieveTextForArbitraryModule(string moduleName, string oid, string parameters)
+        public async Task<string> RetrieveTextForArbitraryModule(string moduleName, string oid, string parameters, bool firstOIDOnly)
         {
             // This async approach courtesy of https://stackoverflow.com/questions/25295166/async-method-is-blocking-ui-thread-on-which-it-is-executing
             return await Task.Run<string>(async () =>
@@ -288,7 +288,8 @@ namespace PUL
 
                 if (retrievedJsonString != null) 
                 {
-                    JsonData retrievedJson = JsonMapper.ToObject(retrievedJsonString)[oid];
+                    JsonData retrievedJson = JsonMapper.ToObject(retrievedJsonString);
+                    if (firstOIDOnly) retrievedJson = retrievedJson[oid];
                     foreach (KeyValuePair<string, JsonData> item in retrievedJson)
                     {
                         returnMe += $"{item.Key}: {item.Value.ToString()}\n";
