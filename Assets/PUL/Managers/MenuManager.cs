@@ -31,6 +31,8 @@ namespace PUL
 
         public GameObject functionDisassemblyButton;
 
+        public GameObject functionDecompilationButton;
+
         public TextMeshPro statusText;
 
         //refers to the menu button prefabs that will be instantiated on the menu.
@@ -141,6 +143,10 @@ namespace PUL
             fdbuttonFunction.TouchBegin.AddListener(() => FunctionDisassemblyButtonCallback());
             Interactable fddistanceInteract = functionDisassemblyButton.GetComponent<Interactable>();
             fddistanceInteract.OnClick.AddListener(() => FunctionDisassemblyButtonCallback());
+            PressableButtonHoloLens2 fd2buttonFunction = functionDecompilationButton.GetComponent<PressableButtonHoloLens2>();
+            fd2buttonFunction.TouchBegin.AddListener(() => FunctionDecompilationButtonCallback());
+            Interactable fd2distanceInteract = functionDecompilationButton.GetComponent<Interactable>();
+            fd2distanceInteract.OnClick.AddListener(() => FunctionDecompilationButtonCallback());
 
             statusText.text = defaultStatusText;
             isBusy = false;
@@ -230,7 +236,6 @@ namespace PUL
             isBusy = false;
         }
 
-
         public async void BinaryButtonCallback(OxideBinary binary, GameObject binaryButton)
         {
             if (isBusy)
@@ -267,9 +272,6 @@ namespace PUL
 
             // Ensure the collection info is populated, now that it is selected
             binary = await GameManager.nexusClient.EnsureBinaryInfo(binary);
-
-            // TEMPORARY!!!!  Force decompilation and grab info
-            binary = await GameManager.nexusClient.EnsureBinaryDecompilation(binary);
 
             // Build buttons without blocking the UI
             StartCoroutine(BinaryButtonCallbackCoroutine(binary));
@@ -443,6 +445,54 @@ namespace PUL
                     count++;
                 }
                 contentTMP.text += $"<color=#000000>------------------------------------\n"; // separate blocks
+                if (count > 100) break;  // ONLY USE FIRST FEW INSTRUCTIONS TO MAKE TESTING BEARABLE
+
+                yield return new WaitForEndOfFrame(); // yield after each block instead of each instruction
+            }
+            statusText.text = defaultStatusText;
+            isBusy = false;
+        }
+
+        public async void FunctionDecompilationButtonCallback()
+        {
+            if (isBusy)
+            {
+                statusText.text = busyText;
+                return;
+            }
+            if (selectedFunction == null)
+            {
+                statusText.text = "<color=#FF0000>Please select a function first!";
+                return;
+            }
+            isBusy = true;
+
+            // Tell the user we're doing something that won't happen instantaneously
+            statusText.text = $"Retrieving decompilation for {selectedBinary.name} / {selectedFunction.name}";
+
+            // Ensure we have the decompilation for this binary
+            selectedBinary = await GameManager.nexusClient.EnsureBinaryDecompilation(selectedBinary);
+
+            // Build text without blocking the UI
+            StartCoroutine(FunctionDecompilationButtonCallbackCoroutine(selectedBinary, selectedFunction));
+        }
+
+        IEnumerator FunctionDecompilationButtonCallbackCoroutine(OxideBinary binary, OxideFunction function)
+        {
+            // Make a new slate
+            GameObject slate = Instantiate(slatePrefab, new Vector3(0.82f, 0, 0.77f), Quaternion.identity);
+            slateList.Add(slate);
+            TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
+            TextMeshPro contentTMP = slate.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
+            titleBarTMP.text = $"{binary.name} DECOMPILATION (ENTIRE BINARY FOR NOW)";
+            contentTMP.text = "";
+
+            // Walk through decompilation and create text display
+            int count = 0;
+            foreach (KeyValuePair<int, string> item in binary.decompilationDict)
+            {
+                contentTMP.text += $"{item.Key}: {item.Value}\n";
+                count++;
                 if (count > 100) break;  // ONLY USE FIRST FEW INSTRUCTIONS TO MAKE TESTING BEARABLE
 
                 yield return new WaitForEndOfFrame(); // yield after each block instead of each instruction
