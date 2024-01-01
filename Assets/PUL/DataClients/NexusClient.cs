@@ -144,7 +144,7 @@ namespace PUL
 
                         // Build binary object with missing info. We'll fill it in 
                         // if user ever selects this binary.
-                        OxideBinary binary = new OxideBinary(oid, binaryNameList[0], size, null, null, null, null);                    
+                        OxideBinary binary = new OxideBinary(oid, binaryNameList[0], size);
                         // -> Log binary
                         binaryList.Add(binary);
                     }
@@ -155,13 +155,12 @@ namespace PUL
             });
         }
 
-        // Pull all the info for a binary from Oxide if not already populated. 
+        // Pull (almost) all the info for a binary from Oxide if not already populated. 
         // Includes disassembly but NOT decompilation -- that's in another method.
         // This approach lets us pull the info on an as-needed basis 
         // (we'll never pull it for a binary no one selects).
         public async Task<OxideBinary> EnsureBinaryInfo(OxideBinary binary)
         {
-            // This async approach courtesy of https://stackoverflow.com/questions/25295166/async-method-is-blocking-ui-thread-on-which-it-is-executing
             return await Task.Run<OxideBinary>(async () =>
             {
                 // Pull the disassembly into a dict of instructions, keyed by offset
@@ -174,17 +173,17 @@ namespace PUL
                         JsonData disassemblyJson = JsonMapper.ToObject(disassemblyJsonString)[binary.oid]["instructions"];
                         foreach (KeyValuePair<string, JsonData> item in disassemblyJson)
                         {
-                            OxideInstruction oxideInstruction = new OxideInstruction((string)(item.Key));
+                            // Create new instruction object and add to dictionary
+                            string offset = (string)(item.Key);
+                            string str = (string)(item.Value["str"]);
+                            OxideInstruction oxideInstruction = new OxideInstruction(offset, str);
+                            int instructionDictKey = Int32.Parse(item.Key);
+                            binary.instructionDict[instructionDictKey] = oxideInstruction;
+
+                            // Set additional values 
                             oxideInstruction.mnemonic = (string)(item.Value["mnemonic"]);
                             oxideInstruction.op_str = (string)(item.Value["op_str"]);
-                            oxideInstruction.str = (string)(item.Value["str"]);
-                            int key = Int32.Parse(item.Key);
-                            binary.instructionDict[key] = oxideInstruction;
                         }
-                    }
-                    else 
-                    {
-                        binary.instructionDict[0] = new OxideInstruction("0");
                     }
                 }
 
@@ -198,18 +197,23 @@ namespace PUL
                         JsonData basicBlocksJson = JsonMapper.ToObject(basicBlocksJsonString)[binary.oid];
                         foreach (KeyValuePair<string, JsonData> item in basicBlocksJson)
                         {
-                            List<string> instructionAddressList = new List<string>();
+                            // Create new basic block object and add to dictionary
+                            string offset = item.Key;
+                            OxideBasicBlock oxideBasicBlock = new OxideBasicBlock(offset);
+                            int basicBlockDictKey = Int32.Parse(item.Key);
+                            binary.basicBlockDict[basicBlockDictKey] = oxideBasicBlock;
+
+                            // Set additional values
+                            oxideBasicBlock.instructionAddressList = new List<string>();
                             foreach (JsonData addr in item.Value["members"])
                             {
-                                instructionAddressList.Add($"{addr}");
+                                oxideBasicBlock.instructionAddressList.Add($"{addr}");
                             }
-                            List<string> destinationAddressList = new List<string>();
+                            oxideBasicBlock.destinationAddressList = new List<string>();
                             foreach (JsonData addr in item.Value["dests"])
                             {
-                                destinationAddressList.Add($"{addr}");
+                                oxideBasicBlock.destinationAddressList.Add($"{addr}");
                             }
-                            int key = Int32.Parse(item.Key);
-                            binary.basicBlockDict[key] = new OxideBasicBlock(item.Key, instructionAddressList, destinationAddressList);
                         }
                     }
                 }
@@ -230,29 +234,29 @@ namespace PUL
                             // This is common in ELF binaries.
                             if (item.Value["start"] == null) continue;
 
-                            int functionDictKey = (int)(item.Value["start"]); // offset ("start") is the dict key
+                            // Get initial values, create new function object, add to dictionary
                             string name = (string)(item.Key);
                             string offset = $"{item.Value["start"]}";
-                            string vaddr = (string)(item.Value["vaddr"]);
-                            string retType = (string)(item.Value["retType"]);
                             string signature = (string)(item.Value["signature"]);
-                            bool returning = ((string)(item.Value["returning"]) == "true");
+                            OxideFunction oxideFunction = new OxideFunction(name, offset, signature);
+                            int functionDictKey = (int)(item.Value["start"]); 
+                            binary.functionDict[functionDictKey] = oxideFunction;
 
-                            SortedDictionary<int, OxideBasicBlock> basicBlockDict = new SortedDictionary<int, OxideBasicBlock>();
-                            for (int blockIdx = 0; blockIdx < item.Value["blocks"].Count; blockIdx++)
+                            // Set additional values
+                            oxideFunction.vaddr = (string)(item.Value["vaddr"]);
+                            oxideFunction.retType = (string)(item.Value["retType"]);
+                            oxideFunction.returning = ((string)(item.Value["returning"]) == "true");
+                            oxideFunction.basicBlockDict = new SortedDictionary<int, OxideBasicBlock>();
+                            foreach (JsonData block in item.Value["blocks"])
                             {
-                                int blockOffset = (int)item.Value["blocks"][blockIdx];
-                                OxideBasicBlock oxideBasicBlock = binary.basicBlockDict[blockOffset];
-                                basicBlockDict[blockOffset] = oxideBasicBlock;
+                                int blockOffset = (int)block;
+                                oxideFunction.basicBlockDict[blockOffset] = binary.basicBlockDict[blockOffset];
                             }
-
-                            IList<string> paramsList = new List<string>();
-                            for (int parmIdx = 0; parmIdx < item.Value["params"].Count; parmIdx++)
+                            oxideFunction.paramsList = new List<string>();
+                            foreach (JsonData param in item.Value["params"])
                             {
-                                paramsList.Add((string)item.Value["params"][parmIdx]);
+                                oxideFunction.paramsList.Add($"{param}");
                             }
-
-                            binary.functionDict[functionDictKey] = new OxideFunction(name, offset, vaddr, basicBlockDict, paramsList, retType, signature, returning);
                         }
                     }
                 }
@@ -268,39 +272,40 @@ namespace PUL
             // Make sure we have populated this baseline data of this binary object. 
             binary = await EnsureBinaryInfo(binary);
 
-            // This async approach courtesy of https://stackoverflow.com/questions/25295166/async-method-is-blocking-ui-thread-on-which-it-is-executing
             return await Task.Run<OxideBinary>(async () =>
             {
-                // Pull the decompilation into a dict of code lines, keyed by line number
+                // Pull the decompilation info
                 if (binary.decompilationDict == null)
                 {
-                    binary.decompilationDict = new SortedDictionary<int, string>();
+                    binary.decompilationDict = new SortedDictionary<int, SortedDictionary<int, string>>();
                     string decompJsonString = await NexusSyncTask($"[\"oxide_retrieve\", \"ghidra_decmap\", [\"{binary.oid}\"], {{}}]");
                     if (decompJsonString != null) 
                     {
                         JsonData decompJson = JsonMapper.ToObject(decompJsonString)["decompile"];
+                        // Walk through the offsets collecting decomp lines
                         foreach (KeyValuePair<string, JsonData> item in decompJson)
                         {
+                            // Create line dict for this offset
                             int offset = Int32.Parse(item.Key);
-                            for (int lineIdx = 0; lineIdx < item.Value["line"].Count; lineIdx++)
+                            SortedDictionary<int, string> lineDict = new SortedDictionary<int, string>();
+                            binary.decompilationDict[offset] = lineDict;
+
+                            // Fill line dict
+                            foreach (JsonData lineJson in item.Value["line"])
                             {
-                                string line = (string)(item.Value["line"][lineIdx]);
+                                string line = (string)lineJson;
                                 int split = line.IndexOf(": ");
                                 string lineNoStr = line.Substring(0, split);
                                 string code = line.Substring(split + 2);
                                 // Debug.Log($"LINE: {lineNoStr} || CODE: {code}");
                                 int lineNo = Int32.Parse(lineNoStr);
-                                binary.decompilationDict[lineNo] = code;
+                                lineDict[lineNo] = code;
                             }
                         }
                     }
-                    else 
-                    {
-                        binary.decompilationDict[0] = "ERROR";
-                    }
                 }
  
-                Debug.Log($"=== For binary {binary.name}: {binary.decompilationDict.Keys.Count} lines of decompiled code.");
+                Debug.Log($"=== For binary {binary.name}: {binary.decompilationDict.Keys.Count} instructions with decompiled code.");
                 return binary; 
             });
         }

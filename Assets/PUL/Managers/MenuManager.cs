@@ -434,7 +434,7 @@ namespace PUL
             contentTMP.text = "";
 
             // Walk through each basic block for this function and add instructions to text display
-            int count = 0;
+            // int count = 0;
             foreach (OxideBasicBlock block in function.basicBlockDict.Values)
             {
                 foreach (string instructionAddress in block.instructionAddressList)
@@ -442,10 +442,10 @@ namespace PUL
                     int addr = Int32.Parse(instructionAddress);
                     OxideInstruction insn = binary.instructionDict[addr];
                     contentTMP.text += $"<color=#777777>{insn.offset} <color=#99FF99>{insn.mnemonic} <color=#FFFFFF>{insn.op_str}\n";
-                    count++;
+                    // count++;
                 }
                 contentTMP.text += $"<color=#000000>------------------------------------\n"; // separate blocks
-                if (count > 100) break;  // ONLY USE FIRST FEW INSTRUCTIONS TO MAKE TESTING BEARABLE
+                // if (count > 100) break;  // ONLY USE FIRST FEW INSTRUCTIONS TO MAKE TESTING BEARABLE
 
                 yield return new WaitForEndOfFrame(); // yield after each block instead of each instruction
             }
@@ -484,19 +484,26 @@ namespace PUL
             slateList.Add(slate);
             TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
             TextMeshPro contentTMP = slate.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
-            titleBarTMP.text = $"{binary.name} DECOMPILATION (ENTIRE BINARY FOR NOW)";
+            titleBarTMP.text = $"{function.name} Decompilation";
             contentTMP.text = "";
 
             // Walk through decompilation and create text display
-            int count = 0;
-            foreach (KeyValuePair<int, string> item in binary.decompilationDict)
+            foreach (OxideBasicBlock block in function.basicBlockDict.Values)
             {
-                contentTMP.text += $"{item.Key}: {item.Value}\n";
-                count++;
-                if (count > 100) break;  // ONLY USE FIRST FEW INSTRUCTIONS TO MAKE TESTING BEARABLE
-
+                foreach (string instructionAddress in block.instructionAddressList)
+                {
+                    int offset = Int32.Parse(instructionAddress);
+                    if (binary.decompilationDict.ContainsKey(offset))
+                    {
+                        foreach (KeyValuePair<int, string> item in binary.decompilationDict[offset])
+                        {
+                            contentTMP.text += $"{offset} || {item.Key}: {item.Value}\n";
+                        }
+                    }
+                }
                 yield return new WaitForEndOfFrame(); // yield after each block instead of each instruction
             }
+
             statusText.text = defaultStatusText;
             isBusy = false;
         }

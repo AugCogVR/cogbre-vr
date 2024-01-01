@@ -76,10 +76,18 @@ namespace PUL
         public string oid { get; set; }
         public string name { get; set; }
         public string size { get; set; }
-        public SortedDictionary<int, OxideInstruction> instructionDict { get; set; }
+
+        // Dictionary of functions, indexed by starting offset
         public SortedDictionary<int, OxideFunction> functionDict { get; set; }
+
+        // Dictionary of basic blocks, indexed by starting offset
         public SortedDictionary<int, OxideBasicBlock> basicBlockDict { get; set; }
-        public SortedDictionary<int, string> decompilationDict  { get; set; }
+
+        // Dictionary of disassembled instructions, indexed by offset
+        public SortedDictionary<int, OxideInstruction> instructionDict { get; set; }
+
+        // Dictionary of decompiled code for this function, indexed by offset and line number. 
+        public SortedDictionary<int, SortedDictionary<int, string>> decompilationDict { get; set; }
 
         // Fields used by DisassemblyFormatter. Not currently in use.
         // public IList<string> originalPaths { get; set; }
@@ -87,19 +95,11 @@ namespace PUL
         // public Dictionary<string, string> dissasembly { get; set; }
         // public string dissasemblyOut { get; set; }
 
-        public OxideBinary(string oid, string name, string size, 
-        SortedDictionary<int, OxideInstruction> instructionDict, 
-        SortedDictionary<int, OxideFunction> functionDict, 
-        SortedDictionary<int, OxideBasicBlock> basicBlockDict,
-        SortedDictionary<int, string> decompilationDict)
+        public OxideBinary(string oid, string name, string size)
         {
             this.oid = oid;
             this.name = name;
             this.size = size;
-            this.instructionDict = instructionDict;
-            this.functionDict = functionDict;
-            this.basicBlockDict = basicBlockDict;
-            this.decompilationDict = decompilationDict;
         }
 
         public override string ToString()
@@ -119,23 +119,16 @@ namespace PUL
         public string offset { get; set; }  // aka "start" 
         public string vaddr { get; set; }   
         public SortedDictionary<int, OxideBasicBlock> basicBlockDict { get; set; }
-        public IList<string> paramsList { get; set; } // aka "params" but that's a keyword in C#
+        public IList<string> paramsList { get; set; } 
         public string retType { get; set; }   
         public string signature { get; set; }
         public bool returning { get; set; }
 
-        public OxideFunction(string name, string offset, string vaddr, 
-        SortedDictionary<int, OxideBasicBlock> basicBlockDict, IList<string> paramsList,
-        string retType, string signature, bool returning)
+        public OxideFunction(string name, string offset, string signature)
         {
             this.name = name;
             this.offset = offset;
-            this.vaddr = vaddr;
-            this.basicBlockDict = basicBlockDict;
-            this.paramsList = paramsList;
-            this.retType = retType;
             this.signature = signature;
-            this.returning = returning;
         }
 
         public override string ToString()
@@ -155,11 +148,9 @@ namespace PUL
         public IList<string> instructionAddressList { get; set; }   
         public IList<string> destinationAddressList { get; set; }
 
-        public OxideBasicBlock(string offset, IList<string> instructionAddressList, IList<string> destinationAddressList)
+        public OxideBasicBlock(string offset)
         {
             this.offset = offset;
-            this.instructionAddressList = instructionAddressList;
-            this.destinationAddressList = destinationAddressList;
         }
 
         public override string ToString()
@@ -181,10 +172,11 @@ namespace PUL
         public string op_str { get; set; }
         // TODO: Add more fields as needed! See commented-out code below.
 
-        // Constructor only takes offset -- others fields will be set externally
-        public OxideInstruction(string offset)
+        // Constructor only takes offset and string representation -- others fields will be set externally
+        public OxideInstruction(string offset, string str)
         {
             this.offset = offset;
+            this.str = str;
         }
 
         public override string ToString()
