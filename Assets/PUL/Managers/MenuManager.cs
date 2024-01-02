@@ -488,21 +488,35 @@ namespace PUL
             contentTMP.text = "";
 
             // Walk through decompilation and create text display
-            foreach (OxideBasicBlock block in function.basicBlockDict.Values)
+            foreach (KeyValuePair<int, OxideDecompLine> item in function.decompDict)
             {
-                foreach (string instructionAddress in block.instructionAddressList)
+                contentTMP.text += $"<color=#777777>{item.Key}: <color=#FFFFFF>{item.Value.code}";
+                if (item.Value.associatedOffsets != null)
                 {
-                    int offset = Int32.Parse(instructionAddress);
-                    if (binary.decompilationDict.ContainsKey(offset))
+                    foreach (int offset in item.Value.associatedOffsets)
                     {
-                        foreach (KeyValuePair<int, string> item in binary.decompilationDict[offset])
-                        {
-                            contentTMP.text += $"{offset} || {item.Key}: {item.Value}\n";
-                        }
+                        contentTMP.text += $"<color=#AAAA00> |{offset}|";        
                     }
                 }
-                yield return new WaitForEndOfFrame(); // yield after each block instead of each instruction
+                contentTMP.text += "\n";
+                yield return new WaitForEndOfFrame(); 
             }
+
+            // foreach (OxideBasicBlock block in function.basicBlockDict.Values)
+            // {
+            //     foreach (string instructionAddress in block.instructionAddressList)
+            //     {
+            //         int offset = Int32.Parse(instructionAddress);
+            //         if (binary.decompMapDict.ContainsKey(offset))
+            //         {
+            //             foreach (KeyValuePair<int, OxideDecompLine> item in binary.decompMapDict[offset])
+            //             {
+            //                 contentTMP.text += $"{offset} || {item.Key}: {item.Value.code}\n";
+            //             }
+            //         }
+            //     }
+                // yield return new WaitForEndOfFrame(); // yield after each block instead of each instruction
+            // }
 
             statusText.text = defaultStatusText;
             isBusy = false;

@@ -74,7 +74,9 @@ namespace PUL
     public class OxideBinary
     {
         public string oid { get; set; }
+
         public string name { get; set; }
+
         public string size { get; set; }
 
         // Dictionary of functions, indexed by starting offset
@@ -86,8 +88,8 @@ namespace PUL
         // Dictionary of disassembled instructions, indexed by offset
         public SortedDictionary<int, OxideInstruction> instructionDict { get; set; }
 
-        // Dictionary of decompiled code for this function, indexed by offset and line number. 
-        public SortedDictionary<int, SortedDictionary<int, string>> decompilationDict { get; set; }
+        // Dictionary of decompiled code for this whole binary, indexed by offset and line number. 
+        public SortedDictionary<int, SortedDictionary<int, OxideDecompLine>> decompMapDict { get; set; }
 
         // Fields used by DisassemblyFormatter. Not currently in use.
         // public IList<string> originalPaths { get; set; }
@@ -116,13 +118,24 @@ namespace PUL
     public class OxideFunction
     {
         public string name { get; set; }   
+
         public string offset { get; set; }  // aka "start" 
+
         public string vaddr { get; set; }   
+
+        // Basic blocks associated with only this function, indexed by offset
         public SortedDictionary<int, OxideBasicBlock> basicBlockDict { get; set; }
+
         public IList<string> paramsList { get; set; } 
+
         public string retType { get; set; }   
+
         public string signature { get; set; }
+
         public bool returning { get; set; }
+
+        // Decomp lines associated with only this function, indexed by line number
+        public SortedDictionary<int, OxideDecompLine> decompDict { get; set; }
 
         public OxideFunction(string name, string offset, string signature)
         {
@@ -188,7 +201,7 @@ namespace PUL
             return output;
         }
     }
-
+    
     // [System.Serializable]
     // public class Operand
     // {
@@ -223,4 +236,29 @@ namespace PUL
     //     public int modrm;
     //     public List<Operand> operands;
     // }
+
+    [System.Serializable]
+    public class OxideDecompLine
+    {
+        public string code { get; set; }   
+
+        public IList<int> associatedOffsets { get; set; }
+
+        // Constructor only takes code -- others fields will be set externally
+        public OxideDecompLine(string code)
+        {
+            this.code = code;
+            this.associatedOffsets = null;
+        }
+
+        public override string ToString()
+        {
+            string output = $"Code: {code}";
+
+            // TODO: add meaningful output for remaining fields
+
+            return output;
+        }
+    }
+
 }

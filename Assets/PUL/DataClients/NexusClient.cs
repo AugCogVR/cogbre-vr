@@ -163,9 +163,9 @@ namespace PUL
         {
             return await Task.Run<OxideBinary>(async () =>
             {
-                // Pull the disassembly into a dict of instructions, keyed by offset
                 if (binary.instructionDict == null)
                 {
+                    // Pull the disassembly into a dict of instructions, keyed by offset
                     binary.instructionDict = new SortedDictionary<int, OxideInstruction>();
                     string disassemblyJsonString = await NexusSyncTask("[\"oxide_get_disassembly\", \"" + binary.oid + "\"]");
                     if (disassemblyJsonString != null) 
@@ -176,20 +176,20 @@ namespace PUL
                             // Create new instruction object and add to dictionary
                             string offset = (string)(item.Key);
                             string str = (string)(item.Value["str"]);
-                            OxideInstruction oxideInstruction = new OxideInstruction(offset, str);
+                            OxideInstruction instruction = new OxideInstruction(offset, str);
                             int instructionDictKey = Int32.Parse(item.Key);
-                            binary.instructionDict[instructionDictKey] = oxideInstruction;
+                            binary.instructionDict[instructionDictKey] = instruction;
 
                             // Set additional values 
-                            oxideInstruction.mnemonic = (string)(item.Value["mnemonic"]);
-                            oxideInstruction.op_str = (string)(item.Value["op_str"]);
+                            instruction.mnemonic = (string)(item.Value["mnemonic"]);
+                            instruction.op_str = (string)(item.Value["op_str"]);
                         }
                     }
                 }
 
-                // Pull the basic block info
                 if (binary.basicBlockDict == null)
                 {
+                    // Pull the basic block info
                     binary.basicBlockDict = new SortedDictionary<int, OxideBasicBlock>();
                     string basicBlocksJsonString = await NexusSyncTask("[\"oxide_get_basic_blocks\", \"" + binary.oid + "\"]");
                     if (basicBlocksJsonString != null) 
@@ -199,28 +199,28 @@ namespace PUL
                         {
                             // Create new basic block object and add to dictionary
                             string offset = item.Key;
-                            OxideBasicBlock oxideBasicBlock = new OxideBasicBlock(offset);
+                            OxideBasicBlock basicBlock = new OxideBasicBlock(offset);
                             int basicBlockDictKey = Int32.Parse(item.Key);
-                            binary.basicBlockDict[basicBlockDictKey] = oxideBasicBlock;
+                            binary.basicBlockDict[basicBlockDictKey] = basicBlock;
 
                             // Set additional values
-                            oxideBasicBlock.instructionAddressList = new List<string>();
+                            basicBlock.instructionAddressList = new List<string>();
                             foreach (JsonData addr in item.Value["members"])
                             {
-                                oxideBasicBlock.instructionAddressList.Add($"{addr}");
+                                basicBlock.instructionAddressList.Add($"{addr}");
                             }
-                            oxideBasicBlock.destinationAddressList = new List<string>();
+                            basicBlock.destinationAddressList = new List<string>();
                             foreach (JsonData addr in item.Value["dests"])
                             {
-                                oxideBasicBlock.destinationAddressList.Add($"{addr}");
+                                basicBlock.destinationAddressList.Add($"{addr}");
                             }
                         }
                     }
                 }
 
-                // Pull the function info
                 if (binary.functionDict == null)
                 {
+                    // Pull the function info
                     binary.functionDict = new SortedDictionary<int, OxideFunction>();
                     string functionsJsonString = await NexusSyncTask($"[\"oxide_retrieve\", \"function_extract\", [\"{binary.oid}\"], {{}}]");
                     if (functionsJsonString != null) 
@@ -238,24 +238,24 @@ namespace PUL
                             string name = (string)(item.Key);
                             string offset = $"{item.Value["start"]}";
                             string signature = (string)(item.Value["signature"]);
-                            OxideFunction oxideFunction = new OxideFunction(name, offset, signature);
+                            OxideFunction function = new OxideFunction(name, offset, signature);
                             int functionDictKey = (int)(item.Value["start"]); 
-                            binary.functionDict[functionDictKey] = oxideFunction;
+                            binary.functionDict[functionDictKey] = function;
 
                             // Set additional values
-                            oxideFunction.vaddr = (string)(item.Value["vaddr"]);
-                            oxideFunction.retType = (string)(item.Value["retType"]);
-                            oxideFunction.returning = ((string)(item.Value["returning"]) == "true");
-                            oxideFunction.basicBlockDict = new SortedDictionary<int, OxideBasicBlock>();
+                            function.vaddr = (string)(item.Value["vaddr"]);
+                            function.retType = (string)(item.Value["retType"]);
+                            function.returning = ((string)(item.Value["returning"]) == "true");
+                            function.basicBlockDict = new SortedDictionary<int, OxideBasicBlock>();
                             foreach (JsonData block in item.Value["blocks"])
                             {
                                 int blockOffset = (int)block;
-                                oxideFunction.basicBlockDict[blockOffset] = binary.basicBlockDict[blockOffset];
+                                function.basicBlockDict[blockOffset] = binary.basicBlockDict[blockOffset];
                             }
-                            oxideFunction.paramsList = new List<string>();
+                            function.paramsList = new List<string>();
                             foreach (JsonData param in item.Value["params"])
                             {
-                                oxideFunction.paramsList.Add($"{param}");
+                                function.paramsList.Add($"{param}");
                             }
                         }
                     }
@@ -274,10 +274,10 @@ namespace PUL
 
             return await Task.Run<OxideBinary>(async () =>
             {
-                // Pull the decompilation info
-                if (binary.decompilationDict == null)
+                if (binary.decompMapDict == null)
                 {
-                    binary.decompilationDict = new SortedDictionary<int, SortedDictionary<int, string>>();
+                    // Pull the decompilation info for the entire binary
+                    binary.decompMapDict = new SortedDictionary<int, SortedDictionary<int, OxideDecompLine>>();
                     string decompJsonString = await NexusSyncTask($"[\"oxide_retrieve\", \"ghidra_decmap\", [\"{binary.oid}\"], {{}}]");
                     if (decompJsonString != null) 
                     {
@@ -287,25 +287,68 @@ namespace PUL
                         {
                             // Create line dict for this offset
                             int offset = Int32.Parse(item.Key);
-                            SortedDictionary<int, string> lineDict = new SortedDictionary<int, string>();
-                            binary.decompilationDict[offset] = lineDict;
+                            SortedDictionary<int, OxideDecompLine> lineDict = new SortedDictionary<int, OxideDecompLine>();
+                            binary.decompMapDict[offset] = lineDict;
 
                             // Fill line dict
                             foreach (JsonData lineJson in item.Value["line"])
                             {
                                 string line = (string)lineJson;
                                 int split = line.IndexOf(": ");
+                                OxideDecompLine decompLine = new OxideDecompLine(line.Substring(split + 2));
                                 string lineNoStr = line.Substring(0, split);
-                                string code = line.Substring(split + 2);
-                                // Debug.Log($"LINE: {lineNoStr} || CODE: {code}");
                                 int lineNo = Int32.Parse(lineNoStr);
-                                lineDict[lineNo] = code;
+                                lineDict[lineNo] = decompLine;
+                            }
+                        }
+                    }
+
+                    // Now, associate decomp lines with functions. 
+                    // The data returned by Nexus/Oxide/Ghidra only tells us the decomp code
+                    // for each offset within the entire binary. Now we have to go through
+                    // and find out what offsets are associated with each function
+                    // in order to determine what code lines are associated with each function. So... 
+                    // For each function...
+                    foreach (OxideFunction function in binary.functionDict.Values)
+                    {
+                        function.decompDict = new SortedDictionary<int, OxideDecompLine>();
+
+                        // For each basic block...                        
+                        foreach (OxideBasicBlock block in function.basicBlockDict.Values)
+                        {
+                            // For each offset in the block...
+                            foreach (string instructionAddress in block.instructionAddressList)
+                            {
+                                // See if that offset has associated decomp lines that we harvested
+                                // in the first half of this function, and add them to 
+                                // decompDict for this function. 
+                                int offset = Int32.Parse(instructionAddress);
+                                if (binary.decompMapDict.ContainsKey(offset))
+                                {
+                                    foreach (KeyValuePair<int, OxideDecompLine> item in binary.decompMapDict[offset])
+                                    {
+                                        int lineNo = item.Key;
+                                        OxideDecompLine decompLine = item.Value;
+                                        function.decompDict[lineNo] = decompLine;
+
+                                        // Also, add this offset to the associatedOffsets list
+                                        // if it's not already there.
+                                        if (decompLine.associatedOffsets == null)
+                                        {
+                                            decompLine.associatedOffsets = new List<int>();
+                                        }
+                                        if (!decompLine.associatedOffsets.Contains(offset))
+                                        {
+                                            decompLine.associatedOffsets.Add(offset);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
                 }
  
-                Debug.Log($"=== For binary {binary.name}: {binary.decompilationDict.Keys.Count} instructions with decompiled code.");
+                Debug.Log($"=== For binary {binary.name}: {binary.decompMapDict.Keys.Count} instructions with decompiled code.");
                 return binary; 
             });
         }
