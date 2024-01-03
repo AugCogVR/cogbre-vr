@@ -19,12 +19,14 @@ Here is a brief list of everything (that we can remember) that you need:
     - [Ghidra](https://ghidra-sre.org/) (currently v10.3.2)
     - and potentially other tools that Oxide leverages
   - These tools have been most extensively tested in Linux (including Windows 11 WSL2 Ubuntu) and MacOS. 
-  - They should work in Windows natively. 
+  - They *should* work in Windows natively. 
 - [cogbre-vr](https://github.com/AugCogVR/cogbre-vr) (latest in repo)
   - Unity (currently v2021.3.4f1)
     - MRTK2 (currently v2.8.3.0)
     - To support VR gear: SteamVR (currently v2.2.3)
     - You don't need VR gear for dev and basic testing
+  - These tools have been most extensively tested in Windows (10/11) and MacOS (simulator mode only). 
+  - They *should* work in Linux natively. 
 - Dev tools: git, VSCode, etc. 
 
 
