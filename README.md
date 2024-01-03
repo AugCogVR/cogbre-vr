@@ -10,8 +10,25 @@ This is a Unity-based front-end to provide an immersive and egocentric experienc
 
 Built and tested with the Unity 2021.3.4f1 LTS editor.
 
+# Getting Started
 
-# Setting up Unity and this app
+Here is a brief list of everything (that we can remember) that you need:
+- [cogbre-nexus](https://github.com/AugCogVR/cogbre-nexus) (latest in repo)
+  - Python 3 and various packages (currently v3.9.16)
+  - [Oxide](https://github.com/Program-Understanding/oxide) (latest in repo)
+    - [Ghidra](https://ghidra-sre.org/) (currently v10.3.2)
+    - and potentially other tools that Oxide leverages
+  - These tools have been most extensively tested in Linux (including Windows 11 WSL2 Ubuntu) and MacOS. 
+  - They should work in Windows natively. 
+- [cogbre-vr](https://github.com/AugCogVR/cogbre-vr) (latest in repo)
+  - Unity (currently v2021.3.4f1)
+    - MRTK2 (currently v2.8.3.0)
+    - To support VR gear: SteamVR (currently v2.2.3)
+    - You don't need VR gear for dev and basic testing
+- Dev tools: git, VSCode, etc. 
+
+
+## Setting up Unity and this app
 
 Download and install Unity Hub and editor version 2021.3.4f1. This project doesn't use modules other than those installed by default. 
 
@@ -22,9 +39,9 @@ Add the project to Unity Hub and open it. Open "SampleScene" from Assets/Scenes.
 Any required packages that aren't included in the baseline Unity installation should be in the project and repo so no additional manual package installations should be required.
 
 
-# VR Device Setup Notes
+## VR Device Setup Notes
 
-## HTC Vive
+### HTC Vive
 
 This app (so far) is designed for the HTC Vive Pro. This is what I had to do to make things work. YMMV.
 
@@ -33,23 +50,6 @@ This app (so far) is designed for the HTC Vive Pro. This is what I had to do to 
 - To add support for HTC Vive controllers, in Unity Project Settings, ensure in XR Plug-in Management -> OpenXR to add Interaction Profile for HTC Vive Controller 
 - If SteamVR insists on a room setup too often, a solution seems to be to manually run Vive Console to start SteamVR before doing VR stuff. See https://steamcommunity.com/app/250820/discussions/0/3040480988282735041/ 
 
-## XR Device Simulator
-
-- When not using the VR hardware, you can use the XR Device Simulator.
-- Refs: 
-  - https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@2.0/manual/xr-device-simulator.html 
-  - https://blog.immersive-insiders.com/xr-simulator/ 
-
-## Switching between VR Hardware and XR Simulator:
-
-### To use hardware: 
-- Enable Open XR: Project Settings -> XR Plug-In Management -> check "Open XR" 
-- Deactivate XR Device Simulator: Hierarchy -> SampleScene -> right click XR Device Simulator -> Toggle Active State (or go to Inspector and uncheck the very first checkbox)
-
-### To use device simulator:
-- Reverse the above
-
-NOTE: Recently, Unity will crash if you start the app configured to use VR Hardware but the hardware is powered off/disconnected. Before some recent change I can't pinpoint, it would gracefully and silently ignore that the hardware was not available and proceed without it. If you figure it out let me know.
 
 
 # Running it
@@ -58,7 +58,7 @@ Set up and start the Nexus: https://github.com/AugCogVR/cogbre-nexus
 
 NOTE: For now, the VR component is hardcoded to look for the server on 127.0.0.1
 
-Load the VR project into Unity, open the main scene, and run it.
+Load the VR project into Unity, open the main scene ("Abstraction 2"), and run it.
 
 
 # Architecture
