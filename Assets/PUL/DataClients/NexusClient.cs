@@ -277,78 +277,96 @@ namespace PUL
                 if (binary.decompMapDict == null)
                 {
                     // Pull the decompilation info for the entire binary
-                    binary.decompMapDict = new SortedDictionary<int, SortedDictionary<int, OxideDecompLine>>();
-                    string decompJsonString = await NexusSyncTask($"[\"oxide_retrieve\", \"ghidra_decmap\", [\"{binary.oid}\"], {{}}]");
+                    string decompJsonString = await NexusSyncTask($"[\"oxide_retrieve\", \"ghidra_decmap\", [\"{binary.oid}\"], {{\"org_by_func\":true}}]");
                     if (decompJsonString != null) 
                     {
                         JsonData decompJson = JsonMapper.ToObject(decompJsonString)["decompile"];
-                        // Walk through the offsets collecting decomp lines
-                        foreach (KeyValuePair<string, JsonData> item in decompJson)
+
+                        // Create the binary-level line dict
+                        binary.decompMapDict = new SortedDictionary<int, SortedDictionary<int, OxideDecompLine>>();
+
+                        // Walk through the functions 
+                        foreach (KeyValuePair<string, JsonData> funcItem in decompJson)
                         {
-                            // Create line dict for this offset
-                            int offset = Int32.Parse(item.Key);
-                            SortedDictionary<int, OxideDecompLine> lineDict = new SortedDictionary<int, OxideDecompLine>();
-                            binary.decompMapDict[offset] = lineDict;
-
-                            // Fill line dict
-                            foreach (JsonData lineJson in item.Value["line"])
+                            string functionName = funcItem.Key;
+                            OxideFunction function = null;
+                            foreach (OxideFunction candidateFunction in binary.functionDict.Values)
                             {
-                                string line = (string)lineJson;
-                                int split = line.IndexOf(": ");
-                                OxideDecompLine decompLine = new OxideDecompLine(line.Substring(split + 2));
-                                string lineNoStr = line.Substring(0, split);
-                                int lineNo = Int32.Parse(lineNoStr);
-                                lineDict[lineNo] = decompLine;
-                            }
-                        }
-                    }
-
-                    // Now, associate decomp lines with functions. 
-                    // The data returned by Nexus/Oxide/Ghidra only tells us the decomp code
-                    // for each offset within the entire binary. Now we have to go through
-                    // and find out what offsets are associated with each function
-                    // in order to determine what code lines are associated with each function. So... 
-                    // For each function...
-                    foreach (OxideFunction function in binary.functionDict.Values)
-                    {
-                        function.decompDict = new SortedDictionary<int, OxideDecompLine>();
-
-                        // For each basic block...                        
-                        foreach (OxideBasicBlock block in function.basicBlockDict.Values)
-                        {
-                            // For each offset in the block...
-                            foreach (string instructionAddress in block.instructionAddressList)
-                            {
-                                // See if that offset has associated decomp lines that we harvested
-                                // in the first half of this function, and add them to 
-                                // decompDict for this function. 
-                                int offset = Int32.Parse(instructionAddress);
-                                if (binary.decompMapDict.ContainsKey(offset))
+                                if (candidateFunction.name == functionName)
                                 {
-                                    foreach (KeyValuePair<int, OxideDecompLine> item in binary.decompMapDict[offset])
-                                    {
-                                        int lineNo = item.Key;
-                                        OxideDecompLine decompLine = item.Value;
-                                        function.decompDict[lineNo] = decompLine;
+                                    function = candidateFunction;
+                                    break;
+                                }
+                            }
+                            if (function == null)
+                            {
+                                Debug.Log($"WARNING: Could not find function object for name {functionName}");
+                                continue;
+                            }
 
-                                        // Also, add this offset to the associatedOffsets list
-                                        // if it's not already there.
-                                        if (decompLine.associatedOffsets == null)
+                            // Create function-level line dict
+                            function.decompDict = new SortedDictionary<int, OxideDecompLine>();
+
+                            // Walk through the offsets
+                            foreach (KeyValuePair<string, JsonData> offsetItem in funcItem.Value)
+                            {
+                                // Get the integer offset. If the key is not a number (e.g., "None")
+                                // just leave it as -1. 
+                                int offset = -1;
+                                try
+                                {
+                                    offset = Int32.Parse(offsetItem.Key);
+                                }
+                                catch (FormatException e) {}
+
+                                foreach (JsonData lineJson in offsetItem.Value["line"])
+                                {
+                                    // Extract the line number and code text 
+                                    string line = (string)lineJson;
+                                    int split = line.IndexOf(": ");
+                                    string lineNoStr = line.Substring(0, split);
+                                    int lineNo = Int32.Parse(lineNoStr);
+                                    string code = line.Substring(split + 2);
+
+                                    // Find the decomp line for this line number. 
+                                    // Create it if not existing.
+                                    OxideDecompLine decompLine = null;
+                                    if (function.decompDict.ContainsKey(lineNo))
+                                    {
+                                        decompLine = function.decompDict[lineNo];
+                                    }
+                                    else
+                                    {
+                                        decompLine = new OxideDecompLine(code);
+                                        function.decompDict[lineNo] = decompLine;
+                                    }
+
+                                    // Create the associated offset list if it doesn't exist already.
+                                    if (decompLine.associatedOffsets == null)
+                                    {
+                                        decompLine.associatedOffsets = new List<int>();                                            
+                                    }
+
+                                    // For meaningful offsets:
+                                    if (offset >= 0)
+                                    {
+                                        // Add the offset to the list of associated offsets
+                                        decompLine.associatedOffsets.Add(offset);
+
+                                        // and add the line to the binary-level dict.
+                                        if (!binary.decompMapDict.ContainsKey(offset))
                                         {
-                                            decompLine.associatedOffsets = new List<int>();
+                                            binary.decompMapDict[offset] = new SortedDictionary<int, OxideDecompLine>();
                                         }
-                                        if (!decompLine.associatedOffsets.Contains(offset))
-                                        {
-                                            decompLine.associatedOffsets.Add(offset);
-                                        }
+                                        binary.decompMapDict[offset][lineNo] = decompLine;
                                     }
                                 }
                             }
                         }
                     }
+
+                    Debug.Log($"=== For binary {binary.name}: {binary.decompMapDict.Keys.Count} instructions with decompiled code.");
                 }
- 
-                Debug.Log($"=== For binary {binary.name}: {binary.decompMapDict.Keys.Count} instructions with decompiled code.");
                 return binary; 
             });
         }
@@ -356,7 +374,6 @@ namespace PUL
         // Given an Oxide module name and an OID, run the module on the OID and return the results as a string.
         public async Task<string> RetrieveTextForArbitraryModule(string moduleName, string oid, string parameters, bool firstOIDOnly)
         {
-            // This async approach courtesy of https://stackoverflow.com/questions/25295166/async-method-is-blocking-ui-thread-on-which-it-is-executing
             return await Task.Run<string>(async () =>
             {
                 string returnMe = "";

@@ -488,9 +488,14 @@ namespace PUL
             contentTMP.text = "";
 
             // Walk through decompilation and create text display
+            int indentLevel = 0;
             foreach (KeyValuePair<int, OxideDecompLine> item in function.decompDict)
             {
-                contentTMP.text += $"<color=#777777>{item.Key}: <color=#FFFFFF>{item.Value.code}";
+                string code = item.Value.code;
+                if (code.Contains('}')) indentLevel--; // Q&D indenting
+                contentTMP.text += $"<color=#777777>{item.Key}: ";
+                for (int i = 0; i < indentLevel; i++) contentTMP.text += "    ";  // Q&D indenting
+                contentTMP.text += $"<color=#FFFFFF>{code}";
                 if (item.Value.associatedOffsets != null)
                 {
                     foreach (int offset in item.Value.associatedOffsets)
@@ -499,24 +504,10 @@ namespace PUL
                     }
                 }
                 contentTMP.text += "\n";
+                if (code.Contains('{')) indentLevel++; // Q&D indenting
+
                 yield return new WaitForEndOfFrame(); 
             }
-
-            // foreach (OxideBasicBlock block in function.basicBlockDict.Values)
-            // {
-            //     foreach (string instructionAddress in block.instructionAddressList)
-            //     {
-            //         int offset = Int32.Parse(instructionAddress);
-            //         if (binary.decompMapDict.ContainsKey(offset))
-            //         {
-            //             foreach (KeyValuePair<int, OxideDecompLine> item in binary.decompMapDict[offset])
-            //             {
-            //                 contentTMP.text += $"{offset} || {item.Key}: {item.Value.code}\n";
-            //             }
-            //         }
-            //     }
-                // yield return new WaitForEndOfFrame(); // yield after each block instead of each instruction
-            // }
 
             statusText.text = defaultStatusText;
             isBusy = false;
