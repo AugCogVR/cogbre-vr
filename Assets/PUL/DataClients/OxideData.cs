@@ -82,20 +82,16 @@ namespace PUL
         // Dictionary of functions, indexed by starting offset
         public SortedDictionary<int, OxideFunction> functionDict { get; set; }
 
-        // Dictionary of basic blocks, indexed by starting offset
+        // Dictionary of all basic blocks, indexed by starting offset
         public SortedDictionary<int, OxideBasicBlock> basicBlockDict { get; set; }
 
-        // Dictionary of disassembled instructions, indexed by offset
+        // Dictionary of all disassembled instructions, indexed by offset
         public SortedDictionary<int, OxideInstruction> instructionDict { get; set; }
 
         // Dictionary of decompiled code for this whole binary, indexed by offset and line number. 
         public SortedDictionary<int, SortedDictionary<int, OxideDecompLine>> decompMapDict { get; set; }
 
-        // Fields used by DisassemblyFormatter. Not currently in use.
-        // public IList<string> originalPaths { get; set; }
-        // public string dissasemblyPath { get; set; }
-        // public Dictionary<string, string> dissasembly { get; set; }
-        // public string dissasemblyOut { get; set; }
+        public OxideCollection parentCollection { get; set; }
 
         public OxideBinary(string oid, string name, string size)
         {
@@ -123,7 +119,7 @@ namespace PUL
 
         public string vaddr { get; set; }   
 
-        // Basic blocks associated with only this function, indexed by offset
+        // Basic blocks associated with this function, indexed by offset
         public SortedDictionary<int, OxideBasicBlock> basicBlockDict { get; set; }
 
         public IList<string> paramsList { get; set; } 
@@ -134,7 +130,11 @@ namespace PUL
 
         public bool returning { get; set; }
 
-        // Decomp lines associated with only this function, indexed by line number
+        public OxideBinary parentBinary { get; set; }
+
+        public SortedDictionary<int, OxideFunction> calledFunctions { get; set; }
+
+        // Decomp lines associated with this function, indexed by line number
         public SortedDictionary<int, OxideDecompLine> decompDict { get; set; }
 
         public OxideFunction(string name, string offset, string signature)
@@ -158,8 +158,17 @@ namespace PUL
     public class OxideBasicBlock
     {
         public string offset { get; set; }   
-        public IList<string> instructionAddressList { get; set; }   
+
+        // Instructions associated with this basic block, indexed by offset
+        public SortedDictionary<int, OxideInstruction> instructionDict { get; set; }
+
+        // Destination basic blocks, indexed by offset
+        public SortedDictionary<int, OxideBasicBlock> destinationBlockDict { get; set; }
+
+        // Keep destinations as strings because not all of them are offsets
         public IList<string> destinationAddressList { get; set; }
+
+        public OxideFunction parentFunction { get; set; } 
 
         public OxideBasicBlock(string offset)
         {
@@ -180,10 +189,16 @@ namespace PUL
     public class OxideInstruction
     {
         public string offset { get; set; }   
+        
         public string str { get; set; }   
+        
         public string mnemonic { get; set; }
+        
         public string op_str { get; set; }
-        // TODO: Add more fields as needed! See commented-out code below.
+        
+        // TODO: Add more instruction fields as needed! See commented-out code below.
+
+        public OxideBasicBlock parentBlock { get; set; } 
 
         // Constructor only takes offset and string representation -- others fields will be set externally
         public OxideInstruction(string offset, string str)
@@ -242,13 +257,13 @@ namespace PUL
     {
         public string code { get; set; }   
 
-        public IList<int> associatedOffsets { get; set; }
+        public SortedDictionary<int, OxideInstruction> associatedInstructionDict { get; set; }
 
         // Constructor only takes code -- others fields will be set externally
         public OxideDecompLine(string code)
         {
             this.code = code;
-            this.associatedOffsets = null;
+            this.associatedInstructionDict = null;
         }
 
         public override string ToString()

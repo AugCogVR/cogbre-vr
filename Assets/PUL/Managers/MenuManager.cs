@@ -27,11 +27,15 @@ namespace PUL
 
         public GameObject binaryStringsButton;
 
-        public GameObject binaryFilestatsButton;
+        public GameObject binaryFileStatsButton;
+
+        public GameObject binaryCallGraphButton;
 
         public GameObject functionDisassemblyButton;
 
         public GameObject functionDecompilationButton;
+
+        public GameObject functionControlFlowGraphButton;
 
         public TextMeshPro statusText;
 
@@ -135,18 +139,31 @@ namespace PUL
             bsbuttonFunction.TouchBegin.AddListener(() => BinaryStringsButtonCallback());
             Interactable bsdistanceInteract = binaryStringsButton.GetComponent<Interactable>();
             bsdistanceInteract.OnClick.AddListener(() => BinaryStringsButtonCallback());
-            PressableButtonHoloLens2 bfbuttonFunction = binaryFilestatsButton.GetComponent<PressableButtonHoloLens2>();
-            bfbuttonFunction.TouchBegin.AddListener(() => BinaryFilestatsButtonCallback());
-            Interactable bfdistanceInteract = binaryFilestatsButton.GetComponent<Interactable>();
-            bfdistanceInteract.OnClick.AddListener(() => BinaryFilestatsButtonCallback());
+
+            PressableButtonHoloLens2 bfbuttonFunction = binaryFileStatsButton.GetComponent<PressableButtonHoloLens2>();
+            bfbuttonFunction.TouchBegin.AddListener(() => BinaryFileStatsButtonCallback());
+            Interactable bfdistanceInteract = binaryFileStatsButton.GetComponent<Interactable>();
+            bfdistanceInteract.OnClick.AddListener(() => BinaryFileStatsButtonCallback());
+            
+            PressableButtonHoloLens2 bcbuttonFunction = binaryCallGraphButton.GetComponent<PressableButtonHoloLens2>();
+            bcbuttonFunction.TouchBegin.AddListener(() => BinaryCallGraphButtonCallback());
+            Interactable bcdistanceInteract = binaryCallGraphButton.GetComponent<Interactable>();
+            bcdistanceInteract.OnClick.AddListener(() => BinaryCallGraphButtonCallback());
+            
             PressableButtonHoloLens2 fdbuttonFunction = functionDisassemblyButton.GetComponent<PressableButtonHoloLens2>();
             fdbuttonFunction.TouchBegin.AddListener(() => FunctionDisassemblyButtonCallback());
             Interactable fddistanceInteract = functionDisassemblyButton.GetComponent<Interactable>();
             fddistanceInteract.OnClick.AddListener(() => FunctionDisassemblyButtonCallback());
+            
             PressableButtonHoloLens2 fd2buttonFunction = functionDecompilationButton.GetComponent<PressableButtonHoloLens2>();
             fd2buttonFunction.TouchBegin.AddListener(() => FunctionDecompilationButtonCallback());
             Interactable fd2distanceInteract = functionDecompilationButton.GetComponent<Interactable>();
             fd2distanceInteract.OnClick.AddListener(() => FunctionDecompilationButtonCallback());
+
+            PressableButtonHoloLens2 fcbuttonFunction = functionControlFlowGraphButton.GetComponent<PressableButtonHoloLens2>();
+            fcbuttonFunction.TouchBegin.AddListener(() => FunctionControlFlowGraphButtonCallback());
+            Interactable fcdistanceInteract = functionControlFlowGraphButton.GetComponent<Interactable>();
+            fcdistanceInteract.OnClick.AddListener(() => FunctionControlFlowGraphButtonCallback());
 
             statusText.text = defaultStatusText;
             isBusy = false;
@@ -270,7 +287,7 @@ namespace PUL
             FunctionGridObjectCollection.UpdateCollection();
             statusText.text = $"Loading function info for binary {binary.name}";
 
-            // Ensure the collection info is populated, now that it is selected
+            // Ensure the binary info is populated, now that it is selected
             binary = await GameManager.nexusClient.EnsureBinaryInfo(binary);
 
             // Build buttons without blocking the UI
@@ -346,7 +363,7 @@ namespace PUL
             isBusy = false;
         }
 
-        public async void BinaryFilestatsButtonCallback()
+        public async void BinaryFileStatsButtonCallback()
         {
             if (isBusy)
             {
@@ -373,6 +390,35 @@ namespace PUL
             TextMeshPro contentTMP = slate.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
             titleBarTMP.text = $"File stats for {selectedBinary.name}";
             contentTMP.text = contentString;
+
+            statusText.text = defaultStatusText;
+            isBusy = false;
+        }
+
+        public async void BinaryCallGraphButtonCallback()
+        {
+            if (isBusy)
+            {
+                statusText.text = busyText;
+                return;
+            }
+            if (selectedBinary == null)
+            {
+                statusText.text = "<color=#FF0000>Please select a binary first!";
+                return;
+            }
+            isBusy = true;
+
+            // Tell the user we're doing something that won't happen instantaneously
+            statusText.text = $"Building call graph for {selectedBinary.name}";
+
+            // Build text without blocking the UI
+            StartCoroutine(BinaryCallGraphButtonCallbackCoroutine(selectedBinary));
+        }
+
+        IEnumerator BinaryCallGraphButtonCallbackCoroutine(OxideBinary binary)
+        {
+            yield return new WaitForEndOfFrame(); 
 
             statusText.text = defaultStatusText;
             isBusy = false;
@@ -434,18 +480,13 @@ namespace PUL
             contentTMP.text = "";
 
             // Walk through each basic block for this function and add instructions to text display
-            // int count = 0;
-            foreach (OxideBasicBlock block in function.basicBlockDict.Values)
+            foreach (OxideBasicBlock basicBlock in function.basicBlockDict.Values)
             {
-                foreach (string instructionAddress in block.instructionAddressList)
+                foreach (OxideInstruction instruction in basicBlock.instructionDict.Values)
                 {
-                    int addr = Int32.Parse(instructionAddress);
-                    OxideInstruction insn = binary.instructionDict[addr];
-                    contentTMP.text += $"<color=#777777>{insn.offset} <color=#99FF99>{insn.mnemonic} <color=#FFFFFF>{insn.op_str}\n";
-                    // count++;
+                    contentTMP.text += $"<color=#777777>{instruction.offset} <color=#99FF99>{instruction.mnemonic} <color=#FFFFFF>{instruction.op_str}\n";
                 }
                 contentTMP.text += $"<color=#000000>------------------------------------\n"; // separate blocks
-                // if (count > 100) break;  // ONLY USE FIRST FEW INSTRUCTIONS TO MAKE TESTING BEARABLE
 
                 yield return new WaitForEndOfFrame(); // yield after each block instead of each instruction
             }
@@ -496,12 +537,9 @@ namespace PUL
                 contentTMP.text += $"<color=#777777>{item.Key}: ";
                 for (int i = 0; i < indentLevel; i++) contentTMP.text += "    ";  // Q&D indenting
                 contentTMP.text += $"<color=#FFFFFF>{code}";
-                if (item.Value.associatedOffsets != null)
+                foreach (int offset in item.Value.associatedInstructionDict.Keys)
                 {
-                    foreach (int offset in item.Value.associatedOffsets)
-                    {
-                        contentTMP.text += $"<color=#AAAA00> |{offset}|";        
-                    }
+                    contentTMP.text += $"<color=#AAAA00> |{offset}|";        
                 }
                 contentTMP.text += "\n";
                 if (code.Contains('{')) indentLevel++; // Q&D indenting
@@ -513,61 +551,34 @@ namespace PUL
             isBusy = false;
         }
 
+        public async void FunctionControlFlowGraphButtonCallback()
+        {
+            if (isBusy)
+            {
+                statusText.text = busyText;
+                return;
+            }
+            if (selectedFunction == null)
+            {
+                statusText.text = "<color=#FF0000>Please select a function first!";
+                return;
+            }
+            isBusy = true;
 
-        // DGB: OLD DEAD CODE KEPT FOR REFERENCE ONLY
-        // // Sets information about an oid and builds a graph
-        // public async void BinaryButtonCallbackOLD(OxideBinary binary)
-        // {
-        //     // // Reset OID information  // ???
-        //     // ResetBinaryInformation();
+            // Tell the user we're doing something that won't happen instantaneously
+            statusText.text = $"Building control flow graph for {selectedBinary.name} / {selectedFunction.name}";
 
-        //     // DGB: Commented out for now -- we'll re-look at 2D or 3D graphs later
-        //     // Builds a graph based on information contained
-        //     // -> NOTE! CURRENTLY GENERATES A RANDOM GRAPH
-        //     // graphManager.CreateGraph(binary);
+            // Build text without blocking the UI
+            StartCoroutine(FunctionControlFlowGraphButtonCallbackCoroutine(selectedBinary, selectedFunction));
+        }
 
-        //     // Tell the user we're doing something that won't happen instantaneously
-        //     contentTMP.text = $"Retrieving disassembly for {binary.name}";
+        IEnumerator FunctionControlFlowGraphButtonCallbackCoroutine(OxideBinary binary, OxideFunction function)
+        {
+            yield return new WaitForEndOfFrame(); 
 
-        //     // Ensure we have all the info for this binary. 
-        //     binary = await GameManager.nexusClient.EnsureBinaryInfo(binary);
-
-        //     // Set the text. This is SLOW so make it a coroutine. 
-        //     StartCoroutine(BinaryButtonCallbackCoroutineOLD(binary.instructionDict));
-        // }
-
-        // // Coroutine to put the disassembly text into the container. Out of all the data
-        // // pulling and moving and processing going on here, THIS is what takes the longest. 
-        // // It goes faster using StringBuilder BUT!!! the whole UI locks up for a couple of seconds
-        // // during that final "sb.ToString()" operation. Ugh! 
-        // IEnumerator BinaryButtonCallbackCoroutineOLD(SortedDictionary<int, OxideInstruction> instructionDict)
-        // {
-        //     // var sb = new System.Text.StringBuilder(); // StringBuilder approach is commented out but left for reference
-        //     contentTMP.text = "";
-        //     if (instructionDict != null)
-        //     {
-        //         int count = 0;
-        //         foreach (KeyValuePair<int, OxideInstruction> item in instructionDict)
-        //         {
-        //             // sb.AppendLine(item.Key + " " + item.Value);
-        //             contentTMP.text += $"{item.Key} {item.Value.instructionString}\n";
-        //             if (++count > 100) break;  // ONLY USE SOME INSTRUCTIONS TO MAKE TESTING BEARABLE
-        //             yield return new WaitForEndOfFrame();
-        //         }
-        //     }
-        //     else 
-        //     {
-        //         // sb.AppendLine("null... Check for 500 error.");
-        //         contentTMP.text += "null... Check for 500 error.";
-        //     }
-        //     // contentTMP.text = sb.ToString();
-        // }
-
-        // void ResetBinaryInformation()
-        // {
-        //     // Resets current graph
-        //     graphManager.DisableGraphs();
-        // }
+            statusText.text = defaultStatusText;
+            isBusy = false;
+        }
     }
 }
 

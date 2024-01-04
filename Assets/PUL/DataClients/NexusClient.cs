@@ -112,9 +112,11 @@ namespace PUL
             }
         } 
 
-        // Return a list of binaries given a collection
-        // Build and store them in the given collection, if not already there
-        // This really should be a member function of the OxideCollection class but "get" functions can't be async
+        // Ensure that this collection has its associated binary info collected.
+        // Return the collection, but with info filled in.
+        // This method does NOT fill in all the info for each binary -- that is performed,
+        // as needed, by EnsureBinaryInfo. 
+        // NOTE: This really should be a member function of the OxideCollection class but "get" functions can't be async
         public async Task<OxideCollection> EnsureCollectionInfo(OxideCollection collection)
         {
             // This async approach courtesy of https://stackoverflow.com/questions/25295166/async-method-is-blocking-ui-thread-on-which-it-is-executing
@@ -122,33 +124,31 @@ namespace PUL
             {
                 if (collection.binaryList == null)
                 {
-                    // -> Get OIDs
+                    // Pull the list of (presumably) binary OIDs info for the given Collection ID
+                    collection.binaryList = new List<OxideBinary>();
                     string oidListJson = await NexusSyncTask($"[\"oxide_get_oids_with_cid\", \"{collection.collectionId}\"]");
                     // Debug.Log($"OID_pull (Collection: {cid}): {oidPull}");
-                    // -> Format OIDs
                     IList<string> oidList = JsonConvert.DeserializeObject<IList<string>>(oidListJson);
-                    IList<OxideBinary> binaryList = new List<OxideBinary>();
-                    // Roll through each OID found, assign information
                     foreach (string oid in oidList)
                     {
                         // -> Grab binary name for OID
                         string binaryNameListJson = await NexusSyncTask($"[\"oxide_get_names_from_oid\", \"{oid}\"]");
                         IList<string> binaryNameList = JsonConvert.DeserializeObject<IList<string>>(binaryNameListJson);
-                        // --> Make sure binaryNameList has contents
-                        if (binaryNameList.Count <= 0)
-                            binaryNameList.Add("Nameless Binary");
-                        //Debug.Log($"BINARY NAME: {binaryNameList[0]}");
+                        string binaryName = "Nameless Binary";
+                        if (binaryNameList.Count > 0) binaryName = binaryNameList[0];
+                        //Debug.Log($"BINARY NAME: {binaryName}");
 
                         // -> Grab binary size
                         string size = await NexusSyncTask($"[\"oxide_get_oid_file_size\", \"{oid}\"]");
 
-                        // Build binary object with missing info. We'll fill it in 
+                        // Build binary object with basic info. Additional info will be filled in later
                         // if user ever selects this binary.
-                        OxideBinary binary = new OxideBinary(oid, binaryNameList[0], size);
+                        OxideBinary binary = new OxideBinary(oid, binaryName, size);
+                        binary.parentCollection = collection;
+
                         // -> Log binary
-                        binaryList.Add(binary);
+                        collection.binaryList.Add(binary);
                     }
-                    collection.binaryList = binaryList;
                 }
                 Debug.Log($"=== For collection {collection.name}: {collection.binaryList.Count} binaries.");
                 return collection;
@@ -156,13 +156,16 @@ namespace PUL
         }
 
         // Pull (almost) all the info for a binary from Oxide if not already populated. 
+        // Return the binary, but with info filled in.
         // Includes disassembly but NOT decompilation -- that's in another method.
         // This approach lets us pull the info on an as-needed basis 
         // (we'll never pull it for a binary no one selects).
+        // NOTE: This really should be a member function(s) of the OxideBinary class but "get" functions can't be async
         public async Task<OxideBinary> EnsureBinaryInfo(OxideBinary binary)
         {
             return await Task.Run<OxideBinary>(async () =>
             {
+                // INSTRUCTIONS
                 if (binary.instructionDict == null)
                 {
                     // Pull the disassembly into a dict of instructions, keyed by offset
@@ -187,6 +190,7 @@ namespace PUL
                     }
                 }
 
+                // BASIC BLOCKS
                 if (binary.basicBlockDict == null)
                 {
                     // Pull the basic block info
@@ -194,6 +198,7 @@ namespace PUL
                     string basicBlocksJsonString = await NexusSyncTask("[\"oxide_get_basic_blocks\", \"" + binary.oid + "\"]");
                     if (basicBlocksJsonString != null) 
                     {
+                        // Parse basic block info from JSON
                         JsonData basicBlocksJson = JsonMapper.ToObject(basicBlocksJsonString)[binary.oid];
                         foreach (KeyValuePair<string, JsonData> item in basicBlocksJson)
                         {
@@ -204,20 +209,44 @@ namespace PUL
                             binary.basicBlockDict[basicBlockDictKey] = basicBlock;
 
                             // Set additional values
-                            basicBlock.instructionAddressList = new List<string>();
+                            basicBlock.instructionDict = new SortedDictionary<int, OxideInstruction>();
                             foreach (JsonData addr in item.Value["members"])
                             {
-                                basicBlock.instructionAddressList.Add($"{addr}");
+                                int instructionOffset = Int32.Parse($"{addr}");
+                                OxideInstruction instruction = binary.instructionDict[instructionOffset];
+                                basicBlock.instructionDict[instructionOffset] = instruction;
                             }
                             basicBlock.destinationAddressList = new List<string>();
                             foreach (JsonData addr in item.Value["dests"])
                             {
                                 basicBlock.destinationAddressList.Add($"{addr}");
                             }
+                            basicBlock.destinationBlockDict = new SortedDictionary<int, OxideBasicBlock>();
+                        }
+
+                        // Now walk through each block and identify destination blocks
+                        foreach (OxideBasicBlock basicBlock in binary.basicBlockDict.Values)
+                        {
+                            foreach (string destinationAddress in basicBlock.destinationAddressList)
+                            {
+                                // Check if the destination is a valid offset and
+                                // add the block to the dict
+                                int offset = -1;
+                                try 
+                                { 
+                                    offset = Int32.Parse(destinationAddress);
+                                }
+                                catch (FormatException e) {}
+                                if (binary.basicBlockDict.ContainsKey(offset))
+                                {
+                                    basicBlock.destinationBlockDict[offset] = binary.basicBlockDict[offset];
+                                }
+                            }
                         }
                     }
                 }
 
+                // FUNCTIONS
                 if (binary.functionDict == null)
                 {
                     // Pull the function info
@@ -261,12 +290,28 @@ namespace PUL
                     }
                 }
 
+                // CLEANUP
+                // Now walk the hierarchy of function -> block -> instruction and set parent references.
+                foreach (OxideFunction function in binary.functionDict.Values)
+                {
+                    function.parentBinary = binary;
+                    foreach (OxideBasicBlock basicBlock in function.basicBlockDict.Values)
+                    {
+                        basicBlock.parentFunction = function;
+                        foreach (OxideInstruction instruction in basicBlock.instructionDict.Values)
+                        {
+                            instruction.parentBlock = basicBlock;
+                        }
+                    }
+                }
+
                 Debug.Log($"=== For binary {binary.name}: {binary.functionDict.Keys.Count} functions, {binary.basicBlockDict.Keys.Count} basic blocks, {binary.instructionDict.Keys.Count} instructions.");
                 return binary; 
             });
         }
 
         // Pull the decompilation for a binary from Oxide if not already populated. 
+        // Populate both the binary-level decomp dict and each function-level decomp dict.
         public async Task<OxideBinary> EnsureBinaryDecompilation(OxideBinary binary)
         {
             // Make sure we have populated this baseline data of this binary object. 
@@ -282,12 +327,13 @@ namespace PUL
                     {
                         JsonData decompJson = JsonMapper.ToObject(decompJsonString)["decompile"];
 
-                        // Create the binary-level line dict
+                        // Create the binary-level decomp line dict
                         binary.decompMapDict = new SortedDictionary<int, SortedDictionary<int, OxideDecompLine>>();
 
-                        // Walk through the functions 
+                        // Walk through the functions in the JSON data
                         foreach (KeyValuePair<string, JsonData> funcItem in decompJson)
                         {
+                            // We only have function name. Search for the function object instance.
                             string functionName = funcItem.Key;
                             OxideFunction function = null;
                             foreach (OxideFunction candidateFunction in binary.functionDict.Values)
@@ -307,18 +353,20 @@ namespace PUL
                             // Create function-level line dict
                             function.decompDict = new SortedDictionary<int, OxideDecompLine>();
 
-                            // Walk through the offsets
+                            // Walk through the offsets and populate the decomp lines and 
+                            // associated offsets
                             foreach (KeyValuePair<string, JsonData> offsetItem in funcItem.Value)
                             {
                                 // Get the integer offset. If the key is not a number (e.g., "None")
-                                // just leave it as -1. 
+                                // just leave it as -1.
                                 int offset = -1;
-                                try
+                                try 
                                 {
                                     offset = Int32.Parse(offsetItem.Key);
                                 }
                                 catch (FormatException e) {}
 
+                                // For this offset, walk through the lines to add to the decomp line dict
                                 foreach (JsonData lineJson in offsetItem.Value["line"])
                                 {
                                     // Extract the line number and code text 
@@ -341,23 +389,29 @@ namespace PUL
                                         function.decompDict[lineNo] = decompLine;
                                     }
 
-                                    // Create the associated offset list if it doesn't exist already.
-                                    if (decompLine.associatedOffsets == null)
+                                    // Create the associated instruction dict for this decomp line 
+                                    // if it doesn't exist already.
+                                    if (decompLine.associatedInstructionDict == null)
                                     {
-                                        decompLine.associatedOffsets = new List<int>();                                            
+                                        decompLine.associatedInstructionDict = new SortedDictionary<int, OxideInstruction>();
                                     }
 
-                                    // For meaningful offsets:
+                                    // For meaningful offsets, perform several actions.
                                     if (offset >= 0)
                                     {
-                                        // Add the offset to the list of associated offsets
-                                        decompLine.associatedOffsets.Add(offset);
+                                        // Look up the instruction associated with this offset
+                                        // and add it to the decompLine's associated instruction dict
+                                        if (binary.instructionDict.ContainsKey(offset))
+                                        {
+                                            decompLine.associatedInstructionDict[offset] = binary.instructionDict[offset];
+                                        }
 
-                                        // and add the line to the binary-level dict.
+                                        // In binary-level dict, create dict for this offset if not already there.
                                         if (!binary.decompMapDict.ContainsKey(offset))
                                         {
                                             binary.decompMapDict[offset] = new SortedDictionary<int, OxideDecompLine>();
                                         }
+                                        // and add the line to the binary-level dict for this offset.
                                         binary.decompMapDict[offset][lineNo] = decompLine;
                                     }
                                 }
