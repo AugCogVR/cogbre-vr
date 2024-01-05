@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine;
 
-namespace PUL_OLD
+namespace PUL
 {
     public class SimpleCubeNode : MonoBehaviour
     {

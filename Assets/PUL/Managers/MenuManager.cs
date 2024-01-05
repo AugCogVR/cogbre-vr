@@ -12,7 +12,7 @@ namespace PUL
     public class MenuManager : MonoBehaviour
     {
         // ====================================
-        // NOTE: These values are wired up in the Unity Editor -> MenuManager object
+        // NOTE: These values are wired up in the Unity Editor -> Menu Manager object
 
         public GameManager GameManager;
 
@@ -53,7 +53,7 @@ namespace PUL
         //refers to the graph manager
         public SpatialGraphManager graphManager;
 
-        // END: These values are wired up in the Unity Editor -> MenuManager object
+        // END: These values are wired up in the Unity Editor -> Menu Manager object
         // ====================================
 
 
@@ -134,7 +134,7 @@ namespace PUL
                 distanceInteract.OnClick.AddListener(() => CollectionButtonCallback(collection, newButton));
             }
 
-            // Set activity button callbacks
+            // Set activity button callbacks. Ugly wall of repetitive code!
             PressableButtonHoloLens2 bsbuttonFunction = binaryStringsButton.GetComponent<PressableButtonHoloLens2>();
             bsbuttonFunction.TouchBegin.AddListener(() => BinaryStringsButtonCallback());
             Interactable bsdistanceInteract = binaryStringsButton.GetComponent<Interactable>();

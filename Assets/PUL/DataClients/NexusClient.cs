@@ -17,22 +17,36 @@ namespace PUL
     [System.Serializable]
     public class NexusClient : MonoBehaviour
     {
-        GameManager gameManager;
+        // ====================================
+        // NOTE: These values are wired up in the Unity Editor -> Nexus Client object
+
+        public GameManager gameManager;
+
+        // END: These values are wired up in the Unity Editor -> Nexus Client object
+        // ====================================
+
+
         public int pacingCounter; // braindead dumb mechanism to throttle polling
+
         private string userId;
+
         public OxideData oxideData;
 
-        public NexusClient(GameManager gameManager)
+
+        void Awake()
         {
-            //Debug.Log("NexusClient Constructor");
-            this.gameManager = gameManager;
             pacingCounter = 0;
             userId = "User123"; // LATER: allow for multiple user IDs when we have multiple users!
+        }
+
+        // Start is called before the first frame update
+        void Start()
+        {
             NexusSessionInit();
         }
 
-        // OnUpdate is called by Game Manager Update
-        public void OnUpdate()
+        // Update is called once per frame
+        void Update()
         {
             // pacingCounter = braindead dumb mechanism to throttle polling
             pacingCounter++;

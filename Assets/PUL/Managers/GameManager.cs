@@ -11,15 +11,25 @@ using UnityEngine.InputSystem.Utilities;
 
 namespace PUL
 {
+    // GameManager keeps track of relevant objects.
+    // It is intended to be a singleton per the pattern described at:
+    // https://bergstrand-niklas.medium.com/setting-up-a-simple-game-manager-in-unity-24b080e9516c
     public class GameManager : MonoBehaviour
     {
-        //#region Singleton
+        // ====================================
+        // NOTE: These values are wired up in the Unity Editor -> Game Manager object
 
         public NexusClient nexusClient;
+
         public MenuManager menuManager;
-        public DisassemblyFormatter disassemblyFormatter;
-        
-        private static GameManager _instance;
+
+        public GraphManager graphManager;
+
+        // END: These values are wired up in the Unity Editor -> MenuManager object
+        // ====================================
+
+
+        private static GameManager _instance; // GameManager is a singleton
 
         public static GameManager Instance
         {
@@ -36,7 +46,6 @@ namespace PUL
 
         private void Awake()
         {
-            // https://bergstrand-niklas.medium.com/setting-up-a-simple-game-manager-in-unity-24b080e9516c
             // If another game manager exists, destroy that game object. If no other game manager exists, 
             // initialize the instance to itself. As a game manager needs to exist throughout all scenes, 
             // call the function DontDestroyOnLoad.
@@ -50,31 +59,22 @@ namespace PUL
             }
             DontDestroyOnLoad(this);
 
-
-
-            // https://forum.unity.com/threads/xr-device-simulator-wasd-inputs-ignored.1346477/
-            // InputSystem.settings.SetInternalFeatureFlag("DISABLE_SHORTCUT_SUPPORT", true);
+            // NOTE: Most other objects are awakened by Unity. We can move that awakening 
+            // to this function if needed. 
         }
-
-
 
         // Start is called before the first frame update
         void Start()
         {
-            // Initialize Nexus client
-            nexusClient = new NexusClient(this);
-            // nexusClient.NexusSessionInit();
-            //on init, menu manager is given 
+            // NOTE: Most other objects are started by Unity. We can move that starting
+            // to this function if needed. 
         }
-        
 
         // Update is called once per frame
         void Update()
         {
-            // Sync with Nexus
-            nexusClient.OnUpdate();
+            // NOTE: Most other objects are updated by Unity. We can move that updating
+            // to this function if needed. 
         }
-
-        //#endregion
     }
 }
