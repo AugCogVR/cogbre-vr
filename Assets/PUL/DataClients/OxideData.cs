@@ -132,7 +132,7 @@ namespace PUL
 
         public OxideBinary parentBinary { get; set; }
 
-        public SortedDictionary<int, OxideFunction> calledFunctions { get; set; }
+        public SortedDictionary<int, OxideFunction> calledFunctionsDict { get; set; }
 
         // Decomp lines associated with this function, indexed by line number
         public SortedDictionary<int, OxideDecompLine> decompDict { get; set; }

@@ -254,22 +254,28 @@ namespace PUL
                     string functionsJsonString = await NexusSyncTask($"[\"oxide_retrieve\", \"function_extract\", [\"{binary.oid}\"], {{}}]");
                     if (functionsJsonString != null) 
                     {
+                        int dummyOffset = Int32.MaxValue;
                         JsonData functionsJson = JsonMapper.ToObject(functionsJsonString);
                         foreach (KeyValuePair<string, JsonData> item in functionsJson)
                         {
-                            // TODO: Skip functions with null starting offset for now;
-                            // figure out later what to do with them... (have to move away from
-                            // indexing functions by offset).
-                            // This is common in ELF binaries.
-                            if (item.Value["start"] == null) continue;
-
                             // Get initial values, create new function object, add to dictionary
                             string name = (string)(item.Key);
-                            string offset = $"{item.Value["start"]}";
+
+                            int offsetInt = -1;
+                            if (item.Value["start"] != null)
+                            {
+                                offsetInt = (int)(item.Value["start"]); 
+                            }
+                            else
+                            {
+                                // HACK: Use dummy offset for functions with null starting offset (externals?).
+                                // This is common in ELF binaries.
+                                offsetInt = dummyOffset;
+                                dummyOffset--;
+                            }
                             string signature = (string)(item.Value["signature"]);
-                            OxideFunction function = new OxideFunction(name, offset, signature);
-                            int functionDictKey = (int)(item.Value["start"]); 
-                            binary.functionDict[functionDictKey] = function;
+                            OxideFunction function = new OxideFunction(name, $"{offsetInt}", signature);
+                            binary.functionDict[offsetInt] = function;
 
                             // Set additional values
                             function.vaddr = (string)(item.Value["vaddr"]);
@@ -286,24 +292,92 @@ namespace PUL
                             {
                                 function.paramsList.Add($"{param}");
                             }
+                            function.calledFunctionsDict = new SortedDictionary<int, OxideFunction>();
                         }
                     }
                 }
 
-                // CLEANUP
-                // Now walk the hierarchy of function -> block -> instruction and set parent references.
+                // CLEANUP 1
+                // Walk through the instructions, basic blocks, and functions to set parent references.
+                // First, walk through the basic blocks and set instruction parents.
+                // This *should* cover all the instructions. 
+                foreach (OxideBasicBlock basicBlock in binary.basicBlockDict.Values)
+                {
+                    foreach (OxideInstruction instruction in basicBlock.instructionDict.Values)
+                    {
+                        instruction.parentBlock = basicBlock;
+                    }
+                }
+                // Next, set parents of functions and basic blocks. 
                 foreach (OxideFunction function in binary.functionDict.Values)
                 {
                     function.parentBinary = binary;
                     foreach (OxideBasicBlock basicBlock in function.basicBlockDict.Values)
                     {
                         basicBlock.parentFunction = function;
-                        foreach (OxideInstruction instruction in basicBlock.instructionDict.Values)
-                        {
-                            instruction.parentBlock = basicBlock;
-                        }
                     }
                 }
+                // KNOWN ISSUE: Not all basic blocks are covered by functions in the 
+                // data returned by function_extract! e.g., basic block 47058 in regedit.exe
+                // HACK: Create dummy function to contain these blocks. 
+                OxideFunction dummyFunction = new OxideFunction("dummy", "0", "dummy function");
+                binary.functionDict[0] = dummyFunction;
+                dummyFunction.parentBinary = binary;
+                dummyFunction.vaddr = "0";
+                dummyFunction.retType = "idk";
+                dummyFunction.returning = false;
+                dummyFunction.calledFunctionsDict = new SortedDictionary<int, OxideFunction>();
+                dummyFunction.basicBlockDict = new SortedDictionary<int, OxideBasicBlock>();
+                // Set parent and child relationships for all "orphaned" basic blocks. 
+                foreach (KeyValuePair<int, OxideBasicBlock> blockItem in binary.basicBlockDict)
+                {
+                    if (blockItem.Value.parentFunction == null)
+                    {
+                        blockItem.Value.parentFunction = dummyFunction;
+                        dummyFunction.basicBlockDict[blockItem.Key] = blockItem.Value;
+                    }
+                }
+
+                // CLEANUP 2
+                // Retrieve and process function call info now that we have bi-directional
+                // links between function <-> block <-> instruction
+                string functionCallsJsonString = await NexusSyncTask($"[\"oxide_retrieve\", \"function_calls\", [\"{binary.oid}\"], {{}}]");
+                if (functionCallsJsonString != null) 
+                {
+                    JsonData functionCallsJson = JsonMapper.ToObject(functionCallsJsonString);
+                    foreach (KeyValuePair<string, JsonData> item in functionCallsJson)
+                    {
+                        // First find the "source" function by finding out what function
+                        // holds the calling instruction at the given offset
+                        int sourceOffset = Int32.Parse(item.Key);
+                        if (binary.instructionDict.ContainsKey(sourceOffset))
+                        {
+                            OxideInstruction instruction = binary.instructionDict[sourceOffset];
+                            OxideBasicBlock basicBlock = instruction.parentBlock;
+                            OxideFunction sourceFunction = basicBlock.parentFunction;
+
+                            // Next find the "target" function in a similar manner
+                            // and add it to the source function's dict of called functions
+                            int targetOffset = (int)(item.Value["func_addr"]);
+                            if (binary.functionDict.ContainsKey(targetOffset))
+                            {
+                                OxideFunction targetFunction = binary.functionDict[targetOffset];
+                                sourceFunction.calledFunctionsDict[targetOffset] = targetFunction;
+                                // Debug.Log($"INFO: Function {sourceFunction.name} calls {targetFunction.name}");
+                            }
+                            else 
+                            {
+                                Debug.Log($"WARNING: reported function call target at offset {targetOffset} not found in instruction dict");
+                            }
+                        }
+                        else 
+                        {
+                            // For some reason, some reported offsets for calls aren't in the disassembly...???
+                            // e.g., "2595" in TASKMAN.EXE
+                            Debug.Log($"WARNING: reported function call at offset {sourceOffset} not found in instruction dict");
+                        }
+                    }
+                }                    
 
                 Debug.Log($"=== For binary {binary.name}: {binary.functionDict.Keys.Count} functions, {binary.basicBlockDict.Keys.Count} basic blocks, {binary.instructionDict.Keys.Count} instructions.");
                 return binary; 
