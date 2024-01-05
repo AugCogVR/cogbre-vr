@@ -254,7 +254,7 @@ namespace PUL
                     string functionsJsonString = await NexusSyncTask($"[\"oxide_retrieve\", \"function_extract\", [\"{binary.oid}\"], {{}}]");
                     if (functionsJsonString != null) 
                     {
-                        int dummyOffset = Int32.MaxValue;
+                        int dummyOffset = Int32.MaxValue - 1;
                         JsonData functionsJson = JsonMapper.ToObject(functionsJsonString);
                         foreach (KeyValuePair<string, JsonData> item in functionsJson)
                         {
@@ -268,8 +268,8 @@ namespace PUL
                             }
                             else
                             {
-                                // HACK: Use dummy offset for functions with null starting offset (externals?).
-                                // This is common in ELF binaries.
+                                // HACK: Use dummy offset for functions with null starting offset. 
+                                // External functions? This is common in ELF binaries.
                                 offsetInt = dummyOffset;
                                 dummyOffset--;
                             }
@@ -320,21 +320,22 @@ namespace PUL
                 // KNOWN ISSUE: Not all basic blocks are covered by functions in the 
                 // data returned by function_extract! e.g., basic block 47058 in regedit.exe
                 // HACK: Create dummy function to contain these blocks. 
-                OxideFunction dummyFunction = new OxideFunction("dummy", "0", "dummy function");
-                binary.functionDict[0] = dummyFunction;
-                dummyFunction.parentBinary = binary;
-                dummyFunction.vaddr = "0";
-                dummyFunction.retType = "idk";
-                dummyFunction.returning = false;
-                dummyFunction.calledFunctionsDict = new SortedDictionary<int, OxideFunction>();
-                dummyFunction.basicBlockDict = new SortedDictionary<int, OxideBasicBlock>();
+                int mainDummyOffset = Int32.MaxValue;
+                OxideFunction mainDummyFunction = new OxideFunction("dummy", $"{mainDummyOffset}", "dummy function");
+                binary.functionDict[mainDummyOffset] = mainDummyFunction;
+                mainDummyFunction.parentBinary = binary;
+                mainDummyFunction.vaddr = "0";
+                mainDummyFunction.retType = "unknown";
+                mainDummyFunction.returning = false;
+                mainDummyFunction.calledFunctionsDict = new SortedDictionary<int, OxideFunction>();
+                mainDummyFunction.basicBlockDict = new SortedDictionary<int, OxideBasicBlock>();
                 // Set parent and child relationships for all "orphaned" basic blocks. 
                 foreach (KeyValuePair<int, OxideBasicBlock> blockItem in binary.basicBlockDict)
                 {
                     if (blockItem.Value.parentFunction == null)
                     {
-                        blockItem.Value.parentFunction = dummyFunction;
-                        dummyFunction.basicBlockDict[blockItem.Key] = blockItem.Value;
+                        blockItem.Value.parentFunction = mainDummyFunction;
+                        mainDummyFunction.basicBlockDict[blockItem.Key] = blockItem.Value;
                     }
                 }
 
