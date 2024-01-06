@@ -250,7 +250,7 @@ namespace PUL
                                 { 
                                     offset = Int32.Parse(destinationAddress);
                                 }
-                                catch (FormatException e) {}
+                                catch {}
                                 if (binary.basicBlockDict.ContainsKey(offset))
                                 {
                                     basicBlock.destinationBlockDict[offset] = binary.basicBlockDict[offset];
@@ -453,7 +453,7 @@ namespace PUL
                                 {
                                     offset = Int32.Parse(offsetItem.Key);
                                 }
-                                catch (FormatException e) {}
+                                catch {}
 
                                 // For this offset, walk through the lines to add to the decomp line dict
                                 foreach (JsonData lineJson in offsetItem.Value["line"])

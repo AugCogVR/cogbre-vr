@@ -241,10 +241,10 @@ namespace PUL
                 // Set button functions
                 // -> Physical Press
                 PressableButtonHoloLens2 buttonFunction = newButton.GetComponent<PressableButtonHoloLens2>();
-                buttonFunction.TouchEnd.AddListener(async () => BinaryButtonCallback(binary, newButton));
+                buttonFunction.TouchEnd.AddListener(() => BinaryButtonCallback(binary, newButton));
                 // -> Ray Press
                 Interactable distanceInteract = newButton.GetComponent<Interactable>();
-                distanceInteract.OnClick.AddListener(async () => BinaryButtonCallback(binary, newButton));
+                distanceInteract.OnClick.AddListener(() => BinaryButtonCallback(binary, newButton));
 
                 yield return new WaitForEndOfFrame();
             }
@@ -316,10 +316,10 @@ namespace PUL
                 // Set button functions
                 // -> Physical Press
                 PressableButtonHoloLens2 buttonFunction = newButton.GetComponent<PressableButtonHoloLens2>();
-                buttonFunction.TouchEnd.AddListener(async () => FunctionButtonCallback(binary, function, newButton));
+                buttonFunction.TouchEnd.AddListener(() => FunctionButtonCallback(binary, function, newButton));
                 // -> Ray Press
                 Interactable distanceInteract = newButton.GetComponent<Interactable>();
-                distanceInteract.OnClick.AddListener(async () => FunctionButtonCallback(binary, function, newButton));
+                distanceInteract.OnClick.AddListener(() => FunctionButtonCallback(binary, function, newButton));
 
                 yield return new WaitForEndOfFrame();
 
@@ -395,7 +395,7 @@ namespace PUL
             isBusy = false;
         }
 
-        public async void BinaryCallGraphButtonCallback()
+        public void BinaryCallGraphButtonCallback()
         {
             if (isBusy)
             {
@@ -424,7 +424,7 @@ namespace PUL
             isBusy = false;
         }
 
-        public async void FunctionButtonCallback(OxideBinary binary, OxideFunction function, GameObject functionButton)
+        public void FunctionButtonCallback(OxideBinary binary, OxideFunction function, GameObject functionButton)
         {
             if (isBusy)
             {
@@ -448,7 +448,7 @@ namespace PUL
             isBusy = false;
         }
 
-        public async void FunctionDisassemblyButtonCallback()
+        public void FunctionDisassemblyButtonCallback()
         {
             if (isBusy)
             {
@@ -551,7 +551,7 @@ namespace PUL
             isBusy = false;
         }
 
-        public async void FunctionControlFlowGraphButtonCallback()
+        public void FunctionControlFlowGraphButtonCallback()
         {
             if (isBusy)
             {
