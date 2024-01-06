@@ -10,13 +10,14 @@ namespace PUL
         private int flipCounter = 0;
         private float targetAngle = 60.0f;
 
-        // OnStart is called by Game Manager Start
-        public void OnStart()
+        // Start is called before the first frame update
+        public void Start()
         {
+            // Nothing to do
         }
 
-        // OnUpdate is called by Game Manager Update
-        public void OnUpdate()
+        // Update is called once per frame
+         public void Update()
         {
             // Wiggle the cube back and forth just to know that the cube update works
             flipCounter++;
@@ -32,18 +33,6 @@ namespace PUL
             Quaternion target = Quaternion.Euler(0, targetAngle, 0);
             // Dampen towards the target rotation
             transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * smooth);
-        }
-
-        // Start is called before the first frame update
-        void Start()
-        {
-            // Empty on purpose -- GameManager will call OnStart() as needed
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-            // Empty on purpose -- GameManager will call OnUpdate() as needed
         }
     }
 }

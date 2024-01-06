@@ -13,19 +13,20 @@ namespace PUL
     ///
     /// Usage:
     /// -Attach this component to a GameObject in a scene.
-    /// -Add nodes by calling <see cref="AddNodeToGraph"/> and passing a Unity component that will act
-    ///  as the node.
-    /// -Add edges by calling <see cref="AddEdgeToGraph"/> and passing two components that have been
-    ///  previously added to the graph and therefore have <see cref="Node"/> components attached to them.
+    /// -Add nodes by calling <see cref="AddNodeToGraph"/> 
+    /// -Add edges by calling <see cref="AddEdgeToGraph"/> and passing two nodes that have been
+    ///  previously added to the graph
     /// -Run and Stop the graph using <see cref="StartGraph"/> and <see cref="StopGraph"/>. 
     /// </summary>
-    public class RandomStartForceDirectedGraph : MonoBehaviour
+    public class ForceDirectedGraph : MonoBehaviour
     {
         /// <summary>
         /// All of the nodes in the graph.
         /// </summary>
-        public Dictionary<int, Node> nodes = new();
+        public Dictionary<int, NodeInfo> nodes = new();
         public Dictionary<int, int> idToIndexMap = new();
+
+        int currIndex = 0;
 
         bool backgroundCalculation = false;
 
@@ -56,59 +57,60 @@ namespace PUL
         /// this behaviour will move the gameobject as it responds to forces in the graph.
         /// </summary>
         /// <param name="component">The component whose gameobject will have a node attached.</param>
-        /// <param name="index">A UNIQUE index for this node.</param>
         /// <param name="nodeMass">The mass of the node. A larger mass will mean more inertia.</param>
         [PublicAPI]
-        public void AddNodeToGraph(
-            Component component,
-            int index,
-            float nodeMass = 1)
+        public NodeInfo AddNodeToGraph(Vector3 startingPosition, string nodeName, string nodeText, float nodeMass = 1) // TODO: Add starting position
         {
-            Node newNode = component.gameObject.AddComponent<Node>();
-            newNode.scn = (SimpleCubeNode)component;
-            newNode.Mass = nodeMass;
-            nodes.Add(index, newNode);
-            idToIndexMap.Add(component.GetInstanceID(), index);
+            GameObject graphNodePrefab = Resources.Load("Prefabs/GraphNode") as GameObject;
+            GameObject graphNode = Instantiate(graphNodePrefab, startingPosition, Quaternion.identity);
+            graphNode.transform.SetParent(this.gameObject.transform);
+
+            // This is not necessary but is a good test and kind of fun
+            // graphNode.AddComponent<TwistyBehavior>();
+
+            NodeInfo nodeInfo = graphNode.AddComponent<NodeInfo>();
+            nodeInfo.Mass = nodeMass;
+            nodeInfo.nodeGameObject = graphNode;
+
+            nodes[currIndex] = nodeInfo;
+            idToIndexMap[graphNode.GetInstanceID()] = currIndex;
+            nodeInfo.MyIndex = currIndex;
+            currIndex++;
+            return nodeInfo;
         }
 
         [PublicAPI]
-        public void AddEdgeToGraph(Component componentA, Component componentB)
+        public EdgeInfo AddEdgeToGraph(NodeInfo sourceNode, NodeInfo targetNode)
         {
-            int indexA = idToIndexMap[componentA.GetInstanceID()];
-            int indexB = idToIndexMap[componentB.GetInstanceID()];
-            nodes.TryGetValue(indexA, out Node nodeA);
-            nodes.TryGetValue(indexB, out Node nodeB);
-
-            if (nodeA != null && nodeB != null)
-            {
-                nodeA.MyEdges.Add(indexB);
-                nodeB.MyEdges.Add(indexA);
-            }
+            GameObject graphEdge = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            Destroy(graphEdge.GetComponent<CapsuleCollider>());   // Disable collisions for edges
+            graphEdge.transform.localScale = new Vector3(.1f, 1f, .1f);
+            EdgeInfo edgeInfo = graphEdge.AddComponent<EdgeInfo>();
+            edgeInfo.sourceTransform = sourceNode.transform;
+            edgeInfo.targetTransform = targetNode.transform;
+            sourceNode.MyEdges.Add(targetNode.MyIndex);
+            return edgeInfo;
         }
 
         [PublicAPI]
-        public void OnUpdate()
+        public void Update()
         {
-            // BARF-O-MATIC -- test that the graph node & edge transforms are properly
+            // BARF-O-MATIC TEST -- test that the graph node & edge transforms are properly
             // connected to the parent graph by spinning the whole graph wildly. 
             // This should never be enabled in normal operations.
-            //transform.localEulerAngles = transform.localEulerAngles + new Vector3(0, 1, 0);
-
-            foreach (Node node in nodes.Values)
-            {
-                node.scn.OnUpdate();
-            }
+            // transform.localEulerAngles = transform.localEulerAngles + new Vector3(0, 1, 0);
         }
+
         [PublicAPI]
         //This creates "Anchor Nodes" that are immobile. Stabilizes lone nodes, or nodes that only have 1 target.
         //TO DO: a good fix, but it's ugly. obvious that some work is going on behind the scenes, because the nodes with single edges are often stretched across the screen. Needs some work, but good for now.
         public void setLoneValuesImmobile()
         {
-            foreach(Node node in nodes.Values)
+            foreach(NodeInfo node in nodes.Values)
             {
-                if(node.MyEdges.Count <= 1)
+                if(node.edges.Count <= 1)
                 {
-                    Debug.Log(node.MyEdges.Count);
+                    Debug.Log(node.edges.Count);
                     node.IsImmobile = true;
                 }
             }
@@ -117,7 +119,7 @@ namespace PUL
         [PublicAPI]
         public void Clear()
         {
-            foreach (Node node in nodes.Values)
+            foreach (NodeInfo node in nodes.Values)
             {
                 Destroy(node);
             }
@@ -128,7 +130,7 @@ namespace PUL
         [PublicAPI]
         public void StartGraph()
         {
-            foreach (Node node in nodes.Values)
+            foreach (NodeInfo node in nodes.Values)
             {
                 node.VirtualPosition = node.transform.localPosition;
             }
@@ -149,7 +151,7 @@ namespace PUL
         public void RunForIterations(int numIterations)
         {
             backgroundCalculation = true;
-            foreach (Node node in nodes.Values)
+            foreach (NodeInfo node in nodes.Values)
             {
                 node.VirtualPosition = node.transform.localPosition;
             }
@@ -160,7 +162,7 @@ namespace PUL
         [PublicAPI]
         public void SetNodeMobility(Component nodeComponent, bool isImmobile)
         {
-            Node node = nodeComponent.GetComponent<Node>();
+            NodeInfo node = nodeComponent.GetComponent<NodeInfo>();
             if (node == null) return;
             node.IsImmobile = isImmobile;
         }
@@ -168,7 +170,7 @@ namespace PUL
         [PublicAPI]
         public void SetNodeMass(Component nodeComponent, float nodeMass)
         {
-            Node node = nodeComponent.GetComponent<Node>();
+            NodeInfo node = nodeComponent.GetComponent<NodeInfo>();
             if (node == null) return;
             node.Mass = nodeMass;
         }
@@ -185,7 +187,7 @@ namespace PUL
             List<Vector3> balanceDisplacements = NodeBalanceDisplacements().ToList();
 
             int finalCount = 0;
-            foreach (Node node in nodes.Values)
+            foreach (NodeInfo node in nodes.Values)
             {
                 Vector3 finalForce = balanceDisplacements[finalCount];
                 finalCount++;
@@ -197,7 +199,7 @@ namespace PUL
             {
                 if (!backgroundCalculation)
                 {
-                    foreach (Node node in nodes.Values)
+                    foreach (NodeInfo node in nodes.Values)
                     {
                         node.transform.localPosition = node.VirtualPosition;
                     }
@@ -222,7 +224,7 @@ namespace PUL
             float animSec = 1;
             while (prog < animSec)
             {
-                foreach (Node node in nodes.Values)
+                foreach (NodeInfo node in nodes.Values)
                 {
                     node.transform.localPosition = Vector3.Lerp(
                         node.transform.localPosition,
@@ -236,7 +238,7 @@ namespace PUL
                 prog += Time.deltaTime;
             }
 
-            foreach (Node node in nodes.Values)
+            foreach (NodeInfo node in nodes.Values)
             {
                 node.transform.localPosition = node.VirtualPosition;
             }
@@ -260,7 +262,7 @@ namespace PUL
                 new NativeArray<Vector3>(nodes.Count, Allocator.TempJob);
 
             List<int> allEdges = new List<int>();
-            foreach (KeyValuePair<int, Node> idxAndNode in nodes)
+            foreach (KeyValuePair<int, NodeInfo> idxAndNode in nodes)
             {
                 nodePositions[idxAndNode.Key] = idxAndNode.Value.VirtualPosition;
                 nodeMasses[idxAndNode.Key] = idxAndNode.Value.Mass;
@@ -365,15 +367,6 @@ namespace PUL
                 NodeResultDisplacement[i] = resultForceAndDirection /
                                             (TimeValue * NodeMasses[i] * (NodePositions.Length - 1));
             }
-        }
-
-        public class Node : MonoBehaviour
-        {
-            public SimpleCubeNode scn;   // TODO: This reference probably doesn't belong here OR should be a "node interface" for abstraction purposes
-            public float Mass;
-            public bool IsImmobile = false;
-            public Vector3 VirtualPosition = Vector3.zero;
-            public readonly List<int> MyEdges = new();
         }
     }
 }

@@ -412,13 +412,8 @@ namespace PUL
             // Tell the user we're doing something that won't happen instantaneously
             statusText.text = $"Building call graph for {selectedBinary.name}";
 
-            // Build text without blocking the UI
-            StartCoroutine(BinaryCallGraphButtonCallbackCoroutine(selectedBinary));
-        }
-
-        IEnumerator BinaryCallGraphButtonCallbackCoroutine(OxideBinary binary)
-        {
-            yield return new WaitForEndOfFrame(); 
+            //bool success = await 
+            GameManager.graphManager.BuildBinaryCallGraph(selectedBinary);
 
             statusText.text = defaultStatusText;
             isBusy = false;
@@ -568,13 +563,7 @@ namespace PUL
             // Tell the user we're doing something that won't happen instantaneously
             statusText.text = $"Building control flow graph for {selectedBinary.name} / {selectedFunction.name}";
 
-            // Build text without blocking the UI
-            StartCoroutine(FunctionControlFlowGraphButtonCallbackCoroutine(selectedBinary, selectedFunction));
-        }
-
-        IEnumerator FunctionControlFlowGraphButtonCallbackCoroutine(OxideBinary binary, OxideFunction function)
-        {
-            yield return new WaitForEndOfFrame(); 
+            GameManager.graphManager.BuildFunctionControlFlowGraph(selectedFunction);
 
             statusText.text = defaultStatusText;
             isBusy = false;
