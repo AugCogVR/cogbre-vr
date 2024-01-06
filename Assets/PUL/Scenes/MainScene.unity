@@ -5677,7 +5677,6 @@ GameObject:
   m_Component:
   - component: {fileID: 600128791}
   - component: {fileID: 600128788}
-  - component: {fileID: 600128790}
   - component: {fileID: 600128787}
   - component: {fileID: 600128789}
   m_Layer: 6
@@ -5836,14 +5835,6 @@ MonoBehaviour:
   defaultMaterials:
   - {fileID: 21202819797275496, guid: 6a84f857bec7e7345843ae29404c57ce, type: 2}
   cacheSharedMaterialsFromRenderer: 0
---- !u!222 &600128790
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 600128786}
-  m_CullTransparentMesh: 0
 --- !u!224 &600128791
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6568,7 +6559,6 @@ GameObject:
   m_Component:
   - component: {fileID: 686274086}
   - component: {fileID: 686274089}
-  - component: {fileID: 686274088}
   - component: {fileID: 686274087}
   m_Layer: 0
   m_Name: StatusLabel
@@ -6689,14 +6679,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 686274089}
   m_maskType: 0
---- !u!222 &686274088
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 686274085}
-  m_CullTransparentMesh: 0
 --- !u!23 &686274089
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -6749,7 +6731,6 @@ GameObject:
   m_Component:
   - component: {fileID: 687027647}
   - component: {fileID: 687027644}
-  - component: {fileID: 687027646}
   - component: {fileID: 687027643}
   - component: {fileID: 687027645}
   m_Layer: 6
@@ -6908,14 +6889,6 @@ MonoBehaviour:
   defaultMaterials:
   - {fileID: 21202819797275496, guid: 6a84f857bec7e7345843ae29404c57ce, type: 2}
   cacheSharedMaterialsFromRenderer: 0
---- !u!222 &687027646
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 687027642}
-  m_CullTransparentMesh: 0
 --- !u!224 &687027647
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7993,7 +7966,6 @@ GameObject:
   m_Component:
   - component: {fileID: 868916283}
   - component: {fileID: 868916286}
-  - component: {fileID: 868916285}
   - component: {fileID: 868916284}
   m_Layer: 0
   m_Name: TextMeshPro
@@ -8114,14 +8086,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 868916286}
   m_maskType: 0
---- !u!222 &868916285
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 868916282}
-  m_CullTransparentMesh: 0
 --- !u!23 &868916286
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -8174,7 +8138,6 @@ GameObject:
   m_Component:
   - component: {fileID: 873316956}
   - component: {fileID: 873316959}
-  - component: {fileID: 873316958}
   - component: {fileID: 873316957}
   m_Layer: 0
   m_Name: TextMeshPro
@@ -8295,14 +8258,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 873316959}
   m_maskType: 0
---- !u!222 &873316958
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 873316955}
-  m_CullTransparentMesh: 0
 --- !u!23 &873316959
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -9425,7 +9380,6 @@ GameObject:
   m_Component:
   - component: {fileID: 967225008}
   - component: {fileID: 967225011}
-  - component: {fileID: 967225010}
   - component: {fileID: 967225009}
   m_Layer: 0
   m_Name: FunctionsLabel
@@ -9546,14 +9500,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 967225011}
   m_maskType: 0
---- !u!222 &967225010
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 967225007}
-  m_CullTransparentMesh: 0
 --- !u!23 &967225011
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -14252,7 +14198,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1339782986}
   - component: {fileID: 1339782983}
-  - component: {fileID: 1339782985}
   - component: {fileID: 1339782982}
   - component: {fileID: 1339782984}
   m_Layer: 6
@@ -14411,14 +14356,6 @@ MonoBehaviour:
   defaultMaterials:
   - {fileID: 21202819797275496, guid: 6a84f857bec7e7345843ae29404c57ce, type: 2}
   cacheSharedMaterialsFromRenderer: 0
---- !u!222 &1339782985
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1339782981}
-  m_CullTransparentMesh: 0
 --- !u!224 &1339782986
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17554,7 +17491,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1553109198}
   - component: {fileID: 1553109201}
-  - component: {fileID: 1553109200}
   - component: {fileID: 1553109199}
   m_Layer: 0
   m_Name: TextMeshPro
@@ -17675,14 +17611,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 1553109201}
   m_maskType: 0
---- !u!222 &1553109200
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1553109197}
-  m_CullTransparentMesh: 0
 --- !u!23 &1553109201
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -17916,7 +17844,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1576555291}
   - component: {fileID: 1576555294}
-  - component: {fileID: 1576555293}
   - component: {fileID: 1576555292}
   m_Layer: 0
   m_Name: CollectionsLabel
@@ -18037,14 +17964,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 1576555294}
   m_maskType: 0
---- !u!222 &1576555293
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1576555290}
-  m_CullTransparentMesh: 0
 --- !u!23 &1576555294
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -18210,7 +18129,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1606838787}
   - component: {fileID: 1606838790}
-  - component: {fileID: 1606838789}
   - component: {fileID: 1606838788}
   m_Layer: 0
   m_Name: TextMeshPro
@@ -18331,14 +18249,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 1606838790}
   m_maskType: 0
---- !u!222 &1606838789
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1606838786}
-  m_CullTransparentMesh: 0
 --- !u!23 &1606838790
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -18454,7 +18364,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1623679292}
   - component: {fileID: 1623679295}
-  - component: {fileID: 1623679294}
   - component: {fileID: 1623679293}
   m_Layer: 0
   m_Name: BinariesLabel
@@ -18575,14 +18484,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 1623679295}
   m_maskType: 0
---- !u!222 &1623679294
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1623679291}
-  m_CullTransparentMesh: 0
 --- !u!23 &1623679295
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -19124,7 +19025,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1681003469}
   - component: {fileID: 1681003472}
-  - component: {fileID: 1681003471}
   - component: {fileID: 1681003470}
   m_Layer: 0
   m_Name: TextMeshPro
@@ -19245,14 +19145,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 1681003472}
   m_maskType: 0
---- !u!222 &1681003471
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1681003468}
-  m_CullTransparentMesh: 0
 --- !u!23 &1681003472
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -20265,7 +20157,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1720156440}
   - component: {fileID: 1720156443}
-  - component: {fileID: 1720156442}
   - component: {fileID: 1720156441}
   m_Layer: 0
   m_Name: DisasmTitle
@@ -20386,14 +20277,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 1720156443}
   m_maskType: 0
---- !u!222 &1720156442
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 2309909354068491477, guid: 54768716de5e66b49b3e8b07771783bb, type: 3}
-  m_PrefabInstance: {fileID: 2309909354697801167}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1720156439}
-  m_CullTransparentMesh: 0
 --- !u!23 &1720156443
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -22518,7 +22401,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1781161891}
   - component: {fileID: 1781161889}
-  - component: {fileID: 1781161890}
   - component: {fileID: 1781161888}
   m_Layer: 0
   m_Name: StatusText
@@ -22661,14 +22543,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!222 &1781161890
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1781161887}
-  m_CullTransparentMesh: 0
 --- !u!224 &1781161891
 RectTransform:
   m_ObjectHideFlags: 0
@@ -24203,7 +24077,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1879474228}
   - component: {fileID: 1879474231}
-  - component: {fileID: 1879474230}
   - component: {fileID: 1879474229}
   m_Layer: 0
   m_Name: TextMeshPro
@@ -24324,14 +24197,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 1879474231}
   m_maskType: 0
---- !u!222 &1879474230
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1879474227}
-  m_CullTransparentMesh: 0
 --- !u!23 &1879474231
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -24912,7 +24777,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1938407455}
   - component: {fileID: 1938407458}
-  - component: {fileID: 1938407457}
   - component: {fileID: 1938407456}
   m_Layer: 0
   m_Name: Disasm
@@ -25033,14 +24897,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 1938407458}
   m_maskType: 0
---- !u!222 &1938407457
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 2309909353883565550, guid: 54768716de5e66b49b3e8b07771783bb, type: 3}
-  m_PrefabInstance: {fileID: 2309909354697801167}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1938407454}
-  m_CullTransparentMesh: 0
 --- !u!23 &1938407458
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -27232,5 +27088,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: 54768716de5e66b49b3e8b07771783bb, type: 3}
