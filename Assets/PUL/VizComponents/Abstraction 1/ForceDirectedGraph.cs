@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
+using TMPro;
 
 namespace PUL
 {
@@ -38,7 +39,7 @@ namespace PUL
         // variables that can be set externally or adjusted from the Unity Editor.
         [Header("Adjustable Values")][Range(0.001f, 500)]
         // The constant that resembles Ke in Coulomb's Law to signify the strength of the repulsive force between nodes.
-        public float UniversalRepulsiveForce = 4.5f;
+        public float UniversalRepulsiveForce = 0.01f; // 4.5f;
 
         [Range(0.001f, 100)]
         // The constant that resembles K in Hooke's Law to signify the strength of the attraction on an edge.
@@ -61,17 +62,25 @@ namespace PUL
         [PublicAPI]
         public NodeInfo AddNodeToGraph(Vector3 startingPosition, string nodeName, string nodeText, float nodeMass = 1) // TODO: Add starting position
         {
+            // Create the GameObject that visually represents this node
             GameObject graphNodePrefab = Resources.Load("Prefabs/GraphNode") as GameObject;
             GameObject graphNode = Instantiate(graphNodePrefab, startingPosition, Quaternion.identity);
+
+            // Set values on the graph node
             graphNode.transform.SetParent(this.gameObject.transform);
 
-            // This is not necessary but is a good test and kind of fun
+            TextMeshPro nodeTitleTMP = graphNode.transform.Find("TitleBar/Title").gameObject.GetComponent<TextMeshPro>();
+            nodeTitleTMP.text = nodeName;
+            TextMeshPro nodeContentTMP = graphNode.transform.Find("GraphCodeLine/TextMeshPro").gameObject.GetComponent<TextMeshPro>();
+            nodeContentTMP.text = nodeText;
+
+            // This is not necessary but is a good test and kind of fun. Comment it out!
             // graphNode.AddComponent<TwistyBehavior>();
 
+            // Create and register the NodeInfo for this graph node.
             NodeInfo nodeInfo = graphNode.AddComponent<NodeInfo>();
             nodeInfo.Mass = nodeMass;
             nodeInfo.nodeGameObject = graphNode;
-
             nodes[currIndex] = nodeInfo;
             idToIndexMap[graphNode.GetInstanceID()] = currIndex;
             nodeInfo.MyIndex = currIndex;
@@ -150,7 +159,7 @@ namespace PUL
         [PublicAPI]
         public void RunForIterations(int numIterations)
         {
-            backgroundCalculation = true;
+            backgroundCalculation = true;  // this makes it not run.... ????
             foreach (NodeInfo node in nodes.Values)
             {
                 node.VirtualPosition = node.transform.localPosition;

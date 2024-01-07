@@ -46,16 +46,49 @@ namespace PUL
 
         IEnumerator BuildBinaryCallGraphCoroutine(OxideBinary binary, ForceDirectedGraph graph, Dictionary<OxideFunction, NodeInfo> functionNodeDict)
         {
+            OxideFunction entryFunction = null;
             foreach (OxideFunction function in binary.functionDict.Values)
             {
-                // Debug.Log($"Add node {function.name} to graph");
-                Vector3 position = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(2.0f, 5.0f), Random.Range(-5.0f, 5.0f));
-                NodeInfo nodeInfo = graph.AddNodeToGraph(position, function.name, function.name);
-                functionNodeDict[function] = nodeInfo;
-                yield return new WaitForEndOfFrame(); 
+                if (function.name == "entry") 
+                {
+                    entryFunction = function; 
+                    break;
+                }
             }
 
-            foreach (OxideFunction sourceFunction in binary.functionDict.Values)
+            if (entryFunction != null)
+            {
+                Queue<(OxideFunction, int)> functionsToProcess = new Queue<(OxideFunction, int)>();
+                functionsToProcess.Enqueue((entryFunction, 0));
+
+                while (functionsToProcess.Count > 0)
+                {
+                    (OxideFunction sourceFunction, int level) = functionsToProcess.Dequeue();
+
+                    Vector3 position = new Vector3(Random.Range(-1.0f, 1.0f), 10.0f - (1.0f * level), Random.Range(-1.0f, 1.0f));
+                    NodeInfo sourceNode = graph.AddNodeToGraph(position, sourceFunction.name, sourceFunction.signature);
+                    functionNodeDict[sourceFunction] = sourceNode;
+
+                    foreach (OxideFunction targetFunction in sourceFunction.calledFunctionsDict.Values)
+                    {
+                        if (functionNodeDict.ContainsKey(targetFunction)) continue;
+                        functionsToProcess.Enqueue((targetFunction, level + 1));
+                    }
+
+                    yield return new WaitForEndOfFrame(); 
+                }
+            }
+
+            // foreach (OxideFunction function in binary.functionDict.Values)
+            // {
+            //     // Debug.Log($"Add node {function.name} to graph");
+            //     Vector3 position = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(2.0f, 5.0f), Random.Range(-5.0f, 5.0f));
+            //     NodeInfo nodeInfo = graph.AddNodeToGraph(position, function.name, function.signature);
+            //     functionNodeDict[function] = nodeInfo;
+            //     yield return new WaitForEndOfFrame(); 
+            // }
+
+            foreach (OxideFunction sourceFunction in functionNodeDict.Keys)
             {
                 foreach (OxideFunction targetFunction in sourceFunction.calledFunctionsDict.Values)
                 {
@@ -66,8 +99,12 @@ namespace PUL
                 }
                 yield return new WaitForEndOfFrame(); 
             }
-            
+
             graph.StartGraph();
+            //graph.RunForIterations(1);
+            // STUPID HACK BECAUSE "RunForIterations" ISN'T WORKING YET
+            for (int crap = 0; crap < 500; crap++) yield return new WaitForEndOfFrame(); 
+            graph.StopGraph();
         }
 
         public void BuildFunctionControlFlowGraph(OxideFunction function)
