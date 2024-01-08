@@ -235,25 +235,33 @@ namespace PUL
                             {
                                 basicBlock.destinationAddressList.Add($"{addr}");
                             }
-                            basicBlock.destinationBlockDict = new SortedDictionary<int, OxideBasicBlock>();
+                            basicBlock.sourceBasicBlockDict = new SortedDictionary<int, OxideBasicBlock>();
+                            basicBlock.targetBasicBlockDict = new SortedDictionary<int, OxideBasicBlock>();
                         }
 
-                        // Now walk through each block and identify destination blocks
-                        foreach (OxideBasicBlock basicBlock in binary.basicBlockDict.Values)
+                        // Now walk through each block and identify source and target blocks
+                        foreach (KeyValuePair<int, OxideBasicBlock> item in binary.basicBlockDict)
                         {
-                            foreach (string destinationAddress in basicBlock.destinationAddressList)
+                            // Identify source block
+                            OxideBasicBlock sourceBlock = item.Value;
+                            foreach (string destinationAddress in sourceBlock.destinationAddressList)
                             {
-                                // Check if the destination is a valid offset and
-                                // add the block to the dict
-                                int offset = -1;
+                                // Check if the destination is a valid offset
+                                int targetOffset = -1;
                                 try 
                                 { 
-                                    offset = Int32.Parse(destinationAddress);
+                                    targetOffset = Int32.Parse(destinationAddress);
                                 }
                                 catch {}
-                                if (binary.basicBlockDict.ContainsKey(offset))
+                                // If valid, update source and target dicts
+                                if (binary.basicBlockDict.ContainsKey(targetOffset))
                                 {
-                                    basicBlock.destinationBlockDict[offset] = binary.basicBlockDict[offset];
+                                    // Identify target block
+                                    OxideBasicBlock targetBlock = binary.basicBlockDict[targetOffset];
+                                    // Update source block's targets
+                                    sourceBlock.targetBasicBlockDict[targetOffset] = targetBlock;
+                                    // Update target block's sources
+                                    targetBlock.sourceBasicBlockDict[item.Key] = sourceBlock;
                                 }
                             }
                         }
@@ -306,7 +314,8 @@ namespace PUL
                             {
                                 function.paramsList.Add($"{param}");
                             }
-                            function.calledFunctionsDict = new SortedDictionary<int, OxideFunction>();
+                            function.sourceFunctionDict = new SortedDictionary<int, OxideFunction>();
+                            function.targetFunctionDict = new SortedDictionary<int, OxideFunction>();
                         }
                     }
                 }
@@ -341,7 +350,8 @@ namespace PUL
                 mainDummyFunction.vaddr = "0";
                 mainDummyFunction.retType = "unknown";
                 mainDummyFunction.returning = false;
-                mainDummyFunction.calledFunctionsDict = new SortedDictionary<int, OxideFunction>();
+                mainDummyFunction.sourceFunctionDict = new SortedDictionary<int, OxideFunction>();
+                mainDummyFunction.targetFunctionDict = new SortedDictionary<int, OxideFunction>();
                 mainDummyFunction.basicBlockDict = new SortedDictionary<int, OxideBasicBlock>();
                 // Set parent and child relationships for all "orphaned" basic blocks. 
                 foreach (KeyValuePair<int, OxideBasicBlock> blockItem in binary.basicBlockDict)
@@ -354,8 +364,9 @@ namespace PUL
                 }
 
                 // CLEANUP 2
-                // Retrieve and process function call info now that we have bi-directional
-                // links between function <-> block <-> instruction
+                // Update function-level sources and targets now that we have bi-directional
+                // links between function <-> block <-> instruction.
+                // First pull function_calls info from Nexus/Oxide.
                 string functionCallsJsonString = await NexusSyncTask($"[\"oxide_retrieve\", \"function_calls\", [\"{binary.oid}\"], {{}}]");
                 if (functionCallsJsonString != null) 
                 {
@@ -372,12 +383,13 @@ namespace PUL
                             OxideFunction sourceFunction = basicBlock.parentFunction;
 
                             // Next find the "target" function in a similar manner
-                            // and add it to the source function's dict of called functions
+                            // and update the source and target's lists of targets and sources
                             int targetOffset = (int)(item.Value["func_addr"]);
                             if (binary.functionDict.ContainsKey(targetOffset))
                             {
                                 OxideFunction targetFunction = binary.functionDict[targetOffset];
-                                sourceFunction.calledFunctionsDict[targetOffset] = targetFunction;
+                                sourceFunction.targetFunctionDict[targetOffset] = targetFunction;
+                                targetFunction.sourceFunctionDict[sourceOffset] = sourceFunction;
                                 // Debug.Log($"INFO: Function {sourceFunction.name} calls {targetFunction.name}");
                             }
                             else 

@@ -132,7 +132,11 @@ namespace PUL
 
         public OxideBinary parentBinary { get; set; }
 
-        public SortedDictionary<int, OxideFunction> calledFunctionsDict { get; set; }
+        // What other functions call this one? indexed by offset
+        public SortedDictionary<int, OxideFunction> sourceFunctionDict { get; set; }
+
+        // What other functions does this one call? indexed by offset
+        public SortedDictionary<int, OxideFunction> targetFunctionDict { get; set; }
 
         // Decomp lines associated with this function, indexed by line number
         public SortedDictionary<int, OxideDecompLine> decompDict { get; set; }
@@ -162,8 +166,11 @@ namespace PUL
         // Instructions associated with this basic block, indexed by offset
         public SortedDictionary<int, OxideInstruction> instructionDict { get; set; }
 
-        // Destination basic blocks, indexed by offset
-        public SortedDictionary<int, OxideBasicBlock> destinationBlockDict { get; set; }
+        // Source blocks of this block, indexed by offset
+        public SortedDictionary<int, OxideBasicBlock> sourceBasicBlockDict { get; set; }
+
+        // Destination blocks of this block, indexed by offset
+        public SortedDictionary<int, OxideBasicBlock> targetBasicBlockDict { get; set; }
 
         // Keep destinations as strings because not all of them are offsets
         public IList<string> destinationAddressList { get; set; }
