@@ -5,7 +5,6 @@ using JetBrains.Annotations;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
-using TMPro;
 
 namespace PUL
 {
@@ -27,6 +26,7 @@ namespace PUL
         public Dictionary<int, NodeInfo> nodes = new();
         public Dictionary<int, int> idToIndexMap = new();
 
+        // Unique index for each node. Just start at 0 and increment it for each new node.
         int currIndex = 0;
 
         bool backgroundCalculation = false;
@@ -57,32 +57,20 @@ namespace PUL
         /// Adds a <see cref="Node"/> component to the component gameobject that is passed. When the graph is run,
         /// this behaviour will move the gameobject as it responds to forces in the graph.
         /// </summary>
-        /// <param name="component">The component whose gameobject will have a node attached.</param>
+        /// <param name="gameObject">The gameobject that will have a node attached.</param>
         /// <param name="nodeMass">The mass of the node. A larger mass will mean more inertia.</param>
         [PublicAPI]
-        public NodeInfo AddNodeToGraph(Vector3 startingPosition, string nodeName, string nodeText, float nodeMass = 1) // TODO: Add starting position
+        public NodeInfo AddNodeToGraph(GameObject gameObject, float nodeMass = 1) // TODO: Add starting position
         {
-            // Create the GameObject that visually represents this node
-            GameObject graphNodePrefab = Resources.Load("Prefabs/GraphNode") as GameObject;
-            GameObject graphNode = Instantiate(graphNodePrefab, startingPosition, Quaternion.identity);
-
-            // Set values on the graph node
-            graphNode.transform.SetParent(this.gameObject.transform);
-
-            TextMeshPro nodeTitleTMP = graphNode.transform.Find("TitleBar/Title").gameObject.GetComponent<TextMeshPro>();
-            nodeTitleTMP.text = nodeName;
-            TextMeshPro nodeContentTMP = graphNode.transform.Find("GraphCodeLine/TextMeshPro").gameObject.GetComponent<TextMeshPro>();
-            nodeContentTMP.text = nodeText;
-
-            // This is not necessary but is a good test and kind of fun. Comment it out!
-            // graphNode.AddComponent<TwistyBehavior>();
+            // Connect the gameObject to this graph
+            gameObject.transform.SetParent(this.gameObject.transform);
 
             // Create and register the NodeInfo for this graph node.
-            NodeInfo nodeInfo = graphNode.AddComponent<NodeInfo>();
+            NodeInfo nodeInfo = gameObject.AddComponent<NodeInfo>();
             nodeInfo.Mass = nodeMass;
-            nodeInfo.nodeGameObject = graphNode;
+            nodeInfo.nodeGameObject = gameObject;
             nodes[currIndex] = nodeInfo;
-            idToIndexMap[graphNode.GetInstanceID()] = currIndex;
+            idToIndexMap[gameObject.GetInstanceID()] = currIndex;
             nodeInfo.MyIndex = currIndex;
             currIndex++;
             return nodeInfo;
@@ -117,9 +105,9 @@ namespace PUL
         {
             foreach(NodeInfo node in nodes.Values)
             {
-                if(node.edges.Count <= 1)
+                if(node.MyEdges.Count <= 1)
                 {
-                    Debug.Log(node.edges.Count);
+                    // Debug.Log(node.MyEdges.Count);
                     node.IsImmobile = true;
                 }
             }

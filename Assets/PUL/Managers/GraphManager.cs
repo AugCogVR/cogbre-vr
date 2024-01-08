@@ -1,8 +1,8 @@
-//using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using TMPro;
 
 namespace PUL
 {
@@ -65,8 +65,19 @@ namespace PUL
                 {
                     (OxideFunction sourceFunction, int level) = functionsToProcess.Dequeue();
 
+                    // Create the GameObject that visually represents this node
+                    GameObject graphNodePrefab = Resources.Load("Prefabs/GraphNode") as GameObject;
                     Vector3 position = new Vector3(Random.Range(-1.0f, 1.0f), 10.0f - (1.0f * level), Random.Range(-1.0f, 1.0f));
-                    NodeInfo sourceNode = graph.AddNodeToGraph(position, sourceFunction.name, sourceFunction.signature);
+                    GameObject gameObject = Instantiate(graphNodePrefab, position, Quaternion.identity);
+                    TextMeshPro nodeTitleTMP = gameObject.transform.Find("TitleBar/Title").gameObject.GetComponent<TextMeshPro>();
+                    nodeTitleTMP.text = sourceFunction.name;
+                    TextMeshPro nodeContentTMP = gameObject.transform.Find("GraphCodeLine/TextMeshPro").gameObject.GetComponent<TextMeshPro>();
+                    nodeContentTMP.text = sourceFunction.signature;
+
+                    // This is not necessary but is a good test and kind of fun. Comment it out!
+                    // gameObject.AddComponent<TwistyBehavior>();
+
+                    NodeInfo sourceNode = graph.AddNodeToGraph(gameObject);
                     functionNodeDict[sourceFunction] = sourceNode;
 
                     foreach (OxideFunction targetFunction in sourceFunction.calledFunctionsDict.Values)
