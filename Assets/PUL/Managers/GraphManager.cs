@@ -48,12 +48,12 @@ namespace PUL
 
         IEnumerator BuildBinaryCallGraphCoroutine(OxideBinary binary, ForceDirectedGraph graph, Dictionary<OxideFunction, NodeInfo> functionNodeDict)
         {
-            // Add function nodes by doing a breadth-first search
+            // Add function nodes by doing a breadth-first search with a queue
             Queue<(OxideFunction, int)> functionsToProcess = new Queue<(OxideFunction, int)>();
 
-            // Start with functions that have no sources
+            // Start by adding functions that have no sources to the queue
             foreach (OxideFunction function in binary.functionDict.Values)
-                if (function.sourceFunctionDict.Count == 0)
+                if ((function.sourceFunctionDict.Count == 0) && (function.targetFunctionDict.Count > 0))
                     functionsToProcess.Enqueue((function, 0));
 
             // Until the queue is empty, add function nodes to the graph.
@@ -128,12 +128,12 @@ namespace PUL
 
         IEnumerator BuildFunctionControlFlowGraphCoroutine(OxideFunction function, ForceDirectedGraph graph, Dictionary<OxideBasicBlock, NodeInfo> basicBlockNodeDict)
         {
-            // Add basic block nodes by doing a breadth-first search
+            // Add basic block nodes by doing a breadth-first search with a queue
             Queue<(OxideBasicBlock, int)> basicBlocksToProcess = new Queue<(OxideBasicBlock, int)>();
 
-            // Start with blocks that have no sources
+            // Start by adding blocks that have no sources to the queue
             foreach (OxideBasicBlock basicBlock in function.basicBlockDict.Values)
-                if (basicBlock.sourceBasicBlockDict.Count == 0)
+                if ((basicBlock.sourceBasicBlockDict.Count == 0) && (basicBlock.targetBasicBlockDict.Count > 0))
                     basicBlocksToProcess.Enqueue((basicBlock, 0));
 
             // Until the queue is empty, add block nodes to the graph.
