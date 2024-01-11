@@ -62,12 +62,12 @@ namespace PUL
                 (OxideFunction sourceFunction, int level) = functionsToProcess.Dequeue();
 
                 // Create the GameObject that visually represents this node
-                GameObject graphNodePrefab = Resources.Load("Prefabs/GraphNode") as GameObject;
-                Vector3 position = new Vector3(Random.Range(-1.0f, 1.0f), 10.0f - (1.0f * level), Random.Range(-1.0f, 1.0f));
+                GameObject graphNodePrefab = Resources.Load("Prefabs/FunctionNode") as GameObject;
+                Vector3 position = new Vector3(Random.Range(-1.0f, 1.0f), 4.0f - (0.5f * level), 2.0f);
                 GameObject gameObject = Instantiate(graphNodePrefab, position, Quaternion.identity);
-                TextMeshPro nodeTitleTMP = gameObject.transform.Find("TitleBar/Title").gameObject.GetComponent<TextMeshPro>();
+                TextMeshPro nodeTitleTMP = gameObject.transform.Find("TitleBar/TitleTMP").gameObject.GetComponent<TextMeshPro>();
                 nodeTitleTMP.text = sourceFunction.name;
-                TextMeshPro nodeContentTMP = gameObject.transform.Find("GraphCodeLine/TextMeshPro").gameObject.GetComponent<TextMeshPro>();
+                TextMeshPro nodeContentTMP = gameObject.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
                 nodeContentTMP.text = sourceFunction.signature;
 
                 // This is not necessary but is a good test and kind of fun. Comment it out!
@@ -108,11 +108,11 @@ namespace PUL
                 yield return new WaitForEndOfFrame(); 
             }
 
-            graph.StartGraph();
-            //graph.RunForIterations(1);
-            // STUPID HACK BECAUSE "RunForIterations" ISN'T WORKING YET
-            for (int crap = 0; crap < 500; crap++) yield return new WaitForEndOfFrame(); 
-            graph.StopGraph();
+            // graph.StartGraph();
+            // // graph.RunForIterations(2000);
+            // // STUPID HACK BECAUSE "RunForIterations" ISN'T WORKING YET
+            // for (int crap = 0; crap < 500; crap++) yield return new WaitForEndOfFrame(); 
+            // graph.StopGraph();
         }
 
         public void BuildFunctionControlFlowGraph(OxideFunction function)
@@ -142,12 +142,12 @@ namespace PUL
                 (OxideBasicBlock sourceBasicBlock, int level) = basicBlocksToProcess.Dequeue();
 
                 // Create the GameObject that visually represents this node
-                GameObject graphNodePrefab = Resources.Load("Prefabs/GraphNode") as GameObject;
+                GameObject graphNodePrefab = Resources.Load("Prefabs/BasicBlockNode") as GameObject;
                 Vector3 position = new Vector3(Random.Range(-1.0f, 1.0f), 10.0f - (1.0f * level), Random.Range(-1.0f, 1.0f));
                 GameObject gameObject = Instantiate(graphNodePrefab, position, Quaternion.identity);
-                TextMeshPro nodeTitleTMP = gameObject.transform.Find("TitleBar/Title").gameObject.GetComponent<TextMeshPro>();
+                TextMeshPro nodeTitleTMP = gameObject.transform.Find("TitleBar/TitleTMP").gameObject.GetComponent<TextMeshPro>();
                 nodeTitleTMP.text = sourceBasicBlock.offset;
-                TextMeshPro nodeContentTMP = gameObject.transform.Find("GraphCodeLine/TextMeshPro").gameObject.GetComponent<TextMeshPro>();
+                TextMeshPro nodeContentTMP = gameObject.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
                 nodeContentTMP.text = "";
                 foreach (OxideInstruction instruction in sourceBasicBlock.instructionDict.Values)
                 {

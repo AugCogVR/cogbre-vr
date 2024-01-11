@@ -81,7 +81,7 @@ namespace PUL
         {
             GameObject graphEdge = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             Destroy(graphEdge.GetComponent<CapsuleCollider>());   // Disable collisions for edges
-            graphEdge.transform.localScale = new Vector3(.1f, 1f, .1f);
+            graphEdge.transform.localScale = new Vector3(.05f, 1f, .05f);
             EdgeInfo edgeInfo = graphEdge.AddComponent<EdgeInfo>();
             edgeInfo.sourceTransform = sourceNode.transform;
             edgeInfo.targetTransform = targetNode.transform;
