@@ -79,9 +79,11 @@ namespace PUL
         [PublicAPI]
         public EdgeInfo AddEdgeToGraph(NodeInfo sourceNode, NodeInfo targetNode)
         {
-            GameObject graphEdge = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            Destroy(graphEdge.GetComponent<CapsuleCollider>());   // Disable collisions for edges
-            graphEdge.transform.localScale = new Vector3(.05f, 1f, .05f);
+            GameObject graphEdgePrefab = Resources.Load("Prefabs/GraphArrow") as GameObject;
+            GameObject graphEdge = Instantiate(graphEdgePrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
+            //GameObject graphEdge = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            //Destroy(graphEdge.GetComponent<CapsuleCollider>());   // Disable collisions for edges
+            //graphEdge.transform.localScale = new Vector3(.05f, 1f, .05f);
             EdgeInfo edgeInfo = graphEdge.AddComponent<EdgeInfo>();
             edgeInfo.sourceTransform = sourceNode.transform;
             edgeInfo.targetTransform = targetNode.transform;

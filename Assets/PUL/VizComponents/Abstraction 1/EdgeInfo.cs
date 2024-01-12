@@ -13,10 +13,19 @@ namespace PUL
 
         public void Update()
         {
+            // Update transform of this edge to visually connect two nodes (source and target transforms)
+
+            // First, find center point halfway between two transforms (.lerp linearly interpolates between two points)
             transform.position = Vector3.Lerp(sourceTransform.position, targetTransform.position, .5f);
-            transform.LookAt(sourceTransform);
-            transform.Rotate(Vector3.right * 90);
-            transform.localScale = new Vector3(.025f, Vector3.Distance(sourceTransform.position, targetTransform.position) * 0.5f, .025f);
+
+            // Second, set heading toward the target transform
+            transform.LookAt(targetTransform);
+
+            // Rotate the model to head the right way
+            transform.Rotate(Vector3.up * -90);
+
+            // Finally, scale the model to stretch between the two edge transforms
+            transform.localScale = new Vector3(Vector3.Distance(sourceTransform.position, targetTransform.position), 1f, 1f);
         }
     }
 }

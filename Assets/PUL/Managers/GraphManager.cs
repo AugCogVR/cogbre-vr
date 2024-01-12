@@ -66,12 +66,10 @@ namespace PUL
 
                 // Create the GameObject that visually represents this node
                 GameObject graphNodePrefab = Resources.Load("Prefabs/FunctionNode") as GameObject;
-                Vector3 position = new Vector3(Random.Range(-1.0f, 1.0f), 4.0f - (0.5f * level), 2.0f);
+                Vector3 position = new Vector3(0.0f, 0.0f, 0.0f);
                 GameObject gameObject = Instantiate(graphNodePrefab, position, Quaternion.identity);
-                TextMeshPro nodeTitleTMP = gameObject.transform.Find("TitleBar/TitleTMP").gameObject.GetComponent<TextMeshPro>();
+                TextMeshPro nodeTitleTMP = gameObject.transform.Find("TextBar/TextTMP").gameObject.GetComponent<TextMeshPro>();
                 nodeTitleTMP.text = sourceFunction.name;
-                TextMeshPro nodeContentTMP = gameObject.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
-                nodeContentTMP.text = sourceFunction.signature;
 
                 // This is not necessary but is a good test and kind of fun. Comment it out!
                 // gameObject.AddComponent<TwistyBehavior>();
@@ -132,9 +130,9 @@ namespace PUL
             }
 
             graph.StartGraph();
-            // graph.RunForIterations(2000);
+            // // graph.RunForIterations(2000);
             // STUPID HACK BECAUSE "RunForIterations" ISN'T WORKING YET
-            for (int crap = 0; crap < 500; crap++) yield return new WaitForEndOfFrame(); 
+            for (int crap = 0; crap < 50; crap++) yield return new WaitForEndOfFrame(); 
             graph.StopGraph();
         }
 
