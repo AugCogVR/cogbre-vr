@@ -48,6 +48,9 @@ namespace PUL
 
         IEnumerator BuildBinaryCallGraphCoroutine(OxideBinary binary, ForceDirectedGraph graph, Dictionary<OxideFunction, NodeInfo> functionNodeDict)
         {
+            // As we process the graph nodes, collect what nodes are at what levels
+            Dictionary<int, IList<GameObject>> layout = new Dictionary<int, IList<GameObject>>();
+
             // Add function nodes by doing a breadth-first search with a queue
             Queue<(OxideFunction, int)> functionsToProcess = new Queue<(OxideFunction, int)>();
 
@@ -76,12 +79,32 @@ namespace PUL
                 NodeInfo sourceNode = graph.AddNodeToGraph(gameObject);
                 functionNodeDict[sourceFunction] = sourceNode;
 
+                if (!layout.ContainsKey(level)) layout[level] = new List<GameObject>();
+                layout[level].Add(gameObject);
+
                 foreach (OxideFunction targetFunction in sourceFunction.targetFunctionDict.Values)
                 {
                     if (functionNodeDict.ContainsKey(targetFunction)) continue; // don't add nodes multiple times
                     functionsToProcess.Enqueue((targetFunction, level + 1));
                 }
 
+                yield return new WaitForEndOfFrame(); 
+            }
+
+            // Reposition nodes per the collected layout
+            float xBuffer = 0.5f;
+            float yBuffer = 0.33f;
+            float top = layout.Keys.Count * yBuffer;
+            foreach (int level in layout.Keys)
+            {
+                float y = top - (level * yBuffer);
+                int xCount = 0;
+                foreach (GameObject gameObject in layout[level])
+                {
+                    float x = xBuffer * xCount;
+                    gameObject.transform.position = new Vector3(x, y, 2.0f);
+                    xCount++;
+                }
                 yield return new WaitForEndOfFrame(); 
             }
 
@@ -108,11 +131,11 @@ namespace PUL
                 yield return new WaitForEndOfFrame(); 
             }
 
-            // graph.StartGraph();
-            // // graph.RunForIterations(2000);
-            // // STUPID HACK BECAUSE "RunForIterations" ISN'T WORKING YET
-            // for (int crap = 0; crap < 500; crap++) yield return new WaitForEndOfFrame(); 
-            // graph.StopGraph();
+            graph.StartGraph();
+            // graph.RunForIterations(2000);
+            // STUPID HACK BECAUSE "RunForIterations" ISN'T WORKING YET
+            for (int crap = 0; crap < 500; crap++) yield return new WaitForEndOfFrame(); 
+            graph.StopGraph();
         }
 
         public void BuildFunctionControlFlowGraph(OxideFunction function)
