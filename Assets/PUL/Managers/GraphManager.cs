@@ -129,11 +129,11 @@ namespace PUL
                 yield return new WaitForEndOfFrame(); 
             }
 
-            graph.StartGraph();
-            // // graph.RunForIterations(2000);
-            // STUPID HACK BECAUSE "RunForIterations" ISN'T WORKING YET
-            for (int crap = 0; crap < 50; crap++) yield return new WaitForEndOfFrame(); 
-            graph.StopGraph();
+            // graph.StartGraph();
+            // // // graph.RunForIterations(2000);
+            // // STUPID HACK BECAUSE "RunForIterations" ISN'T WORKING YET
+            // for (int crap = 0; crap < 5; crap++) yield return new WaitForEndOfFrame(); 
+            // graph.StopGraph();
         }
 
         public void BuildFunctionControlFlowGraph(OxideFunction function)

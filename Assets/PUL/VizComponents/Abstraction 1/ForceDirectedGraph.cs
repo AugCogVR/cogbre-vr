@@ -39,11 +39,11 @@ namespace PUL
         // variables that can be set externally or adjusted from the Unity Editor.
         [Header("Adjustable Values")][Range(0.001f, 500)]
         // The constant that resembles Ke in Coulomb's Law to signify the strength of the repulsive force between nodes.
-        public float UniversalRepulsiveForce = 0.01f; // 4.5f;
+        public float UniversalRepulsiveForce = 1.0f; // 0.001f; // 4.5f;
 
         [Range(0.001f, 100)]
         // The constant that resembles K in Hooke's Law to signify the strength of the attraction on an edge.
-        public float UniversalSpringForce = 2;
+        public float UniversalSpringForce = 0.001f; // 1.0f;
 
         [Range(1, 10)]
         // The speed at which each iteration is run (lower is faster).
@@ -81,9 +81,6 @@ namespace PUL
         {
             GameObject graphEdgePrefab = Resources.Load("Prefabs/GraphArrow") as GameObject;
             GameObject graphEdge = Instantiate(graphEdgePrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
-            //GameObject graphEdge = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            //Destroy(graphEdge.GetComponent<CapsuleCollider>());   // Disable collisions for edges
-            //graphEdge.transform.localScale = new Vector3(.05f, 1f, .05f);
             EdgeInfo edgeInfo = graphEdge.AddComponent<EdgeInfo>();
             edgeInfo.sourceTransform = sourceNode.transform;
             edgeInfo.targetTransform = targetNode.transform;
