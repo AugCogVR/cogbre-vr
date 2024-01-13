@@ -9,7 +9,7 @@ using UnityEngine;
 namespace PUL
 {
     /// <summary>
-    /// Basic Graph
+    /// Basic Graph -- add nodes and edges and nothing else interesting happens.
     ///
     /// Usage:
     /// -Attach this component to a GameObject in a scene.
@@ -30,12 +30,11 @@ namespace PUL
         protected int currIndex = 0;
 
         /// <summary>
-        /// Adds a <see cref="Node"/> component to the component gameobject that is passed. When the graph is run,
-        /// this behaviour will move the gameobject as it responds to forces in the graph.
+        /// Adds a <see cref="Node"/> component to the component gameobject that is passed.
         /// </summary>
         /// <param name="gameObject">The gameobject that will have a node attached.</param>
         [PublicAPI]
-        public NodeInfo AddNodeToGraph(GameObject gameObject) 
+        public virtual NodeInfo AddNodeToGraph(GameObject gameObject) 
         {
             // Connect the gameObject to this graph
             gameObject.transform.SetParent(this.gameObject.transform, false);
@@ -51,7 +50,7 @@ namespace PUL
         }
 
         [PublicAPI]
-        public EdgeInfo AddEdgeToGraph(NodeInfo sourceNode, NodeInfo targetNode)
+        public virtual EdgeInfo AddEdgeToGraph(NodeInfo sourceNode, NodeInfo targetNode)
         {
             // Create gameObject
             GameObject graphEdgePrefab = Resources.Load("Prefabs/GraphArrow") as GameObject;
@@ -78,7 +77,7 @@ namespace PUL
         }
 
         [PublicAPI]
-        public void Clear()
+        public virtual void Clear()
         {
             foreach (NodeInfo node in nodes.Values)
             {
@@ -88,25 +87,25 @@ namespace PUL
             nodes.Clear();
         }
 
-        void OnDestroy()
-        {
-            Clear();
-        }
+        // void OnDestroy()
+        // {
+        //     Clear();
+        // }
 
         [PublicAPI]
-        public void StartGraph()
-        {
-            // Nothing to do for basic graph
-        }
-
-        [PublicAPI]
-        public void StopGraph()
+        public virtual void StartGraph()
         {
             // Nothing to do for basic graph
         }
 
         [PublicAPI]
-        public void RunForIterations(int numIterations)
+        public virtual void StopGraph()
+        {
+            // Nothing to do for basic graph
+        }
+
+        [PublicAPI]
+        public virtual void RunForIterations(int numIterations)
         {
             // Nothing to do for basic graph
         }

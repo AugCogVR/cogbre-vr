@@ -51,7 +51,7 @@ namespace PUL
             GameObject graphHandle = buildGraphHandle($"Call Graph for {binary.name}");
 
             // Create an FDG, add it to our list, and set its parent to the graph handle
-            BasicGraph graph = gameObject.AddComponent<BasicGraph>(); // TODO: Can't instantiate more than one graph with this convention!!!!
+            HierarchicalGraph graph = gameObject.AddComponent<HierarchicalGraph>(); // TODO: Can't instantiate more than one graph with this convention!!!!
             graphList.Add(graph);
             graph.transform.SetParent(graphHandle.transform, false);
             graph.transform.localPosition = new Vector3(0, 0, 0);

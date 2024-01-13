@@ -20,15 +20,6 @@ namespace PUL
     /// </summary>
     public class ForceDirectedGraph : BasicGraph
     {
-        // /// <summary>
-        // /// All of the nodes in the graph.
-        // /// </summary>
-        // public Dictionary<int, NodeInfo> nodes = new();
-        // public Dictionary<int, int> idToIndexMap = new();
-
-        // // Unique index for each node. Just start at 0 and increment it for each new node.
-        // int currIndex = 0;
-
         bool backgroundCalculation = false;
 
         /// <summary>
@@ -59,40 +50,52 @@ namespace PUL
         /// </summary>
         /// <param name="gameObject">The gameobject that will have a node attached.</param>
         [PublicAPI]
-        public NodeInfo AddNodeToGraph(GameObject gameObject)
+        public override NodeInfo AddNodeToGraph(GameObject gameObject)
         {
-            // Connect the gameObject to this graph
-            gameObject.transform.SetParent(this.gameObject.transform, false);
+            NodeInfo nodeInfo = base.AddNodeToGraph(gameObject);
 
-            // Create and register the NodeInfo for this graph node.
-            NodeInfo nodeInfo = gameObject.AddComponent<NodeInfo>();
             nodeInfo.Mass = 1;
-            nodeInfo.nodeGameObject = gameObject;
-            nodes[currIndex] = nodeInfo;
-            idToIndexMap[gameObject.GetInstanceID()] = currIndex;
-            nodeInfo.MyIndex = currIndex;
-            currIndex++;
+
             return nodeInfo;
         }
 
         [PublicAPI]
-        public EdgeInfo AddEdgeToGraph(NodeInfo sourceNode, NodeInfo targetNode)
+        public override EdgeInfo AddEdgeToGraph(NodeInfo sourceNode, NodeInfo targetNode)
         {
-            // Create gameObject
-            GameObject graphEdgePrefab = Resources.Load("Prefabs/GraphArrow") as GameObject;
-            GameObject graphEdge = Instantiate(graphEdgePrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
-
-            // Connect the gameObject to this graph
-            gameObject.transform.SetParent(this.gameObject.transform, false);
-
-            // Attach, set, and return edge info
-            EdgeInfo edgeInfo = graphEdge.AddComponent<EdgeInfo>();
-            edgeInfo.sourceTransform = sourceNode.transform;
-            edgeInfo.targetTransform = targetNode.transform;
-            sourceNode.MyEdges.Add(targetNode.MyIndex);
-            return edgeInfo;
+            return base.AddEdgeToGraph(sourceNode, targetNode);
         }
 
+        [PublicAPI]
+        public override void StartGraph()
+        {
+            foreach (NodeInfo node in nodes.Values)
+            {
+                node.VirtualPosition = node.transform.localPosition;
+            }
+
+            graphAnimator = StartCoroutine(Iterate());
+        }
+
+        [PublicAPI]
+        public override void StopGraph()
+        {
+            if (graphAnimator == null) return;
+
+            StopCoroutine(graphAnimator);
+            graphAnimator = null;
+        }
+
+        [PublicAPI]
+        public override void RunForIterations(int numIterations)
+        {
+            backgroundCalculation = true;  // this makes it not run.... ????
+            foreach (NodeInfo node in nodes.Values)
+            {
+                node.VirtualPosition = node.transform.localPosition;
+            }
+
+            graphAnimator = StartCoroutine(Iterate(numIterations));
+        }
         [PublicAPI]
         //This creates "Anchor Nodes" that are immobile. Stabilizes lone nodes, or nodes that only have 1 target.
         //TO DO: a good fix, but it's ugly. obvious that some work is going on behind the scenes, because the nodes with single edges are often stretched across the screen. Needs some work, but good for now.
@@ -106,38 +109,6 @@ namespace PUL
                     node.IsImmobile = true;
                 }
             }
-        }
-
-        [PublicAPI]
-        public void StartGraph()
-        {
-            foreach (NodeInfo node in nodes.Values)
-            {
-                node.VirtualPosition = node.transform.localPosition;
-            }
-
-            graphAnimator = StartCoroutine(Iterate());
-        }
-
-        [PublicAPI]
-        public void StopGraph()
-        {
-            if (graphAnimator == null) return;
-
-            StopCoroutine(graphAnimator);
-            graphAnimator = null;
-        }
-
-        [PublicAPI]
-        public void RunForIterations(int numIterations)
-        {
-            backgroundCalculation = true;  // this makes it not run.... ????
-            foreach (NodeInfo node in nodes.Values)
-            {
-                node.VirtualPosition = node.transform.localPosition;
-            }
-
-            graphAnimator = StartCoroutine(Iterate(numIterations));
         }
 
         [PublicAPI]
