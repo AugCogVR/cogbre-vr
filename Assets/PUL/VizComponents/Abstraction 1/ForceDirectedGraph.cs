@@ -18,16 +18,16 @@ namespace PUL
     ///  previously added to the graph
     /// -Run and Stop the graph using <see cref="StartGraph"/> and <see cref="StopGraph"/>. 
     /// </summary>
-    public class ForceDirectedGraph : MonoBehaviour
+    public class ForceDirectedGraph : BasicGraph
     {
-        /// <summary>
-        /// All of the nodes in the graph.
-        /// </summary>
-        public Dictionary<int, NodeInfo> nodes = new();
-        public Dictionary<int, int> idToIndexMap = new();
+        // /// <summary>
+        // /// All of the nodes in the graph.
+        // /// </summary>
+        // public Dictionary<int, NodeInfo> nodes = new();
+        // public Dictionary<int, int> idToIndexMap = new();
 
-        // Unique index for each node. Just start at 0 and increment it for each new node.
-        int currIndex = 0;
+        // // Unique index for each node. Just start at 0 and increment it for each new node.
+        // int currIndex = 0;
 
         bool backgroundCalculation = false;
 
@@ -58,16 +58,15 @@ namespace PUL
         /// this behaviour will move the gameobject as it responds to forces in the graph.
         /// </summary>
         /// <param name="gameObject">The gameobject that will have a node attached.</param>
-        /// <param name="nodeMass">The mass of the node. A larger mass will mean more inertia.</param>
         [PublicAPI]
-        public NodeInfo AddNodeToGraph(GameObject gameObject, float nodeMass = 1) // TODO: Add starting position
+        public NodeInfo AddNodeToGraph(GameObject gameObject)
         {
             // Connect the gameObject to this graph
             gameObject.transform.SetParent(this.gameObject.transform, false);
 
             // Create and register the NodeInfo for this graph node.
             NodeInfo nodeInfo = gameObject.AddComponent<NodeInfo>();
-            nodeInfo.Mass = nodeMass;
+            nodeInfo.Mass = 1;
             nodeInfo.nodeGameObject = gameObject;
             nodes[currIndex] = nodeInfo;
             idToIndexMap[gameObject.GetInstanceID()] = currIndex;
@@ -95,15 +94,6 @@ namespace PUL
         }
 
         [PublicAPI]
-        public void Update()
-        {
-            // BARF-O-MATIC TEST -- test that the graph node & edge transforms are properly
-            // connected to the parent graph by spinning the whole graph wildly. 
-            // This should never be enabled in normal operations.
-            // transform.localEulerAngles = transform.localEulerAngles + new Vector3(0, 1, 0);
-        }
-
-        [PublicAPI]
         //This creates "Anchor Nodes" that are immobile. Stabilizes lone nodes, or nodes that only have 1 target.
         //TO DO: a good fix, but it's ugly. obvious that some work is going on behind the scenes, because the nodes with single edges are often stretched across the screen. Needs some work, but good for now.
         public void setLoneValuesImmobile()
@@ -116,17 +106,6 @@ namespace PUL
                     node.IsImmobile = true;
                 }
             }
-        }
-
-        [PublicAPI]
-        public void Clear()
-        {
-            foreach (NodeInfo node in nodes.Values)
-            {
-                Destroy(node);
-            }
-
-            nodes.Clear();
         }
 
         [PublicAPI]
@@ -175,11 +154,6 @@ namespace PUL
             NodeInfo node = nodeComponent.GetComponent<NodeInfo>();
             if (node == null) return;
             node.Mass = nodeMass;
-        }
-
-        void OnDestroy()
-        {
-            Clear();
         }
 
         IEnumerator Iterate(int remainingIterations = 0)

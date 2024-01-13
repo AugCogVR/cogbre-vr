@@ -7,16 +7,22 @@ namespace PUL
 {
     public class NodeInfo : MonoBehaviour
     {
+        // Mass is used by Force Directed Graph and ignored otherwise
         public float Mass;
 
+        // IsImmobile is used by Force Directed Graph and ignored otherwise
         public bool IsImmobile = false;
 
+        // VirtualPosition is used by Force Directed Graph and ignored otherwise
         public Vector3 VirtualPosition = Vector3.zero;
 
+        // List of indices of other graph nodes to which we're connected
         public readonly List<int> MyEdges = new();
 
+        // Convenience field: what is my index? 
         public int MyIndex;
 
+        // Convenience field: what is my associated GameObject?
         public GameObject nodeGameObject = null;
 
 

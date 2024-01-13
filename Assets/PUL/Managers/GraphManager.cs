@@ -51,9 +51,7 @@ namespace PUL
             GameObject graphHandle = buildGraphHandle($"Call Graph for {binary.name}");
 
             // Create an FDG, add it to our list, and set its parent to the graph handle
-            // TODO: In this case, we are abusing the FDG by just never running it. We should
-            // create a similar graph class for traditional hierarchical graphs and use that instead. 
-            ForceDirectedGraph graph = gameObject.AddComponent<ForceDirectedGraph>(); // TODO: Can't instantiate more than one graph with this convention!!!!
+            BasicGraph graph = gameObject.AddComponent<BasicGraph>(); // TODO: Can't instantiate more than one graph with this convention!!!!
             graphList.Add(graph);
             graph.transform.SetParent(graphHandle.transform, false);
             graph.transform.localPosition = new Vector3(0, 0, 0);
@@ -66,7 +64,7 @@ namespace PUL
             StartCoroutine(BuildBinaryCallGraphCoroutine(binary, graph, functionNodeDict));
         }
 
-        IEnumerator BuildBinaryCallGraphCoroutine(OxideBinary binary, ForceDirectedGraph graph, Dictionary<OxideFunction, NodeInfo> functionNodeDict)
+        IEnumerator BuildBinaryCallGraphCoroutine(OxideBinary binary, BasicGraph graph, Dictionary<OxideFunction, NodeInfo> functionNodeDict)
         {
             // Build a hierarchical graph
             // As we process the graph nodes, collect what nodes are at what levels
@@ -129,16 +127,6 @@ namespace PUL
                 yield return new WaitForEndOfFrame(); 
             }
 
-            // ALTERNATIVE: Just add all functions indiscriminately, starting in completely random positions. 
-            // foreach (OxideFunction function in binary.functionDict.Values)
-            // {
-            //     // Debug.Log($"Add node {function.name} to graph");
-            //     Vector3 position = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(2.0f, 5.0f), Random.Range(-5.0f, 5.0f));
-            //     NodeInfo nodeInfo = graph.AddNodeToGraph(position, function.name, function.signature);
-            //     functionNodeDict[function] = nodeInfo;
-            //     yield return new WaitForEndOfFrame(); 
-            // }
-
             // Add edges
             foreach (OxideFunction sourceFunction in functionNodeDict.Keys)
             {
@@ -151,15 +139,6 @@ namespace PUL
                 }
                 yield return new WaitForEndOfFrame(); 
             }
-
-            // Here is where we start the graph iteratively calculating the node positions based on
-            // the force parameters, and let it run for a fixed number of iterations. 
-
-            // graph.StartGraph();
-            // // graph.RunForIterations(50);
-            // // STUPID HACK BECAUSE "RunForIterations" ISN'T WORKING YET
-            // for (int crap = 0; crap < 50; crap++) yield return new WaitForEndOfFrame(); 
-            // graph.StopGraph();
         }
 
         public void BuildFunctionControlFlowGraph(OxideFunction function)
