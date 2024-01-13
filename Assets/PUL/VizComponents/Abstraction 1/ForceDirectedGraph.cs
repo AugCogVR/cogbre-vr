@@ -63,7 +63,7 @@ namespace PUL
         public NodeInfo AddNodeToGraph(GameObject gameObject, float nodeMass = 1) // TODO: Add starting position
         {
             // Connect the gameObject to this graph
-            gameObject.transform.SetParent(this.gameObject.transform);
+            gameObject.transform.SetParent(this.gameObject.transform, false);
 
             // Create and register the NodeInfo for this graph node.
             NodeInfo nodeInfo = gameObject.AddComponent<NodeInfo>();
@@ -79,8 +79,14 @@ namespace PUL
         [PublicAPI]
         public EdgeInfo AddEdgeToGraph(NodeInfo sourceNode, NodeInfo targetNode)
         {
+            // Create gameObject
             GameObject graphEdgePrefab = Resources.Load("Prefabs/GraphArrow") as GameObject;
             GameObject graphEdge = Instantiate(graphEdgePrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
+
+            // Connect the gameObject to this graph
+            gameObject.transform.SetParent(this.gameObject.transform, false);
+
+            // Attach, set, and return edge info
             EdgeInfo edgeInfo = graphEdge.AddComponent<EdgeInfo>();
             edgeInfo.sourceTransform = sourceNode.transform;
             edgeInfo.targetTransform = targetNode.transform;

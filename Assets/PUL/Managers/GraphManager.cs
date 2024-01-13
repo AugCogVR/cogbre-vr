@@ -35,19 +35,40 @@ namespace PUL
         {
         }
 
+        GameObject buildGraphHandle(string labelText)
+        {
+            GameObject graphHandlePrefab = Resources.Load("Prefabs/GraphHandle") as GameObject;
+            Vector3 position = new Vector3(0.82f, 0, 0.77f);
+            GameObject gameObject = Instantiate(graphHandlePrefab, position, Quaternion.identity);
+            TextMeshPro nodeTitleTMP = gameObject.transform.Find("TextBar/TextTMP").gameObject.GetComponent<TextMeshPro>();
+            nodeTitleTMP.text = labelText;
+            return gameObject;
+        }
+
         public void BuildBinaryCallGraph(OxideBinary binary)
         {
-            ForceDirectedGraph graph = gameObject.AddComponent<ForceDirectedGraph>();
+            // Build the "handle" object that the user can use to move the whole graph around
+            GameObject graphHandle = buildGraphHandle($"Call Graph for {binary.name}");
+
+            // Create an FDG, add it to our list, and set its parent to the graph handle
+            // TODO: In this case, we are abusing the FDG by just never running it. We should
+            // create a similar graph class for traditional hierarchical graphs and use that instead. 
+            ForceDirectedGraph graph = gameObject.AddComponent<ForceDirectedGraph>(); // TODO: Can't instantiate more than one graph with this convention!!!!
             graphList.Add(graph);
-            
+            graph.transform.SetParent(graphHandle.transform, false);
+            graph.transform.localPosition = new Vector3(0, 0, 0);
+
+            // Track what functions are associated with what graph nodes
             Dictionary<OxideFunction, NodeInfo> functionNodeDict = new Dictionary<OxideFunction, NodeInfo>(); 
             // TODO: Promote this to a class-level value or put in class-level data structure later
 
+            // Build the graph
             StartCoroutine(BuildBinaryCallGraphCoroutine(binary, graph, functionNodeDict));
         }
 
         IEnumerator BuildBinaryCallGraphCoroutine(OxideBinary binary, ForceDirectedGraph graph, Dictionary<OxideFunction, NodeInfo> functionNodeDict)
         {
+            // Build a hierarchical graph
             // As we process the graph nodes, collect what nodes are at what levels
             Dictionary<int, IList<GameObject>> layout = new Dictionary<int, IList<GameObject>>();
 
@@ -66,12 +87,12 @@ namespace PUL
 
                 // Create the GameObject that visually represents this node
                 GameObject graphNodePrefab = Resources.Load("Prefabs/FunctionNode") as GameObject;
-                Vector3 position = new Vector3(0.0f, 0.0f, 0.0f);
-                GameObject gameObject = Instantiate(graphNodePrefab, position, Quaternion.identity);
+                GameObject gameObject = Instantiate(graphNodePrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
                 TextMeshPro nodeTitleTMP = gameObject.transform.Find("TextBar/TextTMP").gameObject.GetComponent<TextMeshPro>();
                 nodeTitleTMP.text = sourceFunction.name;
 
-                // This is not necessary but is a good test and kind of fun. Comment it out!
+                // TEST: This is not necessary but is a good test of attaching a behavior and 
+                // is kind of fun. Recommend to comment it out!
                 // gameObject.AddComponent<TwistyBehavior>();
 
                 NodeInfo sourceNode = graph.AddNodeToGraph(gameObject);
@@ -90,17 +111,19 @@ namespace PUL
             }
 
             // Reposition nodes per the collected layout
-            float xBuffer = 0.5f;
-            float yBuffer = 0.33f;
-            float top = layout.Keys.Count * yBuffer;
+            float xOffset = 0.25f;
+            float yOffset = -0.25f;
+            float xMultiplier = 0.5f;
+            float yMultiplier = -0.33f;
+            // float top = layout.Keys.Count * yBuffer;
             foreach (int level in layout.Keys)
             {
-                float y = top - (level * yBuffer);
+                float y = (level * yMultiplier) + yOffset;
                 int xCount = 0;
                 foreach (GameObject gameObject in layout[level])
                 {
-                    float x = xBuffer * xCount;
-                    gameObject.transform.position = new Vector3(x, y, 2.0f);
+                    float x = (xMultiplier * xCount) + xOffset;
+                    gameObject.transform.localPosition = new Vector3(x, y, 0);
                     xCount++;
                 }
                 yield return new WaitForEndOfFrame(); 
@@ -129,10 +152,13 @@ namespace PUL
                 yield return new WaitForEndOfFrame(); 
             }
 
+            // Here is where we start the graph iteratively calculating the node positions based on
+            // the force parameters, and let it run for a fixed number of iterations. 
+
             // graph.StartGraph();
-            // // // graph.RunForIterations(2000);
+            // // graph.RunForIterations(50);
             // // STUPID HACK BECAUSE "RunForIterations" ISN'T WORKING YET
-            // for (int crap = 0; crap < 5; crap++) yield return new WaitForEndOfFrame(); 
+            // for (int crap = 0; crap < 50; crap++) yield return new WaitForEndOfFrame(); 
             // graph.StopGraph();
         }
 

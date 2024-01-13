@@ -6,14 +6,19 @@ namespace PUL
 {
     public class EdgeInfo : MonoBehaviour
     {
+        // Source node for this edge
         public Transform sourceTransform;
 
+        // Target node for this edge
         public Transform targetTransform;
 
 
         public void Update()
         {
-            // Update transform of this edge to visually connect two nodes (source and target transforms)
+            // TODO: I *feel* like we should check if the source or target node positions have changed before
+            // recalculating the transforms for every edge model on every single frame. However, the checks 
+            // themselves require calculation as well, and there is more code needed to track status. 
+            // So... leaving it as-is for now. 
 
             // First, find center point halfway between two transforms (.lerp linearly interpolates between two points)
             transform.position = Vector3.Lerp(sourceTransform.position, targetTransform.position, .5f);
