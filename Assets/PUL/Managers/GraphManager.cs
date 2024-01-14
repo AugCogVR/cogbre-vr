@@ -39,10 +39,11 @@ namespace PUL
         {
             GameObject graphHandlePrefab = Resources.Load("Prefabs/GraphHandle") as GameObject;
             Vector3 position = new Vector3(0.82f, 0, 0.77f);
-            GameObject gameObject = Instantiate(graphHandlePrefab, position, Quaternion.identity);
-            TextMeshPro nodeTitleTMP = gameObject.transform.Find("TextBar/TextTMP").gameObject.GetComponent<TextMeshPro>();
+            GameObject graphHandle = Instantiate(graphHandlePrefab, position, Quaternion.identity);
+            TextMeshPro nodeTitleTMP = graphHandle.transform.Find("TextBar/TextTMP").gameObject.GetComponent<TextMeshPro>();
             nodeTitleTMP.text = labelText;
-            return gameObject;
+            graphHandle.transform.SetParent(this.gameObject.transform, false);
+            return graphHandle;
         }
 
         public void BuildBinaryCallGraph(OxideBinary binary)
@@ -50,11 +51,9 @@ namespace PUL
             // Build the "handle" object that the user can use to move the whole graph around
             GameObject graphHandle = buildGraphHandle($"Call Graph for {binary.name}");
 
-            // Create an FDG, add it to our list, and set its parent to the graph handle
-            HierarchicalGraph graph = gameObject.AddComponent<HierarchicalGraph>(); // TODO: Can't instantiate more than one graph with this convention!!!!
+            // Create a graph as a component of the graph handle, add it to our list, and set its parent to the graph handle
+            HierarchicalGraph graph = graphHandle.AddComponent<HierarchicalGraph>(); 
             graphList.Add(graph);
-            graph.transform.SetParent(graphHandle.transform, false);
-            graph.transform.localPosition = new Vector3(0, 0, 0);
 
             // Track what functions are associated with what graph nodes
             Dictionary<OxideFunction, NodeInfo> functionNodeDict = new Dictionary<OxideFunction, NodeInfo>(); 
@@ -143,7 +142,11 @@ namespace PUL
 
         public void BuildFunctionControlFlowGraph(OxideFunction function)
         {
-            ForceDirectedGraph graph = gameObject.AddComponent<ForceDirectedGraph>();
+            // Build the "handle" object that the user can use to move the whole graph around
+            GameObject graphHandle = buildGraphHandle($"CFG for {function.name}");
+
+            // Create a graph as a component of the graph handle, add it to our list, and set its parent to the graph handle
+            ForceDirectedGraph graph = graphHandle.AddComponent<ForceDirectedGraph>();
             graphList.Add(graph);
             
             Dictionary<OxideBasicBlock, NodeInfo> basicBlockNodeDict = new Dictionary<OxideBasicBlock, NodeInfo>(); 
