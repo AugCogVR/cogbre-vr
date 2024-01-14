@@ -7,6 +7,21 @@ namespace PUL
 {
     public class NodeInfo : MonoBehaviour
     {
+        // ============================
+        // BEGIN fields used by HierarchicalGraph -- can be ignored in other cases
+
+        public List<NodeInfo> sourceNodeInfos = new();
+
+        public List<NodeInfo> targetNodeInfos = new();
+
+        public bool added = false;
+
+        // END fields used by HierarchicalGraph -- can be ignored in other cases
+        // ============================
+
+        // ============================
+        // BEGIN fields used by ForceDirectedGraph -- can be ignored in other cases
+
         // Mass is used by Force Directed Graph and ignored otherwise
         public float Mass;
 
@@ -21,6 +36,9 @@ namespace PUL
 
         // Convenience field: what is my index? 
         public int MyIndex;
+
+        // END fields used by ForceDirectedGraph -- can be ignored in other cases
+        // ============================
 
         // Convenience field: what is my associated GameObject?
         public GameObject nodeGameObject = null;

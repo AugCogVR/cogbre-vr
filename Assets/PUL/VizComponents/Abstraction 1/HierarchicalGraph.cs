@@ -44,7 +44,55 @@ namespace PUL
         [PublicAPI]
         public override void StartGraph()
         {
-            // TODO: Move logic that positions the nodes from GraphManager to here
+            StartCoroutine(StartGraphCoroutine());
+        }
+
+        IEnumerator StartGraphCoroutine()
+        {
+            // Arrange the nodes into a hierarchical graph
+            // As we process the graph nodes, collect what nodes are at what levels
+            Dictionary<int, IList<NodeInfo>> layout = new Dictionary<int, IList<NodeInfo>>();
+
+            // Add nodes by doing a breadth-first search with a queue
+            Queue<(NodeInfo, int)> nodeInfosToProcess = new Queue<(NodeInfo, int)>();
+
+            // Start by adding nodes that have no sources to the queue
+            foreach (NodeInfo nodeInfo in nodes.Values)
+                if (nodeInfo.sourceNodeInfos.Count == 0)
+                    nodeInfosToProcess.Enqueue((nodeInfo, 0));
+
+            // Until the queue is empty, add function nodes to the graph.
+            while (nodeInfosToProcess.Count > 0)
+            {
+                (NodeInfo sourceNodeInfo, int level) = nodeInfosToProcess.Dequeue();
+                if (!layout.ContainsKey(level)) layout[level] = new List<NodeInfo>();
+                layout[level].Add(sourceNodeInfo);
+                sourceNodeInfo.added = true;
+                foreach (NodeInfo targetNodeInfo in sourceNodeInfo.targetNodeInfos)
+                {
+                    if (targetNodeInfo.added) continue; // don't add nodes multiple times
+                    nodeInfosToProcess.Enqueue((targetNodeInfo, level + 1));
+                }
+                yield return new WaitForEndOfFrame();
+            }
+
+            // Reposition nodes per the collected layout
+            float xOffset = 0.25f;
+            float yOffset = -0.25f;
+            foreach (int level in layout.Keys)
+            {
+                int xCount = 0;
+                foreach (NodeInfo nodeInfo in layout[level])
+                {
+                    Vector3 size = nodeInfo.nodeGameObject.GetComponent<Collider>().bounds.size;
+                    // Debug.Log($" SIZE SIZE SIZE {size}");
+                    float x = ((size.x + 0.2f) * xCount) + xOffset;
+                    float y = (-size.y * 2.0f * level) + yOffset;
+                    nodeInfo.transform.localPosition = new Vector3(x, y, 0);
+                    xCount++;
+                }
+                yield return new WaitForEndOfFrame();
+            }
         }
     }
 }
