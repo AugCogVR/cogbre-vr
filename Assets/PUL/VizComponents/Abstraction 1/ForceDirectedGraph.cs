@@ -9,7 +9,8 @@ using UnityEngine;
 namespace PUL
 {
     /// <summary>
-    /// Force-Directed Graph starting with randomly-placed nodes. See Edge 
+    /// A force directed graph for Unity that uses Hooke's Law and Coulombs Law running in Unity C# Jobs.
+    /// Adaptation of this code: https://github.com/atonalfreerider/Unity-FDG
     ///
     /// Usage:
     /// -Attach this component to a GameObject in a scene.
@@ -96,6 +97,7 @@ namespace PUL
 
             graphAnimator = StartCoroutine(Iterate(numIterations));
         }
+
         [PublicAPI]
         //This creates "Anchor Nodes" that are immobile. Stabilizes lone nodes, or nodes that only have 1 target.
         //TO DO: a good fix, but it's ugly. obvious that some work is going on behind the scenes, because the nodes with single edges are often stretched across the screen. Needs some work, but good for now.
