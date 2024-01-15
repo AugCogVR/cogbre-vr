@@ -57,8 +57,13 @@ namespace PUL
             GameObject graphEdge = Instantiate(graphEdgePrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
 
             // Connect the gameObject to this graph
-            gameObject.transform.SetParent(this.gameObject.transform, false);
+            graphEdge.transform.SetParent(this.gameObject.transform, false);
 
+            // Attach line renderer
+            LineRenderer lineRenderer = graphEdge.AddComponent<LineRenderer>();
+            lineRenderer.startWidth = 0.01f;
+            lineRenderer.endWidth = 0.01f;
+        
             // Attach, set, and return edge info
             EdgeInfo edgeInfo = graphEdge.AddComponent<EdgeInfo>();
             edgeInfo.sourceTransform = sourceNode.transform;
