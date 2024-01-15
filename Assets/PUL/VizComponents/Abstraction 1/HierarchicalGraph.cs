@@ -50,6 +50,10 @@ namespace PUL
         IEnumerator StartGraphCoroutine()
         {
             // Arrange the nodes into a hierarchical graph
+
+            // THIS IS CURRENTLY A VERY RUDIMENTARY GRID-BASED LAYOUT.
+            // TODO: Implement a Sugiyama-like layout
+            
             // As we process the graph nodes, collect what nodes are at what levels
             Dictionary<int, IList<NodeInfo>> layout = new Dictionary<int, IList<NodeInfo>>();
 
