@@ -14,10 +14,12 @@ namespace PUL
 
         public List<NodeInfo> targetNodeInfos = new();
 
+        // Has this node been added to the graph yet? 
         public bool added = false;
 
         // END fields used by HierarchicalGraph -- can be ignored in other cases
         // ============================
+
 
         // ============================
         // BEGIN fields used by ForceDirectedGraph -- can be ignored in other cases
@@ -39,6 +41,7 @@ namespace PUL
 
         // END fields used by ForceDirectedGraph -- can be ignored in other cases
         // ============================
+
 
         // Convenience field: what is my associated GameObject?
         public GameObject nodeGameObject = null;

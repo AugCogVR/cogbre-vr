@@ -565,6 +565,9 @@ namespace PUL
 
             GameManager.graphManager.BuildFunctionControlFlowGraph(selectedFunction);
 
+            // Uncomment this line to test the Force-Directed Graph. 
+            // GameManager.graphManager.BuildFunctionControlFlowGraphFDG(selectedFunction);
+
             statusText.text = defaultStatusText;
             isBusy = false;
         }

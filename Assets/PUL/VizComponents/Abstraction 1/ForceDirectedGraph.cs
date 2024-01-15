@@ -21,6 +21,15 @@ namespace PUL
     /// </summary>
     public class ForceDirectedGraph : BasicGraph
     {
+        /// <summary>
+        /// All of the nodes in the graph.
+        /// </summary>
+        public Dictionary<int, NodeInfo> nodes = new();
+        public Dictionary<int, int> idToIndexMap = new();
+
+        // Unique index for each node. Just start at 0 and increment it for each new node.
+        protected int currIndex = 0;
+
         bool backgroundCalculation = false;
 
         /// <summary>
@@ -54,16 +63,20 @@ namespace PUL
         public override NodeInfo AddNodeToGraph(GameObject gameObject)
         {
             NodeInfo nodeInfo = base.AddNodeToGraph(gameObject);
-
             nodeInfo.Mass = 1;
-
+            nodes[currIndex] = nodeInfo;
+            idToIndexMap[gameObject.GetInstanceID()] = currIndex;
+            nodeInfo.MyIndex = currIndex;
+            currIndex++;
             return nodeInfo;
         }
 
         [PublicAPI]
         public override EdgeInfo AddEdgeToGraph(NodeInfo sourceNode, NodeInfo targetNode)
         {
-            return base.AddEdgeToGraph(sourceNode, targetNode);
+            EdgeInfo edgeInfo = base.AddEdgeToGraph(sourceNode, targetNode);
+            sourceNode.MyEdges.Add(targetNode.MyIndex); 
+            return edgeInfo;
         }
 
         [PublicAPI]

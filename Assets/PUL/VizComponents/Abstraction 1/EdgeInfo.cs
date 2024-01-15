@@ -6,11 +6,8 @@ namespace PUL
 {
     public class EdgeInfo : MonoBehaviour
     {
-        // Source node for this edge
-        public Transform sourceTransform;
-
-        // Target node for this edge
-        public Transform targetTransform;
+        // The control points defining the line or curve between source and target nodes
+        public IList<GameObject> controlPoints;
 
 
         public void Update()
@@ -22,21 +19,65 @@ namespace PUL
 
             // Update the line renderer
             LineRenderer lineRenderer = this.gameObject.GetComponent<LineRenderer>();
-            lineRenderer.SetPosition(0, sourceTransform.position);
-            lineRenderer.SetPosition(1, targetTransform.position);
-            // This is apparently the new location for the default-line material per some rando on the internet
-            lineRenderer.material = new Material(Shader.Find("Legacy Shaders/Particles/Alpha Blended Premultiply"));
+
+            // If there are more than 2 control points, draw bezier curves
+            if (controlPoints.Count > 2)
+            {
+                UpdateLineRendererBezier(lineRenderer);
+            }
+            // Otherwise just draw a single straight line
+            else 
+            {
+                lineRenderer.SetPosition(0, controlPoints[0].transform.position);
+                lineRenderer.SetPosition(1, controlPoints[1].transform.position);
+            }
 
             // Update the arrow:
             // Position the arrow closer to the target (.lerp linearly interpolates between two points)
             // Ideally, we want the arrow to be adjacent to the target but not inside the target. 
             // TODO: Don't hardcode the distance adjustment
-            float distance = Vector3.Distance(sourceTransform.position, targetTransform.position);
-            transform.position = Vector3.Lerp(sourceTransform.position, targetTransform.position, (distance - 0.15f) / distance);
+            Transform lastSectionStart = (controlPoints[controlPoints.Count - 2]).transform;
+            Transform lastSectionEnd = (controlPoints[controlPoints.Count - 1]).transform;
+            float distance = Vector3.Distance(lastSectionStart.position, lastSectionEnd.position);
+            transform.position = Vector3.Lerp(lastSectionStart.position, lastSectionEnd.position, (distance - 0.15f) / distance);
             // Set the arrow's heading toward the target transform
-            transform.LookAt(targetTransform);
+            transform.LookAt(lastSectionEnd);
             // Rotate the model to head the right way
             transform.Rotate(Vector3.up * -90);
+        }
+
+        // Thanks to https://www.gamedeveloper.com/business/how-to-work-with-bezier-curve-in-games-with-unity
+        void UpdateLineRendererBezier(LineRenderer lineRenderer)
+        {
+            int curveCount = (int)(controlPoints.Count / 3);
+            int segmentCount = 25;
+
+            for (int curveIdx = 0; curveIdx < curveCount; curveIdx++)
+            {
+                for (int segmentIdx = 1; segmentIdx <= segmentCount; segmentIdx++)
+                {
+                    float t = segmentIdx / (float)segmentCount;
+                    int nodeIndex = curveIdx * 3;
+                    Vector3 point = CalculateCubicBezierPoint(t, controlPoints[nodeIndex].transform.position, controlPoints[nodeIndex + 1].transform.position, controlPoints[nodeIndex + 2].transform.position, controlPoints[nodeIndex + 3].transform.position);
+                    lineRenderer.positionCount = (curveIdx * segmentCount) + segmentIdx;
+                    lineRenderer.SetPosition((curveIdx * segmentCount) + (segmentIdx - 1), point);
+                }                
+            }
+        }
+        Vector3 CalculateCubicBezierPoint(float t, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
+        {
+            float u = 1 - t;
+            float tt = t * t;
+            float uu = u * u;
+            float uuu = uu * u;
+            float ttt = tt * t;
+            
+            Vector3 p = uuu * p0; 
+            p += 3 * uu * t * p1; 
+            p += 3 * u * tt * p2; 
+            p += ttt * p3; 
+            
+            return p;
         }
     }
 }
