@@ -151,7 +151,12 @@ namespace PUL
                 {
                     NodeInfo nodeInfo = basicBlockNodeInfoDict[basicBlock];
                     foreach (OxideBasicBlock sourceBasicBlock in basicBlock.sourceBasicBlockDict.Values)
-                        nodeInfo.sourceNodeInfos.Add(basicBlockNodeInfoDict[sourceBasicBlock]);
+                    {
+                        if (basicBlockNodeInfoDict.ContainsKey(sourceBasicBlock)) // TODO: Why do I need to do this check? Why is a nodeInfo missing for a basicBlock that has sources???
+                        {
+                            nodeInfo.sourceNodeInfos.Add(basicBlockNodeInfoDict[sourceBasicBlock]);
+                        }
+                    }
                     foreach (OxideBasicBlock targetBasicBlock in basicBlock.targetBasicBlockDict.Values)
                     {
                         if (basicBlockNodeInfoDict.ContainsKey(targetBasicBlock)) // TODO: Why do I need to do this check? Why is a nodeInfo missing for a basicBlock that has targets???
