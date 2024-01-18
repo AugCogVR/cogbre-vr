@@ -8,17 +8,26 @@ namespace PUL
     public class NodeInfo : MonoBehaviour
     {
         // ============================
+        // BEGIN fields used by SugiyamaGraph and HierarchicalGraph -- can be ignored in other cases
+
+        public List<EdgeInfo> sourceEdgeInfos = new();
+
+        public List<EdgeInfo> targetEdgeInfos = new();
+
+        // END fields used by SugiyamaGraph and HierarchicalGraph -- can be ignored in other cases
+        // ============================
+
+
+
+        // ============================
         // BEGIN fields used by HierarchicalGraph -- can be ignored in other cases
-
-        public List<NodeInfo> sourceNodeInfos = new();
-
-        public List<NodeInfo> targetNodeInfos = new();
 
         // Has this node been added to the graph yet? 
         public bool added = false;
 
         // END fields used by HierarchicalGraph -- can be ignored in other cases
         // ============================
+
 
 
         // ============================

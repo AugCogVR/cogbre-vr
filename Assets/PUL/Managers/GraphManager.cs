@@ -84,18 +84,19 @@ namespace PUL
                 yield return new WaitForEndOfFrame();
             }
 
-            // Set source/target relationships in graph nodes and add edges
-            foreach (OxideFunction function in binary.functionDict.Values)
+            // Add edges to the graph
+            foreach (OxideFunction sourceFunction in binary.functionDict.Values)
             {
-                if (functionNodeInfoDict.ContainsKey(function))
+                if (functionNodeInfoDict.ContainsKey(sourceFunction))
                 {
-                    NodeInfo nodeInfo = functionNodeInfoDict[function];
-                    foreach (OxideFunction sourceFunction in function.sourceFunctionDict.Values)
-                        nodeInfo.sourceNodeInfos.Add(functionNodeInfoDict[sourceFunction]);
-                    foreach (OxideFunction targetFunction in function.targetFunctionDict.Values)
+                    NodeInfo sourceNodeInfo = functionNodeInfoDict[sourceFunction];
+                    foreach (OxideFunction targetFunction in sourceFunction.targetFunctionDict.Values)
                     {
-                        nodeInfo.targetNodeInfos.Add(functionNodeInfoDict[targetFunction]);
-                        graph.AddEdgeToGraph(nodeInfo, functionNodeInfoDict[targetFunction]);
+                        if (functionNodeInfoDict.ContainsKey(targetFunction))
+                        {
+                            NodeInfo targetNodeInfo = functionNodeInfoDict[targetFunction];
+                            graph.AddEdgeToGraph(sourceNodeInfo, targetNodeInfo);
+                        }
                     }
                 }
                 yield return new WaitForEndOfFrame();
@@ -144,25 +145,18 @@ namespace PUL
                 yield return new WaitForEndOfFrame();
             }
 
-            // Set source/target relationships in graph nodes and add edges
-            foreach (OxideBasicBlock basicBlock in function.basicBlockDict.Values)
+            // Add edges to the graph
+            foreach (OxideBasicBlock sourceBasicBlock in function.basicBlockDict.Values)
             {
-                if (basicBlockNodeInfoDict.ContainsKey(basicBlock))
+                if (basicBlockNodeInfoDict.ContainsKey(sourceBasicBlock))
                 {
-                    NodeInfo nodeInfo = basicBlockNodeInfoDict[basicBlock];
-                    foreach (OxideBasicBlock sourceBasicBlock in basicBlock.sourceBasicBlockDict.Values)
+                    NodeInfo sourceNodeInfo = basicBlockNodeInfoDict[sourceBasicBlock];
+                    foreach (OxideBasicBlock targetBasicBlock in sourceBasicBlock.targetBasicBlockDict.Values)
                     {
-                        if (basicBlockNodeInfoDict.ContainsKey(sourceBasicBlock)) // TODO: Why do I need to do this check? Why is a nodeInfo missing for a basicBlock that has sources???
+                        if (basicBlockNodeInfoDict.ContainsKey(targetBasicBlock))
                         {
-                            nodeInfo.sourceNodeInfos.Add(basicBlockNodeInfoDict[sourceBasicBlock]);
-                        }
-                    }
-                    foreach (OxideBasicBlock targetBasicBlock in basicBlock.targetBasicBlockDict.Values)
-                    {
-                        if (basicBlockNodeInfoDict.ContainsKey(targetBasicBlock)) // TODO: Why do I need to do this check? Why is a nodeInfo missing for a basicBlock that has targets???
-                        {
-                            nodeInfo.targetNodeInfos.Add(basicBlockNodeInfoDict[targetBasicBlock]);
-                            graph.AddEdgeToGraph(nodeInfo, basicBlockNodeInfoDict[targetBasicBlock]);
+                            NodeInfo targetNodeInfo = basicBlockNodeInfoDict[targetBasicBlock];
+                            graph.AddEdgeToGraph(sourceNodeInfo, targetNodeInfo);
                         }
                     }
                 }

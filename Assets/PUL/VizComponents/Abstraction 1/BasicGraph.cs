@@ -37,7 +37,7 @@ namespace PUL
         }
 
         [PublicAPI]
-        public virtual EdgeInfo AddEdgeToGraph(NodeInfo sourceNode, NodeInfo targetNode)
+        public virtual EdgeInfo AddEdgeToGraph(NodeInfo sourceNodeInfo, NodeInfo targetNodeInfo)
         {
             // Create gameObject
             GameObject graphEdgePrefab = Resources.Load("Prefabs/GraphArrow") as GameObject;
@@ -53,13 +53,20 @@ namespace PUL
             // This is apparently the new location for the "default-line" material per some rando on the internet
             lineRenderer.material = new Material(Shader.Find("Legacy Shaders/Particles/Alpha Blended Premultiply"));
 
-            // Attach, set, and return edge info
+            // Attach edge info
             EdgeInfo edgeInfo = graphEdge.AddComponent<EdgeInfo>();
+
+            // Set relationships between nodes and edges
+            edgeInfo.sourceNodeInfo = sourceNodeInfo;
+            edgeInfo.targetNodeInfo = targetNodeInfo;
+            sourceNodeInfo.targetEdgeInfos.Add(edgeInfo);
+            targetNodeInfo.sourceEdgeInfos.Add(edgeInfo);
+
             // By default, an edge will have two control points: start and end, as defined 
             // by positions of the source and target nodes
             edgeInfo.controlPoints = new List<GameObject>();
-            edgeInfo.controlPoints.Add(sourceNode.nodeGameObject);
-            edgeInfo.controlPoints.Add(targetNode.nodeGameObject);
+            edgeInfo.controlPoints.Add(sourceNodeInfo.nodeGameObject);
+            edgeInfo.controlPoints.Add(targetNodeInfo.nodeGameObject);
             return edgeInfo;
         }
 
@@ -73,7 +80,7 @@ namespace PUL
         }
 
 
-        // Sort this out later...
+        // TODO: Sort this out later...
 
         // [PublicAPI]
         // public virtual void Clear()

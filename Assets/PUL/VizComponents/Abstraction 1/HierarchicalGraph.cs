@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using JetBrains.Annotations;
-using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 
@@ -57,9 +55,7 @@ namespace PUL
         IEnumerator StartGraphCoroutine()
         {
             // Arrange the nodes into a hierarchical graph
-
-            // THIS IS CURRENTLY A VERY RUDIMENTARY GRID-BASED LAYOUT.
-            // TODO: Implement a Sugiyama-like layout
+            // THIS IS A VERY RUDIMENTARY GRID-BASED LAYOUT.
 
             // As we process the graph nodes, collect what nodes are at what levels
             Dictionary<int, IList<NodeInfo>> layout = new Dictionary<int, IList<NodeInfo>>();
@@ -69,7 +65,7 @@ namespace PUL
 
             // Start by adding nodes that have no sources to the queue
             foreach (NodeInfo nodeInfo in nodes)
-                if (nodeInfo.sourceNodeInfos.Count == 0)
+                if (nodeInfo.sourceEdgeInfos.Count == 0)
                     nodeInfosToProcess.Enqueue((nodeInfo, 0));
 
             // Until the queue is empty, add function nodes to the graph.
@@ -79,10 +75,10 @@ namespace PUL
                 if (!layout.ContainsKey(level)) layout[level] = new List<NodeInfo>();
                 layout[level].Add(sourceNodeInfo);
                 sourceNodeInfo.added = true;
-                foreach (NodeInfo targetNodeInfo in sourceNodeInfo.targetNodeInfos)
+                foreach (EdgeInfo targetEdgeInfo in sourceNodeInfo.targetEdgeInfos)
                 {
-                    if (targetNodeInfo.added) continue; // don't add nodes multiple times
-                    nodeInfosToProcess.Enqueue((targetNodeInfo, level + 1));
+                    if (targetEdgeInfo.targetNodeInfo.added) continue; // don't add nodes multiple times
+                    nodeInfosToProcess.Enqueue((targetEdgeInfo.targetNodeInfo, level + 1));
                 }
                 yield return new WaitForEndOfFrame();
             }

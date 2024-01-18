@@ -6,6 +6,10 @@ namespace PUL
 {
     public class EdgeInfo : MonoBehaviour
     {
+        public NodeInfo sourceNodeInfo;
+
+        public NodeInfo targetNodeInfo;
+
         // The control points defining the line or curve between source and target nodes
         public IList<GameObject> controlPoints;
 
