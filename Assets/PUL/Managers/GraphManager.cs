@@ -53,7 +53,8 @@ namespace PUL
             GameObject graphHandle = buildGraphHandle($"Call Graph for {binary.name}");
 
             // Create a graph as a component of the graph handle, add it to our list, and set its parent to the graph handle
-            HierarchicalGraph graph = graphHandle.AddComponent<HierarchicalGraph>();
+            // HierarchicalGraph graph = graphHandle.AddComponent<HierarchicalGraph>();
+            SugiyamaGraph graph = graphHandle.AddComponent<SugiyamaGraph>();
             graphList.Add(graph);
 
             // Track the nodes create for each function
@@ -112,7 +113,8 @@ namespace PUL
             GameObject graphHandle = buildGraphHandle($"CFG for {function.name}");
 
             // Create a graph as a component of the graph handle, add it to our list, and set its parent to the graph handle
-            HierarchicalGraph graph = graphHandle.AddComponent<HierarchicalGraph>();
+            // HierarchicalGraph graph = graphHandle.AddComponent<HierarchicalGraph>();
+            SugiyamaGraph graph = graphHandle.AddComponent<SugiyamaGraph>();
             graphList.Add(graph);
 
             // Track the nodes create for each basic block            
@@ -122,7 +124,7 @@ namespace PUL
             StartCoroutine(BuildFunctionControlFlowGraphCoroutine(function, graph, basicBlockNodeInfoDict));
         }
 
-        IEnumerator BuildFunctionControlFlowGraphCoroutine(OxideFunction function, HierarchicalGraph graph, Dictionary<OxideBasicBlock, NodeInfo> basicBlockNodeInfoDict)
+        IEnumerator BuildFunctionControlFlowGraphCoroutine(OxideFunction function, BasicGraph graph, Dictionary<OxideBasicBlock, NodeInfo> basicBlockNodeInfoDict)
         {
             // Create and add all the nodes to the graph
             foreach (OxideBasicBlock basicBlock in function.basicBlockDict.Values)

@@ -25,138 +25,22 @@ namespace PUL
         // Graph nodes
         public List<NodeInfo> nodes = new();
 
-        // // Graph edges, accessed by source and target node tuples.
-        // public Dictionary<(NodeInfo, NodeInfo), EdgeInfo> edges = new();
-
-
-
-
-        class CellWrapper : IComparable<CellWrapper>
-        {
-            // sum value for edge Crosses
-            private double edgeCrossesIndicator = 0;
-
-            // counter for additions to the edgeCrossesIndicator
-            private int additions = 0;
-
-            // the vertical level where the cell wrapper is inserted
-            public int level = 0;
-
-            // current position in the grid
-            public int gridPosition = 0;
-
-            // priority for movements to the barycenter
-            public int priority = 0;
-
-            // reference to the node
-            private NodeInfo nodeInfo = null;
-
-            // CellWrapper constructor
-            public CellWrapper(int level, double edgeCrossesIndicator, NodeInfo nodeInfo)
-            {
-                this.level = level;
-                this.edgeCrossesIndicator = edgeCrossesIndicator;
-                this.nodeInfo = nodeInfo;
-                additions++;
-            }
-
-            // returns the wrapped Vertex
-            public NodeInfo getVertexView()
-            {
-                return nodeInfo;
-            }
-
-            // returns the average value for the edge crosses indicator for the wrapped cell
-            public double getEdgeCrossesIndicator()
-            {
-                if (additions == 0)
-                    return 0;
-                return edgeCrossesIndicator / additions;
-            }
-
-            // Adds a value to the edge crosses indicator for the wrapped cell
-            public void addToEdgeCrossesIndicator(double addValue)
-            {
-                edgeCrossesIndicator += addValue;
-                additions++;
-            }
-
-            // gets the level of the wrapped cell
-            public int getLevel()
-            {
-                return level;
-            }
-
-            // gets the grid position for the wrapped cell
-            public int getGridPosition()
-            {
-                return gridPosition;
-            }
-
-            // Sets the grid position for the wrapped cell
-            public void setGridPosition(int pos)
-            {
-                this.gridPosition = pos;
-            }
-
-            // increments the the priority of this cell wrapper.
-            // The priority was used by moving the cell to its barycenter.
-            void incrementPriority()
-            {
-                priority++;
-            }
-
-            // returns the priority of this cell wrapper.
-            // The priority was used by moving the cell to its barycenter.
-            public int getPriority()
-            {
-                return priority;
-            }
-
-            // @see java.lang.Comparable#compareTo(Object)
-            public int CompareTo(CellWrapper compare)
-            {
-                if (compare.getEdgeCrossesIndicator() == this.getEdgeCrossesIndicator())
-                    return 0;
-
-                double compareValue = compare.getEdgeCrossesIndicator() - this.getEdgeCrossesIndicator();
-
-                return (int) (compareValue * 1000);
-
-            }
-        }
-
-
-        enum Orientation
-        {
-            TOP, LEFT
-        }
-
         private static Orientation DEFAULT_ORIENTATION = Orientation.TOP;
 
-        private static int DEFAULT_HORIZONTAL_SPACING = 200;
+        private static int DEFAULT_HORIZONTAL_SPACING = 2;
 
-        private static int DEFAULT_VERTICAL_SPACING = 100;
+        private static int DEFAULT_VERTICAL_SPACING = 1;
 
         private bool executed = false;
 
         // represents the size of the grid in horizontal grid elements
         private int gridAreaSize = Int32.MinValue;
 
-        private int horzSpacing;
-
-        private int vertSpacing;
-
         private HashSet<NodeInfo> traversalSet = new HashSet<NodeInfo>();
 
         private Dictionary<NodeInfo, CellWrapper> vertToWrapper = new Dictionary<NodeInfo, CellWrapper>();
 
         private Orientation orientation;
-
-
-
-
-
 
 
         /// <summary>
@@ -176,9 +60,6 @@ namespace PUL
         public override EdgeInfo AddEdgeToGraph(NodeInfo sourceNode, NodeInfo targetNode)
         {
             EdgeInfo edgeInfo = base.AddEdgeToGraph(sourceNode, targetNode);
-            sourceNode.targetEdgeInfos.Add(edgeInfo);
-            targetNode.sourceEdgeInfos.Add(edgeInfo);
-            // edges[(sourceNode, targetNode)] = edgeInfo;
             return edgeInfo;
         }
 
@@ -188,21 +69,9 @@ namespace PUL
             StartCoroutine(StartGraphCoroutine());
         }
 
-
-
-
-
-
-
-
-
-
-
         IEnumerator StartGraphCoroutine()
         {
             this.orientation = DEFAULT_ORIENTATION;
-    		this.horzSpacing = DEFAULT_HORIZONTAL_SPACING;
-		    this.vertSpacing = DEFAULT_VERTICAL_SPACING;
 
             initialize();
 
@@ -214,23 +83,28 @@ namespace PUL
             if (!executed)
             {
                 List<List<CellWrapper>> graphLevels = runSugiyama();
+
                 foreach (List<CellWrapper> level in graphLevels)
                 {
                     foreach (CellWrapper wrapper in level)
                     {
                         NodeInfo vertex = wrapper.getVertexView();
 
+                        Vector3 size = vertex.nodeGameObject.GetComponent<Collider>().bounds.size;
+                        float xOffset = 0.25f;
+                        float yOffset = -0.25f;
+
                         if (orientation == Orientation.TOP)
                         {
-                            float xCoordinate = 10.0f + (wrapper.gridPosition * horzSpacing);
-                            float yCoordinate = 10.0f + (wrapper.level * vertSpacing);
-                            vertex.transform.localPosition = new Vector3(xCoordinate, yCoordinate, 0.0f);
+                            float x = ((size.x + 0.2f) * wrapper.gridPosition) + xOffset;
+                            float y = (-size.y * 2.0f * wrapper.level) + yOffset;
+                            vertex.transform.localPosition = new Vector3(x, y, 0.0f);
                         }
                         else
                         {
-                            float yCoordinate = 10.0f + (wrapper.gridPosition * vertSpacing);
-                            float xCoordinate = 10.0f + (wrapper.level * horzSpacing);
-                            vertex.transform.localPosition = new Vector3(xCoordinate, yCoordinate, 0.0f);
+                            float y = (-size.y * 2.0f * wrapper.gridPosition) + yOffset;
+                            float x = ((size.x + 0.2f) * wrapper.level) + xOffset;
+                            vertex.transform.localPosition = new Vector3(x, y, 0.0f);
                         }
                     }
                 }
@@ -279,7 +153,7 @@ namespace PUL
                 {
                     traversalSet.Add(vert);
 
-                    int in_degree = vert.sourceEdgeInfos.Count; // getGraph().inDegree(vert);
+                    int in_degree = vert.sourceEdgeInfos.Count; 
                     if (in_degree == 0)
                     {
                         roots.Add(vert);
@@ -290,11 +164,8 @@ namespace PUL
         }
 
         /** Method fills the levels and stores them in the member levels.
-
         * Each level was represended by a List with Cell Wrapper objects.
         * These Lists are the elements in the <code>levels</code> List.
-        * @return 
-        *
         */
         private List<List<CellWrapper>> fillLevels(List<NodeInfo> roots, HashSet<NodeInfo> vertexSet)
         {
@@ -313,7 +184,6 @@ namespace PUL
         /** Fills the List for the specified level with a wrapper
         * for the MyGraphCell. After that the method called for
         * each neighbor graph cell.
-        *
         * @param level The level for the graphCell
         * @param graphCell The Graph Cell
         */
@@ -546,7 +416,6 @@ namespace PUL
                 foreach (EdgeInfo edge in edgeList)
                 {
                     // if it is a forward edge follow it
-                    //Object neighborPort = null;
                     NodeInfo neighborVertex = null;
                     if (vertexView == edge.sourceNodeInfo)
                     {
@@ -554,15 +423,14 @@ namespace PUL
                     }
                     else
                     {
-                        if (vertexView == edge.sourceNodeInfo)   // TODO: THIS REDUNDANCY MAKES NO SENSE, but is in the original code
+                        if (vertexView == edge.targetNodeInfo) 
                         {
-                            neighborVertex = edge.targetNodeInfo; 
+                            neighborVertex = edge.sourceNodeInfo; 
                         }
                     }
 
                     if (neighborVertex != null)
                     {
-
                         CellWrapper targetWrapper = vertToWrapper[neighborVertex];
 
                         if (!(targetWrapper == sourceWrapper) || (targetWrapper == null || targetWrapper.getLevel() == levelIndex))
@@ -599,7 +467,6 @@ namespace PUL
         * @param currentIndexInTheLevel
         * @param currentPriority
         * @param currentWrapper The Wrapper
-        *
         * @return The free GridPosition or -1 is position is not free.
         */
         private bool move(bool toRight, List<CellWrapper> currentLevel, int currentIndexInTheLevel, int currentPriority)
@@ -658,6 +525,107 @@ namespace PUL
             traversalSet.Clear();
             vertToWrapper.Clear();
             executed = false;
+        }
+
+
+        class CellWrapper : IComparable<CellWrapper>
+        {
+            // sum value for edge Crosses
+            private double edgeCrossesIndicator = 0;
+
+            // counter for additions to the edgeCrossesIndicator
+            private int additions = 0;
+
+            // the vertical level where the cell wrapper is inserted
+            public int level = 0;
+
+            // current position in the grid
+            public int gridPosition = 0;
+
+            // priority for movements to the barycenter
+            public int priority = 0;
+
+            // reference to the node
+            private NodeInfo nodeInfo = null;
+
+            // CellWrapper constructor
+            public CellWrapper(int level, double edgeCrossesIndicator, NodeInfo nodeInfo)
+            {
+                this.level = level;
+                this.edgeCrossesIndicator = edgeCrossesIndicator;
+                this.nodeInfo = nodeInfo;
+                additions++;
+            }
+
+            // returns the wrapped Vertex
+            public NodeInfo getVertexView()
+            {
+                return nodeInfo;
+            }
+
+            // returns the average value for the edge crosses indicator for the wrapped cell
+            public double getEdgeCrossesIndicator()
+            {
+                if (additions == 0)
+                    return 0;
+                return edgeCrossesIndicator / additions;
+            }
+
+            // Adds a value to the edge crosses indicator for the wrapped cell
+            public void addToEdgeCrossesIndicator(double addValue)
+            {
+                edgeCrossesIndicator += addValue;
+                additions++;
+            }
+
+            // gets the level of the wrapped cell
+            public int getLevel()
+            {
+                return level;
+            }
+
+            // gets the grid position for the wrapped cell
+            public int getGridPosition()
+            {
+                return gridPosition;
+            }
+
+            // Sets the grid position for the wrapped cell
+            public void setGridPosition(int pos)
+            {
+                this.gridPosition = pos;
+            }
+
+            // increments the the priority of this cell wrapper.
+            // The priority was used by moving the cell to its barycenter.
+            void incrementPriority()
+            {
+                priority++;
+            }
+
+            // returns the priority of this cell wrapper.
+            // The priority was used by moving the cell to its barycenter.
+            public int getPriority()
+            {
+                return priority;
+            }
+
+            // @see java.lang.Comparable#compareTo(Object)
+            public int CompareTo(CellWrapper compare)
+            {
+                if (compare.getEdgeCrossesIndicator() == this.getEdgeCrossesIndicator())
+                    return 0;
+
+                double compareValue = compare.getEdgeCrossesIndicator() - this.getEdgeCrossesIndicator();
+
+                return (int) (compareValue * 1000);
+
+            }
+        }
+
+        enum Orientation
+        {
+            TOP, LEFT
         }
     }
 }
