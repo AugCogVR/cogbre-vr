@@ -105,6 +105,10 @@ namespace PUL
 
             // Let the graph position the nodes
             graph.StartGraph();
+
+            // Assume this action to build the graph originated from a menu call,
+            // so signal its completion. 
+            gameManager.menuManager.unsetBusy();
         }
 
         public void BuildFunctionControlFlowGraph(OxideFunction function)
@@ -167,6 +171,10 @@ namespace PUL
 
             // Let the graph position the nodes
             graph.StartGraph();
+
+            // Assume this action to build the graph originated from a menu call,
+            // so signal its completion. 
+            gameManager.menuManager.unsetBusy();
         }
 
 
@@ -244,6 +252,11 @@ namespace PUL
             }
 
             graph.StartGraph();
+
+            // Assume this action to build the graph originated from a menu call,
+            // so signal its completion. 
+            gameManager.menuManager.unsetBusy();
+
             //graph.RunForIterations(1);
             // STUPID HACK BECAUSE "RunForIterations" ISN'T WORKING YET
             for (int crap = 0; crap < 500; crap++) yield return new WaitForEndOfFrame();

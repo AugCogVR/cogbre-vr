@@ -93,6 +93,29 @@ namespace PUL
         // Use this status text when UI is busy
         private string busyText = "<color=\"red\">PLEASE WAIT FOR CURRENT PROCESSING TO COMPLETE";
 
+        // Attempt to set the menu manager state to "busy" -- called by a long-running
+        // operation when it starts. In busy state, any menu operations
+        // will be ignored. Return true if successful, false otherwise.
+        public bool setBusy()
+        {
+            // If already busy, set a reminder message and return false.
+            if (isBusy)
+            {
+                statusText.text = busyText;
+                return false;
+            }
+
+            // Since we're not busy, we can be busy. 
+            isBusy = true;
+            return true; // Great Success
+        }
+
+        // Unset the busy state -- called by a long-running operation when it completes. 
+        public void unsetBusy()
+        {
+            statusText.text = defaultStatusText;
+            isBusy = false;
+        }
 
         private string createCollectionButtonText(OxideCollection collection)
         {
@@ -165,20 +188,14 @@ namespace PUL
             Interactable fcdistanceInteract = functionControlFlowGraphButton.GetComponent<Interactable>();
             fcdistanceInteract.OnClick.AddListener(() => FunctionControlFlowGraphButtonCallback());
 
-            statusText.text = defaultStatusText;
-            isBusy = false;
+            unsetBusy();
             CollectionGridObjectCollection.UpdateCollection();
             initialized = true;
         }
 
         public async void CollectionButtonCallback(OxideCollection collection, GameObject collectionButton)
         {
-            if (isBusy)
-            {
-                statusText.text = busyText;
-                return;
-            }
-            isBusy = true;
+            if (!setBusy()) return;
 
             // Set the selected collection, binary, function
             selectedCollection = collection;
@@ -249,18 +266,12 @@ namespace PUL
                 yield return new WaitForEndOfFrame();
             }
             BinaryGridObjectCollection.UpdateCollection();
-            statusText.text = defaultStatusText;
-            isBusy = false;
+            unsetBusy();
         }
 
         public async void BinaryButtonCallback(OxideBinary binary, GameObject binaryButton)
         {
-            if (isBusy)
-            {
-                statusText.text = busyText;
-                return;
-            }
-            isBusy = true;
+            if (!setBusy()) return;
 
             // Set the selected binary and function
             selectedBinary = binary;
@@ -326,23 +337,19 @@ namespace PUL
                 if (++count > 10) break; // low limit for testing
             }
             FunctionGridObjectCollection.UpdateCollection();
-            statusText.text = defaultStatusText;
-            isBusy = false;
+            unsetBusy();
         }
 
         public async void BinaryStringsButtonCallback()
         {
-            if (isBusy)
-            {
-                statusText.text = busyText;
-                return;
-            }
+            if (!setBusy()) return;
             if (selectedBinary == null)
             {
+                unsetBusy();
                 statusText.text = "<color=#FF0000>Please select a binary first!";
                 return;
             }
-            isBusy = true;
+            setBusy();
 
             // Tell the user we're doing something that won't happen instantaneously
             statusText.text = $"Retrieving strings for {selectedBinary.name}";
@@ -359,23 +366,19 @@ namespace PUL
             titleBarTMP.text = $"Strings for {selectedBinary.name}";
             contentTMP.text = contentString;
 
-            statusText.text = defaultStatusText;
-            isBusy = false;
+            unsetBusy();
         }
 
         public async void BinaryFileStatsButtonCallback()
         {
-            if (isBusy)
-            {
-                statusText.text = busyText;
-                return;
-            }
+            if (!setBusy()) return;
             if (selectedBinary == null)
             {
+                unsetBusy();
                 statusText.text = "<color=#FF0000>Please select a binary first!";
                 return;
             }
-            isBusy = true;
+            setBusy();
 
             // Tell the user we're doing something that won't happen instantaneously
             statusText.text = $"Retrieving file stats for {selectedBinary.name}";
@@ -391,42 +394,30 @@ namespace PUL
             titleBarTMP.text = $"File stats for {selectedBinary.name}";
             contentTMP.text = contentString;
 
-            statusText.text = defaultStatusText;
-            isBusy = false;
+            unsetBusy();
         }
 
         public void BinaryCallGraphButtonCallback()
         {
-            if (isBusy)
-            {
-                statusText.text = busyText;
-                return;
-            }
+            if (!setBusy()) return;
             if (selectedBinary == null)
             {
+                unsetBusy();
                 statusText.text = "<color=#FF0000>Please select a binary first!";
                 return;
             }
-            isBusy = true;
+            setBusy();
 
             // Tell the user we're doing something that won't happen instantaneously
             statusText.text = $"Building call graph for {selectedBinary.name}";
 
             //bool success = await 
             GameManager.graphManager.BuildBinaryCallGraph(selectedBinary);
-
-            statusText.text = defaultStatusText;
-            isBusy = false;
         }
 
         public void FunctionButtonCallback(OxideBinary binary, OxideFunction function, GameObject functionButton)
         {
-            if (isBusy)
-            {
-                statusText.text = busyText;
-                return;
-            }
-            isBusy = true;
+            if (!setBusy()) return;
 
             // Set the selected function
             selectedFunction = function;
@@ -440,22 +431,19 @@ namespace PUL
             }
             functionButton.GetComponentInChildren<TextMeshPro>().text = $"<color=#FFFF00>{createFunctionButtonText(function)}";
 
-            isBusy = false;
+            unsetBusy();
         }
 
         public void FunctionDisassemblyButtonCallback()
         {
-            if (isBusy)
-            {
-                statusText.text = busyText;
-                return;
-            }
+            if (!setBusy()) return;
             if (selectedFunction == null)
             {
+                unsetBusy();
                 statusText.text = "<color=#FF0000>Please select a function first!";
                 return;
             }
-            isBusy = true;
+            setBusy();
 
             // Tell the user we're doing something that won't happen instantaneously
             statusText.text = $"Retrieving disassembly for {selectedBinary.name} / {selectedFunction.name}";
@@ -471,7 +459,7 @@ namespace PUL
             slateList.Add(slate);
             TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
             TextMeshPro contentTMP = slate.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
-            titleBarTMP.text = $"{binary.name} / {function.name}\n{function.signature}";
+            titleBarTMP.text = $"{binary.name} / {function.name} Disassembly\n{function.signature}";
             contentTMP.text = "";
 
             // Walk through each basic block for this function and add instructions to text display
@@ -485,23 +473,20 @@ namespace PUL
 
                 yield return new WaitForEndOfFrame(); // yield after each block instead of each instruction
             }
-            statusText.text = defaultStatusText;
-            isBusy = false;
+            
+            unsetBusy();
         }
 
         public async void FunctionDecompilationButtonCallback()
         {
-            if (isBusy)
-            {
-                statusText.text = busyText;
-                return;
-            }
+            if (!setBusy()) return;
             if (selectedFunction == null)
             {
+                unsetBusy();
                 statusText.text = "<color=#FF0000>Please select a function first!";
                 return;
             }
-            isBusy = true;
+            setBusy();
 
             // Tell the user we're doing something that won't happen instantaneously
             statusText.text = $"Retrieving decompilation for {selectedBinary.name} / {selectedFunction.name}";
@@ -520,7 +505,7 @@ namespace PUL
             slateList.Add(slate);
             TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
             TextMeshPro contentTMP = slate.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
-            titleBarTMP.text = $"{function.name} Decompilation";
+            titleBarTMP.text = $"{binary.name} / {function.name} Decompilation";
             contentTMP.text = "";
 
             // Walk through decompilation and create text display
@@ -542,23 +527,19 @@ namespace PUL
                 yield return new WaitForEndOfFrame(); 
             }
 
-            statusText.text = defaultStatusText;
-            isBusy = false;
+            unsetBusy();
         }
 
         public void FunctionControlFlowGraphButtonCallback()
         {
-            if (isBusy)
-            {
-                statusText.text = busyText;
-                return;
-            }
+            if (!setBusy()) return;
             if (selectedFunction == null)
             {
+                unsetBusy();
                 statusText.text = "<color=#FF0000>Please select a function first!";
                 return;
             }
-            isBusy = true;
+            setBusy();
 
             // Tell the user we're doing something that won't happen instantaneously
             statusText.text = $"Building control flow graph for {selectedBinary.name} / {selectedFunction.name}";
@@ -567,9 +548,6 @@ namespace PUL
 
             // Uncomment this line to test the Force-Directed Graph. 
             // GameManager.graphManager.BuildFunctionControlFlowGraphFDG(selectedFunction);
-
-            statusText.text = defaultStatusText;
-            isBusy = false;
         }
     }
 }

@@ -324,6 +324,12 @@ namespace PUL
         {
             foreach (NodeInfo v in vertexSet)
             {
+                // BAND-AID for reasons I haven't figured out yet.
+                // Skip this node if it's not in the mapping for whatever reason.
+                // The original code assumes it will be in the mapping and doesn't check. 
+                // Replicate error using "htop" Ubuntu 20.04 elf binary.
+                if (!vertToWrapper.ContainsKey(v)) continue;
+
                 CellWrapper currentwrapper = vertToWrapper[v];
 
                 List<EdgeInfo> edgeList = getNeighborEdges(v);
