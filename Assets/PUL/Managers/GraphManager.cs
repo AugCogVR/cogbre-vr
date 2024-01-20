@@ -52,6 +52,11 @@ namespace PUL
             // Build the "handle" object that the user can use to move the whole graph around
             GameObject graphHandle = buildGraphHandle($"Call Graph for {binary.name}");
 
+            // Hide the graph until it's done
+            graphHandle.transform.position = new Vector3(graphHandle.transform.position.x,
+                                                         graphHandle.transform.position.y - 100f,
+                                                         graphHandle.transform.position.z);
+
             // Create a graph as a component of the graph handle, add it to our list, and set its parent to the graph handle
             // HierarchicalGraph graph = graphHandle.AddComponent<HierarchicalGraph>();
             SugiyamaGraph graph = graphHandle.AddComponent<SugiyamaGraph>();
@@ -62,10 +67,10 @@ namespace PUL
             Dictionary<OxideFunction, NodeInfo> functionNodeInfoDict = new Dictionary<OxideFunction, NodeInfo>();
 
             // Build the graph
-            StartCoroutine(BuildBinaryCallGraphCoroutine(binary, graph, functionNodeInfoDict));
+            StartCoroutine(BuildBinaryCallGraphCoroutine(binary, graph, functionNodeInfoDict, graphHandle));
         }
 
-        IEnumerator BuildBinaryCallGraphCoroutine(OxideBinary binary, BasicGraph graph, Dictionary<OxideFunction, NodeInfo> functionNodeInfoDict)
+        IEnumerator BuildBinaryCallGraphCoroutine(OxideBinary binary, BasicGraph graph, Dictionary<OxideFunction, NodeInfo> functionNodeInfoDict, GameObject graphHandle)
         {
             // Create and add all the nodes to the graph
             foreach (OxideFunction function in binary.functionDict.Values)
@@ -106,6 +111,11 @@ namespace PUL
             // Let the graph position the nodes
             graph.StartGraph();
 
+            // Bring the graph back
+            graphHandle.transform.position = new Vector3(graphHandle.transform.position.x,
+                                                         graphHandle.transform.position.y + 100f,
+                                                         graphHandle.transform.position.z);
+
             // Assume this action to build the graph originated from a menu call,
             // so signal its completion. 
             gameManager.menuManager.unsetBusy();
@@ -114,7 +124,12 @@ namespace PUL
         public void BuildFunctionControlFlowGraph(OxideFunction function)
         {
             // Build the "handle" object that the user can use to move the whole graph around
-            GameObject graphHandle = buildGraphHandle($"CFG for {function.name}");
+            GameObject graphHandle = buildGraphHandle($"CFG for {function.parentBinary.name} / {function.name}");
+
+            // Hide the graph until it's done
+            graphHandle.transform.position = new Vector3(graphHandle.transform.position.x,
+                                                         graphHandle.transform.position.y - 100f,
+                                                         graphHandle.transform.position.z);
 
             // Create a graph as a component of the graph handle, add it to our list, and set its parent to the graph handle
             // HierarchicalGraph graph = graphHandle.AddComponent<HierarchicalGraph>();
@@ -125,10 +140,10 @@ namespace PUL
             // TODO: Promote this to a class-level value or put in class-level data structure later
             Dictionary<OxideBasicBlock, NodeInfo> basicBlockNodeInfoDict = new Dictionary<OxideBasicBlock, NodeInfo>();
 
-            StartCoroutine(BuildFunctionControlFlowGraphCoroutine(function, graph, basicBlockNodeInfoDict));
+            StartCoroutine(BuildFunctionControlFlowGraphCoroutine(function, graph, basicBlockNodeInfoDict, graphHandle));
         }
 
-        IEnumerator BuildFunctionControlFlowGraphCoroutine(OxideFunction function, BasicGraph graph, Dictionary<OxideBasicBlock, NodeInfo> basicBlockNodeInfoDict)
+        IEnumerator BuildFunctionControlFlowGraphCoroutine(OxideFunction function, BasicGraph graph, Dictionary<OxideBasicBlock, NodeInfo> basicBlockNodeInfoDict, GameObject graphHandle)
         {
             // Create and add all the nodes to the graph
             foreach (OxideBasicBlock basicBlock in function.basicBlockDict.Values)
@@ -172,6 +187,11 @@ namespace PUL
             // Let the graph position the nodes
             graph.StartGraph();
 
+            // Bring the graph back
+            graphHandle.transform.position = new Vector3(graphHandle.transform.position.x,
+                                                         graphHandle.transform.position.y + 100f,
+                                                         graphHandle.transform.position.z);
+
             // Assume this action to build the graph originated from a menu call,
             // so signal its completion. 
             gameManager.menuManager.unsetBusy();
@@ -185,6 +205,11 @@ namespace PUL
             // Build the "handle" object that the user can use to move the whole graph around
             GameObject graphHandle = buildGraphHandle($"CFG for {function.name}");
 
+            // Hide the graph until it's done
+            graphHandle.transform.position = new Vector3(graphHandle.transform.position.x,
+                                                         graphHandle.transform.position.y - 100f,
+                                                         graphHandle.transform.position.z);
+
             // Create a graph as a component of the graph handle, add it to our list, and set its parent to the graph handle
             ForceDirectedGraph graph = graphHandle.AddComponent<ForceDirectedGraph>();
             graphList.Add(graph);
@@ -193,10 +218,10 @@ namespace PUL
             // TODO: Promote this to a class-level value or put in class-level data structure later
             Dictionary<OxideBasicBlock, NodeInfo> basicBlockNodeInfoDict = new Dictionary<OxideBasicBlock, NodeInfo>();
 
-            StartCoroutine(BuildFunctionControlFlowGraphFDGCoroutine(function, graph, basicBlockNodeInfoDict));
+            StartCoroutine(BuildFunctionControlFlowGraphFDGCoroutine(function, graph, basicBlockNodeInfoDict, graphHandle));
         }
 
-        IEnumerator BuildFunctionControlFlowGraphFDGCoroutine(OxideFunction function, ForceDirectedGraph graph, Dictionary<OxideBasicBlock, NodeInfo> basicBlockNodeInfoDict)
+        IEnumerator BuildFunctionControlFlowGraphFDGCoroutine(OxideFunction function, ForceDirectedGraph graph, Dictionary<OxideBasicBlock, NodeInfo> basicBlockNodeInfoDict, GameObject graphHandle)
         {
             // Add basic block nodes by doing a breadth-first search with a queue
             Queue<(OxideBasicBlock, int)> basicBlocksToProcess = new Queue<(OxideBasicBlock, int)>();
@@ -251,7 +276,13 @@ namespace PUL
                 yield return new WaitForEndOfFrame();
             }
 
+            // Let the graph position the nodes
             graph.StartGraph();
+
+            // Bring the graph back
+            graphHandle.transform.position = new Vector3(graphHandle.transform.position.x,
+                                                         graphHandle.transform.position.y + 100f,
+                                                         graphHandle.transform.position.z);
 
             // Assume this action to build the graph originated from a menu call,
             // so signal its completion. 
