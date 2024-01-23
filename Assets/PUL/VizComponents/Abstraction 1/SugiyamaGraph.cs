@@ -27,10 +27,6 @@ namespace PUL
 
         private static Orientation DEFAULT_ORIENTATION = Orientation.TOP;
 
-        private static int DEFAULT_HORIZONTAL_SPACING = 2;
-
-        private static int DEFAULT_VERTICAL_SPACING = 1;
-
         private bool executed = false;
 
         // represents the size of the grid in horizontal grid elements
