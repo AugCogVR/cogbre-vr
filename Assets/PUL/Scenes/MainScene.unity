@@ -4059,7 +4059,7 @@ MonoBehaviour:
   MenuButtonPrefab: {fileID: 8962121248065496612, guid: 4700d80f0785df14b9b97998dcfa434d, type: 3}
   ObjectButtonPrefab: {fileID: 8770522309334129640, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
   slatePrefab: {fileID: 7238801519295131563, guid: f7848356a597b9147bb2a12c168d95fe, type: 3}
-  UIPanel: {fileID: 475612925}
+  UIPanel: {fileID: 475612916}
   graphManager: {fileID: 32110106}
   initialized: 0
 --- !u!21 &598882568

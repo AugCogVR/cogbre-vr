@@ -39,8 +39,7 @@ namespace PUL
         GameObject buildGraphHandle(string labelText)
         {
             GameObject graphHandlePrefab = Resources.Load("Prefabs/GraphHandle") as GameObject;
-            Vector3 position = new Vector3(0.82f, 0, 0.77f);
-            GameObject graphHandle = Instantiate(graphHandlePrefab, position, Quaternion.identity);
+            GameObject graphHandle = Instantiate(graphHandlePrefab, gameManager.getSpawnPosition(), gameManager.getSpawnRotation());
             TextMeshPro nodeTitleTMP = graphHandle.transform.Find("TextBar/TextTMP").gameObject.GetComponent<TextMeshPro>();
             nodeTitleTMP.text = labelText;
             graphHandle.transform.SetParent(this.gameObject.transform, false);

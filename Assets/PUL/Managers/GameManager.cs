@@ -28,6 +28,9 @@ namespace PUL
         // END: These values are wired up in the Unity Editor -> MenuManager object
         // ====================================
 
+        
+        // Spawn point for new slates, graphs, etc. 
+        private GameObject spawnPoint;
 
         private static GameManager _instance; // GameManager is a singleton
 
@@ -58,23 +61,32 @@ namespace PUL
                 _instance = this;
             }
             DontDestroyOnLoad(this);
-
-            // NOTE: Most other objects are awakened by Unity. We can move that awakening 
-            // to this function if needed. 
         }
 
         // Start is called before the first frame update
         void Start()
         {
-            // NOTE: Most other objects are started by Unity. We can move that starting
-            // to this function if needed. 
+            // Create a spawn point relative to the UI Panel
+            spawnPoint = new GameObject();
+            spawnPoint.transform.parent = menuManager.UIPanel.transform;
+            spawnPoint.transform.localPosition = new Vector3(0.9f, 0.25f, 0);
         }
 
         // Update is called once per frame
         void Update()
         {
-            // NOTE: Most other objects are updated by Unity. We can move that updating
-            // to this function if needed. 
+        }
+
+        // Return the position of the spawn point.
+        public Vector3 getSpawnPosition()
+        {
+            return spawnPoint.transform.position;
+        }
+
+        // Return the rotation of the spawn point.
+        public Quaternion getSpawnRotation()
+        {
+            return spawnPoint.transform.rotation;
         }
     }
 }

@@ -47,8 +47,8 @@ namespace PUL
         // The Slate prefeb we instantiate for function disassembly
         public GameObject slatePrefab;
 
-        //refers to the transform of the UI panel
-        public Transform UIPanel;
+        // The UI panel
+        public GameObject UIPanel;
 
         //refers to the graph manager
         public SpatialGraphManager graphManager;
@@ -144,7 +144,7 @@ namespace PUL
                 // Set the parent to the GridObjectCollection.
                 newButton.transform.parent = CollectionGridObjectCollection.transform;
                 newButton.transform.localEulerAngles = Vector3.zero;
-                newButton.transform.localScale = new Vector3(newButton.transform.localScale.x * UIPanel.localScale.x, newButton.transform.localScale.y * UIPanel.localScale.y, newButton.transform.localScale.z * UIPanel.localScale.z);
+                newButton.transform.localScale = new Vector3(newButton.transform.localScale.x * UIPanel.transform.localScale.x, newButton.transform.localScale.y * UIPanel.transform.localScale.y, newButton.transform.localScale.z * UIPanel.transform.localScale.z);
                 newButton.transform.name = collection.name + ": Menu Button";
                 newButton.GetComponentInChildren<TextMeshPro>().text = createCollectionButtonText(collection);
 
@@ -250,7 +250,7 @@ namespace PUL
                 // Set the parent to the GridObjectCollection.
                 newButton.transform.parent = BinaryGridObjectCollection.transform;
                 newButton.transform.localEulerAngles = Vector3.zero;
-                newButton.transform.localScale = new Vector3(newButton.transform.localScale.x * UIPanel.localScale.x, newButton.transform.localScale.y * UIPanel.localScale.y, newButton.transform.localScale.z * UIPanel.localScale.z);
+                newButton.transform.localScale = new Vector3(newButton.transform.localScale.x * UIPanel.transform.localScale.x, newButton.transform.localScale.y * UIPanel.transform.localScale.y, newButton.transform.localScale.z * UIPanel.transform.localScale.z);
                 newButton.transform.name = binary.name + ": Menu Button";
                 newButton.GetComponentInChildren<TextMeshPro>().text = createBinaryButtonText(binary);
                 binaryButtonDict[binary] = newButton;
@@ -319,7 +319,7 @@ namespace PUL
                 // Set the parent to the GridObjectCollection.
                 newButton.transform.parent = FunctionGridObjectCollection.transform;
                 newButton.transform.localEulerAngles = Vector3.zero;
-                newButton.transform.localScale = new Vector3(newButton.transform.localScale.x * UIPanel.localScale.x, newButton.transform.localScale.y * UIPanel.localScale.y, newButton.transform.localScale.z * UIPanel.localScale.z);
+                newButton.transform.localScale = new Vector3(newButton.transform.localScale.x * UIPanel.transform.localScale.x, newButton.transform.localScale.y * UIPanel.transform.localScale.y, newButton.transform.localScale.z * UIPanel.transform.localScale.z);
                 newButton.transform.name = function.offset + ": Menu Button";
                 newButton.GetComponentInChildren<TextMeshPro>().text = createFunctionButtonText(function);
                 functionButtonDict[function] = newButton;
@@ -359,7 +359,7 @@ namespace PUL
             // string contentString = await GameManager.nexusClient.RetrieveTextForArbitraryModule("ghidra_decmap", selectedBinary.oid, "{}", false);
 
             // Make a new slate
-            GameObject slate = Instantiate(slatePrefab, new Vector3(0.82f, 0, 0.77f), Quaternion.identity);
+            GameObject slate = Instantiate(slatePrefab, GameManager.getSpawnPosition(), GameManager.getSpawnRotation());
             slateList.Add(slate);
             TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
             TextMeshPro contentTMP = slate.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
@@ -387,7 +387,7 @@ namespace PUL
             string contentString = await GameManager.nexusClient.RetrieveTextForArbitraryModule("file_stats", selectedBinary.oid, "{}", true);
 
             // Make a new slate
-            GameObject slate = Instantiate(slatePrefab, new Vector3(0.82f, 0, 0.77f), Quaternion.identity);
+            GameObject slate = Instantiate(slatePrefab, GameManager.getSpawnPosition(), GameManager.getSpawnRotation());
             slateList.Add(slate);
             TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
             TextMeshPro contentTMP = slate.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
@@ -455,7 +455,7 @@ namespace PUL
         IEnumerator FunctionDisassemblyButtonCallbackCoroutine(OxideBinary binary, OxideFunction function)
         {
             // Make a new slate
-            GameObject slate = Instantiate(slatePrefab, new Vector3(0.82f, 0, 0.77f), Quaternion.identity);
+            GameObject slate = Instantiate(slatePrefab, GameManager.getSpawnPosition(), GameManager.getSpawnRotation());
             slateList.Add(slate);
             TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
             TextMeshPro contentTMP = slate.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
@@ -501,7 +501,7 @@ namespace PUL
         IEnumerator FunctionDecompilationButtonCallbackCoroutine(OxideBinary binary, OxideFunction function)
         {
             // Make a new slate
-            GameObject slate = Instantiate(slatePrefab, new Vector3(0.82f, 0, 0.77f), Quaternion.identity);
+            GameObject slate = Instantiate(slatePrefab, GameManager.getSpawnPosition(), GameManager.getSpawnRotation());
             slateList.Add(slate);
             TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
             TextMeshPro contentTMP = slate.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
