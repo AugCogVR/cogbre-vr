@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['forcedirectedgraph_31',['ForceDirectedGraph',['../classPUL_1_1ForceDirectedGraph.html',1,'PUL']]]
+  ['edgeinfo_288',['EdgeInfo',['../classPUL_1_1EdgeInfo.html',1,'PUL']]]
 ];

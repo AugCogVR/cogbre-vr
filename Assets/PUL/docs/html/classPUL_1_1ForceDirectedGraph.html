@@ -70,6 +70,8 @@ $(function() {
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classPUL_1_1ForceDirectedGraph-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">PUL.ForceDirectedGraph Class Reference</div>  </div>
@@ -99,35 +101,32 @@ Collaboration diagram for PUL.ForceDirectedGraph:</div>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPUL_1_1ForceDirectedGraph_1_1BalanceForceJob.html">BalanceForceJob</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a1fc4c0701ecedb5a9f5c68aae81c1209"><td class="memItemLeft" align="right" valign="top">override <a class="el" href="classPUL_1_1NodeInfo.html">NodeInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1ForceDirectedGraph.html#a1fc4c0701ecedb5a9f5c68aae81c1209">AddNodeToGraph</a> (GameObject gameObject)</td></tr>
 <tr class="memdesc:a1fc4c0701ecedb5a9f5c68aae81c1209"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a Node component to the component gameobject that is passed. When the graph is run, this behaviour will move the gameobject as it responds to forces in the graph.  <a href="classPUL_1_1ForceDirectedGraph.html#a1fc4c0701ecedb5a9f5c68aae81c1209">More...</a><br /></td></tr>
 <tr class="separator:a1fc4c0701ecedb5a9f5c68aae81c1209"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf0be8ec62ec95cbe5dafd251a1112ba"><td class="memItemLeft" align="right" valign="top"><a id="acf0be8ec62ec95cbe5dafd251a1112ba"></a>
-override <a class="el" href="classPUL_1_1EdgeInfo.html">EdgeInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><b>AddEdgeToGraph</b> (<a class="el" href="classPUL_1_1NodeInfo.html">NodeInfo</a> sourceNode, <a class="el" href="classPUL_1_1NodeInfo.html">NodeInfo</a> targetNode)</td></tr>
+<tr class="memitem:acf0be8ec62ec95cbe5dafd251a1112ba"><td class="memItemLeft" align="right" valign="top">override <a class="el" href="classPUL_1_1EdgeInfo.html">EdgeInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1ForceDirectedGraph.html#acf0be8ec62ec95cbe5dafd251a1112ba">AddEdgeToGraph</a> (<a class="el" href="classPUL_1_1NodeInfo.html">NodeInfo</a> sourceNode, <a class="el" href="classPUL_1_1NodeInfo.html">NodeInfo</a> targetNode)</td></tr>
 <tr class="separator:acf0be8ec62ec95cbe5dafd251a1112ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d7c1f3aff921cfc90599e463f550baf"><td class="memItemLeft" align="right" valign="top"><a id="a1d7c1f3aff921cfc90599e463f550baf"></a>
-override void&#160;</td><td class="memItemRight" valign="bottom"><b>StartGraph</b> ()</td></tr>
+<tr class="memitem:a1d7c1f3aff921cfc90599e463f550baf"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1ForceDirectedGraph.html#a1d7c1f3aff921cfc90599e463f550baf">StartGraph</a> ()</td></tr>
 <tr class="separator:a1d7c1f3aff921cfc90599e463f550baf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33e5d10420b1b4ec4d66fbd557a0ac9a"><td class="memItemLeft" align="right" valign="top"><a id="a33e5d10420b1b4ec4d66fbd557a0ac9a"></a>
-override void&#160;</td><td class="memItemRight" valign="bottom"><b>StopGraph</b> ()</td></tr>
+<tr class="memitem:a33e5d10420b1b4ec4d66fbd557a0ac9a"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1ForceDirectedGraph.html#a33e5d10420b1b4ec4d66fbd557a0ac9a">StopGraph</a> ()</td></tr>
 <tr class="separator:a33e5d10420b1b4ec4d66fbd557a0ac9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2c7f6dd64a1bffb677733a3d7706ae67"><td class="memItemLeft" align="right" valign="top"><a id="a2c7f6dd64a1bffb677733a3d7706ae67"></a>
-override void&#160;</td><td class="memItemRight" valign="bottom"><b>RunForIterations</b> (int numIterations)</td></tr>
+<tr class="memitem:a2c7f6dd64a1bffb677733a3d7706ae67"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1ForceDirectedGraph.html#a2c7f6dd64a1bffb677733a3d7706ae67">RunForIterations</a> (int numIterations)</td></tr>
 <tr class="separator:a2c7f6dd64a1bffb677733a3d7706ae67"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec95e3947ca39433a51c764b166b25c1"><td class="memItemLeft" align="right" valign="top"><a id="aec95e3947ca39433a51c764b166b25c1"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setLoneValuesImmobile</b> ()</td></tr>
+<tr class="memitem:aec95e3947ca39433a51c764b166b25c1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1ForceDirectedGraph.html#aec95e3947ca39433a51c764b166b25c1">setLoneValuesImmobile</a> ()</td></tr>
 <tr class="separator:aec95e3947ca39433a51c764b166b25c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae8cca08d401ec5f17a95a9c7fd8f676"><td class="memItemLeft" align="right" valign="top"><a id="aae8cca08d401ec5f17a95a9c7fd8f676"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>SetNodeMobility</b> (Component nodeComponent, bool isImmobile)</td></tr>
+<tr class="memitem:aae8cca08d401ec5f17a95a9c7fd8f676"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1ForceDirectedGraph.html#aae8cca08d401ec5f17a95a9c7fd8f676">SetNodeMobility</a> (Component nodeComponent, bool isImmobile)</td></tr>
 <tr class="separator:aae8cca08d401ec5f17a95a9c7fd8f676"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a59c53fbc8f540a8db9620c144df2068a"><td class="memItemLeft" align="right" valign="top"><a id="a59c53fbc8f540a8db9620c144df2068a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>SetNodeMass</b> (Component nodeComponent, float nodeMass)</td></tr>
+<tr class="memitem:a59c53fbc8f540a8db9620c144df2068a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1ForceDirectedGraph.html#a59c53fbc8f540a8db9620c144df2068a">SetNodeMass</a> (Component nodeComponent, float nodeMass)</td></tr>
 <tr class="separator:a59c53fbc8f540a8db9620c144df2068a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPUL_1_1BasicGraph"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPUL_1_1BasicGraph')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPUL_1_1BasicGraph.html">PUL.BasicGraph</a></td></tr>
-<tr class="memitem:a5cd566cf6e6d351d3a3e92604ce618b0 inherit pub_methods_classPUL_1_1BasicGraph"><td class="memItemLeft" align="right" valign="top"><a id="a5cd566cf6e6d351d3a3e92604ce618b0"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>Update</b> ()</td></tr>
+<tr class="memitem:a5cd566cf6e6d351d3a3e92604ce618b0 inherit pub_methods_classPUL_1_1BasicGraph"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1BasicGraph.html#a5cd566cf6e6d351d3a3e92604ce618b0">Update</a> ()</td></tr>
 <tr class="separator:a5cd566cf6e6d351d3a3e92604ce618b0 inherit pub_methods_classPUL_1_1BasicGraph"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
@@ -135,32 +134,82 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:abaca132ceda815d9c326632a07da673c"><td class="memItemLeft" align="right" valign="top">Dictionary&lt; int, <a class="el" href="classPUL_1_1NodeInfo.html">NodeInfo</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1ForceDirectedGraph.html#abaca132ceda815d9c326632a07da673c">nodes</a> = new()</td></tr>
 <tr class="memdesc:abaca132ceda815d9c326632a07da673c"><td class="mdescLeft">&#160;</td><td class="mdescRight">All of the nodes in the graph.  <a href="classPUL_1_1ForceDirectedGraph.html#abaca132ceda815d9c326632a07da673c">More...</a><br /></td></tr>
 <tr class="separator:abaca132ceda815d9c326632a07da673c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac22dff4496a1beeae8c031fef5866f69"><td class="memItemLeft" align="right" valign="top"><a id="ac22dff4496a1beeae8c031fef5866f69"></a>
-Dictionary&lt; int, int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>idToIndexMap</b> = new()</td></tr>
+<tr class="memitem:ac22dff4496a1beeae8c031fef5866f69"><td class="memItemLeft" align="right" valign="top">Dictionary&lt; int, int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1ForceDirectedGraph.html#ac22dff4496a1beeae8c031fef5866f69">idToIndexMap</a> = new()</td></tr>
 <tr class="separator:ac22dff4496a1beeae8c031fef5866f69"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a04466a2185351376ac536ad0e8ad0e6d"><td class="memItemLeft" align="right" valign="top"><a id="a04466a2185351376ac536ad0e8ad0e6d"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>UniversalRepulsiveForce</b> = 1.0f</td></tr>
+<tr class="memitem:a04466a2185351376ac536ad0e8ad0e6d"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1ForceDirectedGraph.html#a04466a2185351376ac536ad0e8ad0e6d">UniversalRepulsiveForce</a> = 1.0f</td></tr>
 <tr class="separator:a04466a2185351376ac536ad0e8ad0e6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abb178701cf17ca1b3f769f8d4c930adb"><td class="memItemLeft" align="right" valign="top"><a id="abb178701cf17ca1b3f769f8d4c930adb"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>UniversalSpringForce</b> = 0.001f</td></tr>
+<tr class="memitem:abb178701cf17ca1b3f769f8d4c930adb"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1ForceDirectedGraph.html#abb178701cf17ca1b3f769f8d4c930adb">UniversalSpringForce</a> = 0.001f</td></tr>
 <tr class="separator:abb178701cf17ca1b3f769f8d4c930adb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3e4eca6d1565d53010308838b1b1b3c0"><td class="memItemLeft" align="right" valign="top"><a id="a3e4eca6d1565d53010308838b1b1b3c0"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>TimeStep</b> = 2</td></tr>
+<tr class="memitem:a3e4eca6d1565d53010308838b1b1b3c0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1ForceDirectedGraph.html#a3e4eca6d1565d53010308838b1b1b3c0">TimeStep</a> = 2</td></tr>
 <tr class="separator:a3e4eca6d1565d53010308838b1b1b3c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9091d86f53ad7c7955e39eedd07f9f8d"><td class="memItemLeft" align="right" valign="top"><a id="a9091d86f53ad7c7955e39eedd07f9f8d"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>ForceCalcBatch</b> = 1</td></tr>
+<tr class="memitem:a9091d86f53ad7c7955e39eedd07f9f8d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1ForceDirectedGraph.html#a9091d86f53ad7c7955e39eedd07f9f8d">ForceCalcBatch</a> = 1</td></tr>
 <tr class="separator:a9091d86f53ad7c7955e39eedd07f9f8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:aa7ce9154b94170aa02bdfc59e6382022"><td class="memItemLeft" align="right" valign="top"><a id="aa7ce9154b94170aa02bdfc59e6382022"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>currIndex</b> = 0</td></tr>
+<tr class="memitem:aa7ce9154b94170aa02bdfc59e6382022"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1ForceDirectedGraph.html#aa7ce9154b94170aa02bdfc59e6382022">currIndex</a> = 0</td></tr>
 <tr class="separator:aa7ce9154b94170aa02bdfc59e6382022"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:ace67138cdcd371d1416dfafef32ed4fc"><td class="memItemLeft" align="right" valign="top">IEnumerator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1ForceDirectedGraph.html#ace67138cdcd371d1416dfafef32ed4fc">Iterate</a> (int remainingIterations=0)</td></tr>
+<tr class="separator:ace67138cdcd371d1416dfafef32ed4fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8791dc50304dacc654bf0f5ba63a9b11"><td class="memItemLeft" align="right" valign="top">IEnumerator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1ForceDirectedGraph.html#a8791dc50304dacc654bf0f5ba63a9b11">MoveToFinal</a> ()</td></tr>
+<tr class="separator:a8791dc50304dacc654bf0f5ba63a9b11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7540cfa8f734b8a52b15210d3241e820"><td class="memItemLeft" align="right" valign="top">IEnumerable&lt; Vector3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1ForceDirectedGraph.html#a7540cfa8f734b8a52b15210d3241e820">NodeBalanceDisplacements</a> ()</td></tr>
+<tr class="memdesc:a7540cfa8f734b8a52b15210d3241e820"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run a job to calculate the balance forces that each node is experiencing from every other node in the map.  <a href="classPUL_1_1ForceDirectedGraph.html#a7540cfa8f734b8a52b15210d3241e820">More...</a><br /></td></tr>
+<tr class="separator:a7540cfa8f734b8a52b15210d3241e820"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a17ec1d04feb7cf57ef7f5004aa7a6d11"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1ForceDirectedGraph.html#a17ec1d04feb7cf57ef7f5004aa7a6d11">backgroundCalculation</a> = false</td></tr>
+<tr class="separator:a17ec1d04feb7cf57ef7f5004aa7a6d11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6fd8225ef9afe97e0fefcfb4aca73948"><td class="memItemLeft" align="right" valign="top">Coroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1ForceDirectedGraph.html#a6fd8225ef9afe97e0fefcfb4aca73948">graphAnimator</a></td></tr>
+<tr class="memdesc:a6fd8225ef9afe97e0fefcfb4aca73948"><td class="mdescLeft">&#160;</td><td class="mdescRight">A coroutine that continuously runs and updates the state of the world on every iteration.  <a href="classPUL_1_1ForceDirectedGraph.html#a6fd8225ef9afe97e0fefcfb4aca73948">More...</a><br /></td></tr>
+<tr class="separator:a6fd8225ef9afe97e0fefcfb4aca73948"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A force directed graph for Unity that uses Hooke's Law and Coulombs Law running in Unity C# Jobs. Adaptation of this code: <a href="https://github.com/atonalfreerider/Unity-FDG">https://github.com/atonalfreerider/Unity-FDG</a> </p>
-<p>Usage: -Attach this component to a GameObject in a scene. -Add nodes by calling <a class="el" href="classPUL_1_1ForceDirectedGraph.html#a1fc4c0701ecedb5a9f5c68aae81c1209" title="Adds a Node component to the component gameobject that is passed. When the graph is run,...">AddNodeToGraph</a> -Add edges by calling AddEdgeToGraph and passing two nodes that have been previously added to the graph -Run and Stop the graph using StartGraph and StopGraph.</p>
+<p>Usage: -Attach this component to a GameObject in a scene. -Add nodes by calling <a class="el" href="classPUL_1_1ForceDirectedGraph.html#a1fc4c0701ecedb5a9f5c68aae81c1209" title="Adds a Node component to the component gameobject that is passed. When the graph is run,...">AddNodeToGraph</a> -Add edges by calling <a class="el" href="classPUL_1_1ForceDirectedGraph.html#acf0be8ec62ec95cbe5dafd251a1112ba">AddEdgeToGraph</a> and passing two nodes that have been previously added to the graph -Run and Stop the graph using <a class="el" href="classPUL_1_1ForceDirectedGraph.html#a1d7c1f3aff921cfc90599e463f550baf">StartGraph</a> and <a class="el" href="classPUL_1_1ForceDirectedGraph.html#a33e5d10420b1b4ec4d66fbd557a0ac9a">StopGraph</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="acf0be8ec62ec95cbe5dafd251a1112ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf0be8ec62ec95cbe5dafd251a1112ba">&#9670;&nbsp;</a></span>AddEdgeToGraph()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override <a class="el" href="classPUL_1_1EdgeInfo.html">EdgeInfo</a> PUL.ForceDirectedGraph.AddEdgeToGraph </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classPUL_1_1NodeInfo.html">NodeInfo</a>&#160;</td>
+          <td class="paramname"><em>sourceNode</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classPUL_1_1NodeInfo.html">NodeInfo</a>&#160;</td>
+          <td class="paramname"><em>targetNode</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classPUL_1_1BasicGraph.html#a463dc3a39842ca7d10b7bc5a834c05d9">PUL.BasicGraph</a>.</p>
+
+</div>
+</div>
 <a id="a1fc4c0701ecedb5a9f5c68aae81c1209"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1fc4c0701ecedb5a9f5c68aae81c1209">&#9670;&nbsp;</a></span>AddNodeToGraph()</h2>
 
@@ -197,7 +246,361 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>currIndex</b> = 0</td>
 
 </div>
 </div>
+<a id="ace67138cdcd371d1416dfafef32ed4fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace67138cdcd371d1416dfafef32ed4fc">&#9670;&nbsp;</a></span>Iterate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">IEnumerator PUL.ForceDirectedGraph.Iterate </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>remainingIterations</em> = <code>0</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8791dc50304dacc654bf0f5ba63a9b11"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8791dc50304dacc654bf0f5ba63a9b11">&#9670;&nbsp;</a></span>MoveToFinal()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">IEnumerator PUL.ForceDirectedGraph.MoveToFinal </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7540cfa8f734b8a52b15210d3241e820"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7540cfa8f734b8a52b15210d3241e820">&#9670;&nbsp;</a></span>NodeBalanceDisplacements()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">IEnumerable&lt;Vector3&gt; PUL.ForceDirectedGraph.NodeBalanceDisplacements </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Run a job to calculate the balance forces that each node is experiencing from every other node in the map. </p>
+<dl class="section return"><dt>Returns</dt><dd>The result forces on each node in the order that they are represented in nodes.</dd></dl>
+
+</div>
+</div>
+<a id="a2c7f6dd64a1bffb677733a3d7706ae67"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c7f6dd64a1bffb677733a3d7706ae67">&#9670;&nbsp;</a></span>RunForIterations()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override void PUL.ForceDirectedGraph.RunForIterations </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>numIterations</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classPUL_1_1BasicGraph.html#a849c6768a673befb8b197bfe54dde587">PUL.BasicGraph</a>.</p>
+
+</div>
+</div>
+<a id="aec95e3947ca39433a51c764b166b25c1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec95e3947ca39433a51c764b166b25c1">&#9670;&nbsp;</a></span>setLoneValuesImmobile()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PUL.ForceDirectedGraph.setLoneValuesImmobile </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a59c53fbc8f540a8db9620c144df2068a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a59c53fbc8f540a8db9620c144df2068a">&#9670;&nbsp;</a></span>SetNodeMass()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PUL.ForceDirectedGraph.SetNodeMass </td>
+          <td>(</td>
+          <td class="paramtype">Component&#160;</td>
+          <td class="paramname"><em>nodeComponent</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>nodeMass</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aae8cca08d401ec5f17a95a9c7fd8f676"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae8cca08d401ec5f17a95a9c7fd8f676">&#9670;&nbsp;</a></span>SetNodeMobility()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PUL.ForceDirectedGraph.SetNodeMobility </td>
+          <td>(</td>
+          <td class="paramtype">Component&#160;</td>
+          <td class="paramname"><em>nodeComponent</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>isImmobile</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1d7c1f3aff921cfc90599e463f550baf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1d7c1f3aff921cfc90599e463f550baf">&#9670;&nbsp;</a></span>StartGraph()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override void PUL.ForceDirectedGraph.StartGraph </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classPUL_1_1BasicGraph.html#ab04f96bb1a67a630b89ae6f70a5d522a">PUL.BasicGraph</a>.</p>
+
+</div>
+</div>
+<a id="a33e5d10420b1b4ec4d66fbd557a0ac9a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a33e5d10420b1b4ec4d66fbd557a0ac9a">&#9670;&nbsp;</a></span>StopGraph()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override void PUL.ForceDirectedGraph.StopGraph </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classPUL_1_1BasicGraph.html#acdf59548e86a4c4f947cc8cdae0c618f">PUL.BasicGraph</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a17ec1d04feb7cf57ef7f5004aa7a6d11"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a17ec1d04feb7cf57ef7f5004aa7a6d11">&#9670;&nbsp;</a></span>backgroundCalculation</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool PUL.ForceDirectedGraph.backgroundCalculation = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa7ce9154b94170aa02bdfc59e6382022"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa7ce9154b94170aa02bdfc59e6382022">&#9670;&nbsp;</a></span>currIndex</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int PUL.ForceDirectedGraph.currIndex = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9091d86f53ad7c7955e39eedd07f9f8d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9091d86f53ad7c7955e39eedd07f9f8d">&#9670;&nbsp;</a></span>ForceCalcBatch</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int PUL.ForceDirectedGraph.ForceCalcBatch = 1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6fd8225ef9afe97e0fefcfb4aca73948"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6fd8225ef9afe97e0fefcfb4aca73948">&#9670;&nbsp;</a></span>graphAnimator</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Coroutine PUL.ForceDirectedGraph.graphAnimator</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>A coroutine that continuously runs and updates the state of the world on every iteration. </p>
+
+</div>
+</div>
+<a id="ac22dff4496a1beeae8c031fef5866f69"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac22dff4496a1beeae8c031fef5866f69">&#9670;&nbsp;</a></span>idToIndexMap</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Dictionary&lt;int, int&gt; PUL.ForceDirectedGraph.idToIndexMap = new()</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="abaca132ceda815d9c326632a07da673c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abaca132ceda815d9c326632a07da673c">&#9670;&nbsp;</a></span>nodes</h2>
 
@@ -214,8 +617,50 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>currIndex</b> = 0</td>
 
 </div>
 </div>
+<a id="a3e4eca6d1565d53010308838b1b1b3c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e4eca6d1565d53010308838b1b1b3c0">&#9670;&nbsp;</a></span>TimeStep</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int PUL.ForceDirectedGraph.TimeStep = 2</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a04466a2185351376ac536ad0e8ad0e6d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04466a2185351376ac536ad0e8ad0e6d">&#9670;&nbsp;</a></span>UniversalRepulsiveForce</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float PUL.ForceDirectedGraph.UniversalRepulsiveForce = 1.0f</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abb178701cf17ca1b3f769f8d4c930adb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb178701cf17ca1b3f769f8d4c930adb">&#9670;&nbsp;</a></span>UniversalSpringForce</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float PUL.ForceDirectedGraph.UniversalSpringForce = 0.001f</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/mnt/i/worktemp/Auburn/Research/dev/cogbre-vr/Assets/PUL/VizComponents/Abstraction 1/ForceDirectedGraph.cs</li>
+<li>/mnt/i/worktemp/Auburn/Research/dev/cogbre-vr/Assets/PUL/VizComponents/Abstraction 1/<a class="el" href="ForceDirectedGraph_8cs.html">ForceDirectedGraph.cs</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

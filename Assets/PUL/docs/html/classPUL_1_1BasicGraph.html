@@ -102,26 +102,59 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5f00202c39a865895d4ef9273569619f"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classPUL_1_1NodeInfo.html">NodeInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1BasicGraph.html#a5f00202c39a865895d4ef9273569619f">AddNodeToGraph</a> (GameObject gameObject)</td></tr>
 <tr class="memdesc:a5f00202c39a865895d4ef9273569619f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a Node component to the component gameobject that is passed.  <a href="classPUL_1_1BasicGraph.html#a5f00202c39a865895d4ef9273569619f">More...</a><br /></td></tr>
 <tr class="separator:a5f00202c39a865895d4ef9273569619f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a463dc3a39842ca7d10b7bc5a834c05d9"><td class="memItemLeft" align="right" valign="top"><a id="a463dc3a39842ca7d10b7bc5a834c05d9"></a>
-virtual <a class="el" href="classPUL_1_1EdgeInfo.html">EdgeInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><b>AddEdgeToGraph</b> (<a class="el" href="classPUL_1_1NodeInfo.html">NodeInfo</a> sourceNodeInfo, <a class="el" href="classPUL_1_1NodeInfo.html">NodeInfo</a> targetNodeInfo)</td></tr>
+<tr class="memitem:a463dc3a39842ca7d10b7bc5a834c05d9"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classPUL_1_1EdgeInfo.html">EdgeInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1BasicGraph.html#a463dc3a39842ca7d10b7bc5a834c05d9">AddEdgeToGraph</a> (<a class="el" href="classPUL_1_1NodeInfo.html">NodeInfo</a> sourceNodeInfo, <a class="el" href="classPUL_1_1NodeInfo.html">NodeInfo</a> targetNodeInfo)</td></tr>
 <tr class="separator:a463dc3a39842ca7d10b7bc5a834c05d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5cd566cf6e6d351d3a3e92604ce618b0"><td class="memItemLeft" align="right" valign="top"><a id="a5cd566cf6e6d351d3a3e92604ce618b0"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>Update</b> ()</td></tr>
+<tr class="memitem:a5cd566cf6e6d351d3a3e92604ce618b0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1BasicGraph.html#a5cd566cf6e6d351d3a3e92604ce618b0">Update</a> ()</td></tr>
 <tr class="separator:a5cd566cf6e6d351d3a3e92604ce618b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab04f96bb1a67a630b89ae6f70a5d522a"><td class="memItemLeft" align="right" valign="top"><a id="ab04f96bb1a67a630b89ae6f70a5d522a"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>StartGraph</b> ()</td></tr>
+<tr class="memitem:ab04f96bb1a67a630b89ae6f70a5d522a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1BasicGraph.html#ab04f96bb1a67a630b89ae6f70a5d522a">StartGraph</a> ()</td></tr>
 <tr class="separator:ab04f96bb1a67a630b89ae6f70a5d522a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acdf59548e86a4c4f947cc8cdae0c618f"><td class="memItemLeft" align="right" valign="top"><a id="acdf59548e86a4c4f947cc8cdae0c618f"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>StopGraph</b> ()</td></tr>
+<tr class="memitem:acdf59548e86a4c4f947cc8cdae0c618f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1BasicGraph.html#acdf59548e86a4c4f947cc8cdae0c618f">StopGraph</a> ()</td></tr>
 <tr class="separator:acdf59548e86a4c4f947cc8cdae0c618f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a849c6768a673befb8b197bfe54dde587"><td class="memItemLeft" align="right" valign="top"><a id="a849c6768a673befb8b197bfe54dde587"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>RunForIterations</b> (int numIterations)</td></tr>
+<tr class="memitem:a849c6768a673befb8b197bfe54dde587"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1BasicGraph.html#a849c6768a673befb8b197bfe54dde587">RunForIterations</a> (int numIterations)</td></tr>
 <tr class="separator:a849c6768a673befb8b197bfe54dde587"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Basic Graph &ndash; add nodes and edges and nothing else interesting happens. </p>
-<p>Usage: -Attach this component to a GameObject in a scene. -Add nodes by calling <a class="el" href="classPUL_1_1BasicGraph.html#a5f00202c39a865895d4ef9273569619f" title="Adds a Node component to the component gameobject that is passed.">AddNodeToGraph</a> -Add edges by calling AddEdgeToGraph and passing two nodes that have been previously added to the graph -Run and Stop the graph using StartGraph and StopGraph.</p>
+<p>Usage: -Attach this component to a GameObject in a scene. -Add nodes by calling <a class="el" href="classPUL_1_1BasicGraph.html#a5f00202c39a865895d4ef9273569619f" title="Adds a Node component to the component gameobject that is passed.">AddNodeToGraph</a> -Add edges by calling <a class="el" href="classPUL_1_1BasicGraph.html#a463dc3a39842ca7d10b7bc5a834c05d9">AddEdgeToGraph</a> and passing two nodes that have been previously added to the graph -Run and Stop the graph using <a class="el" href="classPUL_1_1BasicGraph.html#ab04f96bb1a67a630b89ae6f70a5d522a">StartGraph</a> and <a class="el" href="classPUL_1_1BasicGraph.html#acdf59548e86a4c4f947cc8cdae0c618f">StopGraph</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a463dc3a39842ca7d10b7bc5a834c05d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a463dc3a39842ca7d10b7bc5a834c05d9">&#9670;&nbsp;</a></span>AddEdgeToGraph()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classPUL_1_1EdgeInfo.html">EdgeInfo</a> PUL.BasicGraph.AddEdgeToGraph </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classPUL_1_1NodeInfo.html">NodeInfo</a>&#160;</td>
+          <td class="paramname"><em>sourceNodeInfo</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classPUL_1_1NodeInfo.html">NodeInfo</a>&#160;</td>
+          <td class="paramname"><em>targetNodeInfo</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented in <a class="el" href="classPUL_1_1ForceDirectedGraph.html#acf0be8ec62ec95cbe5dafd251a1112ba">PUL.ForceDirectedGraph</a>, <a class="el" href="classPUL_1_1SugiyamaGraph.html#a9c1ef9f17583e68e80c881f32699908e">PUL.SugiyamaGraph</a>, and <a class="el" href="classPUL_1_1HierarchicalGraph.html#abc94f3d9966d3fed2d1ef48276fa5b83">PUL.HierarchicalGraph</a>.</p>
+
+</div>
+</div>
 <a id="a5f00202c39a865895d4ef9273569619f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5f00202c39a865895d4ef9273569619f">&#9670;&nbsp;</a></span>AddNodeToGraph()</h2>
 
@@ -158,8 +191,115 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>RunForIterati
 
 </div>
 </div>
+<a id="a849c6768a673befb8b197bfe54dde587"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a849c6768a673befb8b197bfe54dde587">&#9670;&nbsp;</a></span>RunForIterations()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void PUL.BasicGraph.RunForIterations </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>numIterations</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented in <a class="el" href="classPUL_1_1ForceDirectedGraph.html#a2c7f6dd64a1bffb677733a3d7706ae67">PUL.ForceDirectedGraph</a>.</p>
+
+</div>
+</div>
+<a id="ab04f96bb1a67a630b89ae6f70a5d522a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab04f96bb1a67a630b89ae6f70a5d522a">&#9670;&nbsp;</a></span>StartGraph()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void PUL.BasicGraph.StartGraph </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented in <a class="el" href="classPUL_1_1ForceDirectedGraph.html#a1d7c1f3aff921cfc90599e463f550baf">PUL.ForceDirectedGraph</a>, <a class="el" href="classPUL_1_1SugiyamaGraph.html#a51560e76cb93fa9038124268d70454e3">PUL.SugiyamaGraph</a>, and <a class="el" href="classPUL_1_1HierarchicalGraph.html#a636168959c19392540e625959e943507">PUL.HierarchicalGraph</a>.</p>
+
+</div>
+</div>
+<a id="acdf59548e86a4c4f947cc8cdae0c618f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acdf59548e86a4c4f947cc8cdae0c618f">&#9670;&nbsp;</a></span>StopGraph()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void PUL.BasicGraph.StopGraph </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented in <a class="el" href="classPUL_1_1ForceDirectedGraph.html#a33e5d10420b1b4ec4d66fbd557a0ac9a">PUL.ForceDirectedGraph</a>.</p>
+
+</div>
+</div>
+<a id="a5cd566cf6e6d351d3a3e92604ce618b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5cd566cf6e6d351d3a3e92604ce618b0">&#9670;&nbsp;</a></span>Update()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PUL.BasicGraph.Update </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/mnt/i/worktemp/Auburn/Research/dev/cogbre-vr/Assets/PUL/VizComponents/Abstraction 1/BasicGraph.cs</li>
+<li>/mnt/i/worktemp/Auburn/Research/dev/cogbre-vr/Assets/PUL/VizComponents/Abstraction 1/<a class="el" href="BasicGraph_8cs.html">BasicGraph.cs</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

@@ -1,5 +1,29 @@
 var searchData=
 [
-  ['menumanager_8',['MenuManager',['../classPUL_1_1MenuManager.html',1,'PUL']]],
-  ['menumanagereditor_9',['MenuManagerEditor',['../classMenuManagerEditor.html',1,'']]]
+  ['gamemanager_96',['GameManager',['../classPUL_1_1GameManager.html',1,'PUL.GameManager'],['../classPUL_1_1MenuManager.html#aa2cd876c2d941942b3804268a383dce8',1,'PUL.MenuManager.GameManager()'],['../classPUL_1_1NexusClient.html#ac9a90836ea2efe75b3b86aabaffa70a3',1,'PUL.NexusClient.gameManager()'],['../classPUL_1_1GraphManager.html#a62eed5ad891c0df2b73fed43780eb76e',1,'PUL.GraphManager.gameManager()']]],
+  ['gamemanager_2ecs_97',['GameManager.cs',['../GameManager_8cs.html',1,'']]],
+  ['generategraph_98',['GenerateGraph',['../classSpatialGraph.html#afffe02019f33f045d1173518c7c9d054',1,'SpatialGraph']]],
+  ['getedgecrossesindicator_99',['getEdgeCrossesIndicator',['../classPUL_1_1SugiyamaGraph_1_1CellWrapper.html#a214c5d32ab484d259e9f83e39e23d92e',1,'PUL::SugiyamaGraph::CellWrapper']]],
+  ['getgridposition_100',['getGridPosition',['../classPUL_1_1SugiyamaGraph_1_1CellWrapper.html#abb60d7b1015d5ba68d603ec7cbe2e374',1,'PUL::SugiyamaGraph::CellWrapper']]],
+  ['getlevel_101',['getLevel',['../classPUL_1_1SugiyamaGraph_1_1CellWrapper.html#ad3f9ee48f355368fb0401918f39c5633',1,'PUL::SugiyamaGraph::CellWrapper']]],
+  ['getneighboredges_102',['getNeighborEdges',['../classPUL_1_1SugiyamaGraph.html#a4deee9d806f0a2e70b7c2b87241208cf',1,'PUL::SugiyamaGraph']]],
+  ['getpriority_103',['getPriority',['../classPUL_1_1SugiyamaGraph_1_1CellWrapper.html#a757c5d7e0f0f8255a84e682d4619aaeb',1,'PUL::SugiyamaGraph::CellWrapper']]],
+  ['getspawnposition_104',['getSpawnPosition',['../classPUL_1_1GameManager.html#a7a5f446185544cb3d9b9a8a050a04559',1,'PUL::GameManager']]],
+  ['getspawnrotation_105',['getSpawnRotation',['../classPUL_1_1GameManager.html#a9453c26644520f21311f09d5bd042502',1,'PUL::GameManager']]],
+  ['getvertexview_106',['getVertexView',['../classPUL_1_1SugiyamaGraph_1_1CellWrapper.html#a1150973d004902cf3a4bfe2475ab94ae',1,'PUL::SugiyamaGraph::CellWrapper']]],
+  ['grabmove_107',['grabMove',['../classSpatialNode.html#a9ce490ed5932dceec2a3aec59dfe17f7',1,'SpatialNode']]],
+  ['graph_108',['graph',['../classSpatialNode.html#af2251e78f929f40c4bc53079068fa31b',1,'SpatialNode']]],
+  ['graph_2ecs_109',['Graph.cs',['../Graph_8cs.html',1,'']]],
+  ['graphanimator_110',['graphAnimator',['../classPUL_1_1ForceDirectedGraph.html#a6fd8225ef9afe97e0fefcfb4aca73948',1,'PUL::ForceDirectedGraph']]],
+  ['graphborder_111',['graphBorder',['../classSpatialGraph.html#ae2d111e033c1c18882ed8ddbbffa9847',1,'SpatialGraph']]],
+  ['graphborderscale_112',['graphBorderScale',['../classSpatialGraph.html#ab45c43c8b5247ca14d68a8b893f29ff1',1,'SpatialGraph']]],
+  ['graphbounds_113',['graphBounds',['../classSpatialGraph.html#a3ba8935f435c8d3722cf449e2647cca7',1,'SpatialGraph']]],
+  ['graphcodelinecontroller_2ecs_114',['GraphCodeLineController.cs',['../GraphCodeLineController_8cs.html',1,'']]],
+  ['graphlist_115',['graphList',['../classPUL_1_1GraphManager.html#a7e09ac1023436d235349e27ac26ffbd1',1,'PUL::GraphManager']]],
+  ['graphmanager_116',['GraphManager',['../classPUL_1_1GraphManager.html',1,'PUL.GraphManager'],['../classPUL_1_1GameManager.html#a65bbaa41eb9c68979331392508b78e76',1,'PUL.GameManager.graphManager()'],['../classPUL_1_1MenuManager.html#a4acf6c57e185754d3111b4dd50d6d120',1,'PUL.MenuManager.graphManager()'],['../classSpatialGraph.html#abdcdba6c523eedb61048af65f939d9a9',1,'SpatialGraph.graphManager()']]],
+  ['graphmanager_2ecs_117',['GraphManager.cs',['../GraphManager_8cs.html',1,'']]],
+  ['graphscale_118',['graphScale',['../classSpatialGraph.html#a50aa03f90f7f6fc895b37cebaa368008',1,'SpatialGraph']]],
+  ['graphtiny_119',['graphTiny',['../classSpatialGraph.html#a585c20f0ca9cbf50b5e439d201b42287',1,'SpatialGraph']]],
+  ['gridareasize_120',['gridAreaSize',['../classPUL_1_1SugiyamaGraph.html#ad25409ff65ebdc4f0ae5272ed11b161d',1,'PUL::SugiyamaGraph']]],
+  ['gridposition_121',['gridPosition',['../classPUL_1_1SugiyamaGraph_1_1CellWrapper.html#a27c15d263bcd5ae01329448bdbf706c1',1,'PUL::SugiyamaGraph::CellWrapper']]]
 ];

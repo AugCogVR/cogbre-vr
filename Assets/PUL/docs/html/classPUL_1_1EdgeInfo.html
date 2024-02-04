@@ -68,6 +68,7 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="classPUL_1_1EdgeInfo-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">PUL.EdgeInfo Class Reference</div>  </div>
@@ -95,24 +96,176 @@ Collaboration diagram for PUL.EdgeInfo:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ae56c992310de8b8caa6608dd2c26fa1d"><td class="memItemLeft" align="right" valign="top"><a id="ae56c992310de8b8caa6608dd2c26fa1d"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>Update</b> ()</td></tr>
+<tr class="memitem:ae56c992310de8b8caa6608dd2c26fa1d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1EdgeInfo.html#ae56c992310de8b8caa6608dd2c26fa1d">Update</a> ()</td></tr>
 <tr class="separator:ae56c992310de8b8caa6608dd2c26fa1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a2fffd26bf4f133b0dd2bef67e9046d06"><td class="memItemLeft" align="right" valign="top"><a id="a2fffd26bf4f133b0dd2bef67e9046d06"></a>
-<a class="el" href="classPUL_1_1NodeInfo.html">NodeInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><b>sourceNodeInfo</b></td></tr>
+<tr class="memitem:a2fffd26bf4f133b0dd2bef67e9046d06"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPUL_1_1NodeInfo.html">NodeInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1EdgeInfo.html#a2fffd26bf4f133b0dd2bef67e9046d06">sourceNodeInfo</a></td></tr>
 <tr class="separator:a2fffd26bf4f133b0dd2bef67e9046d06"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad98af84e404b080f54da6dd7a83e4d06"><td class="memItemLeft" align="right" valign="top"><a id="ad98af84e404b080f54da6dd7a83e4d06"></a>
-<a class="el" href="classPUL_1_1NodeInfo.html">NodeInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><b>targetNodeInfo</b></td></tr>
+<tr class="memitem:ad98af84e404b080f54da6dd7a83e4d06"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPUL_1_1NodeInfo.html">NodeInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1EdgeInfo.html#ad98af84e404b080f54da6dd7a83e4d06">targetNodeInfo</a></td></tr>
 <tr class="separator:ad98af84e404b080f54da6dd7a83e4d06"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef05f266ba8856118a6d1159ab2fb043"><td class="memItemLeft" align="right" valign="top"><a id="aef05f266ba8856118a6d1159ab2fb043"></a>
-IList&lt; GameObject &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>controlPoints</b></td></tr>
+<tr class="memitem:aef05f266ba8856118a6d1159ab2fb043"><td class="memItemLeft" align="right" valign="top">IList&lt; GameObject &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1EdgeInfo.html#aef05f266ba8856118a6d1159ab2fb043">controlPoints</a></td></tr>
 <tr class="separator:aef05f266ba8856118a6d1159ab2fb043"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:ac9fdecf0d0774634c81c7259eab0c04b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1EdgeInfo.html#ac9fdecf0d0774634c81c7259eab0c04b">UpdateLineRendererBezier</a> (LineRenderer lineRenderer)</td></tr>
+<tr class="separator:ac9fdecf0d0774634c81c7259eab0c04b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2aef9a564c6cec10ebd9bb69236bb9be"><td class="memItemLeft" align="right" valign="top">Vector3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPUL_1_1EdgeInfo.html#a2aef9a564c6cec10ebd9bb69236bb9be">CalculateCubicBezierPoint</a> (float t, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)</td></tr>
+<tr class="separator:a2aef9a564c6cec10ebd9bb69236bb9be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a2aef9a564c6cec10ebd9bb69236bb9be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2aef9a564c6cec10ebd9bb69236bb9be">&#9670;&nbsp;</a></span>CalculateCubicBezierPoint()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Vector3 PUL.EdgeInfo.CalculateCubicBezierPoint </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>t</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Vector3&#160;</td>
+          <td class="paramname"><em>p0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Vector3&#160;</td>
+          <td class="paramname"><em>p1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Vector3&#160;</td>
+          <td class="paramname"><em>p2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Vector3&#160;</td>
+          <td class="paramname"><em>p3</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae56c992310de8b8caa6608dd2c26fa1d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae56c992310de8b8caa6608dd2c26fa1d">&#9670;&nbsp;</a></span>Update()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PUL.EdgeInfo.Update </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac9fdecf0d0774634c81c7259eab0c04b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9fdecf0d0774634c81c7259eab0c04b">&#9670;&nbsp;</a></span>UpdateLineRendererBezier()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PUL.EdgeInfo.UpdateLineRendererBezier </td>
+          <td>(</td>
+          <td class="paramtype">LineRenderer&#160;</td>
+          <td class="paramname"><em>lineRenderer</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="aef05f266ba8856118a6d1159ab2fb043"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef05f266ba8856118a6d1159ab2fb043">&#9670;&nbsp;</a></span>controlPoints</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">IList&lt;GameObject&gt; PUL.EdgeInfo.controlPoints</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2fffd26bf4f133b0dd2bef67e9046d06"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2fffd26bf4f133b0dd2bef67e9046d06">&#9670;&nbsp;</a></span>sourceNodeInfo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classPUL_1_1NodeInfo.html">NodeInfo</a> PUL.EdgeInfo.sourceNodeInfo</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad98af84e404b080f54da6dd7a83e4d06"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad98af84e404b080f54da6dd7a83e4d06">&#9670;&nbsp;</a></span>targetNodeInfo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classPUL_1_1NodeInfo.html">NodeInfo</a> PUL.EdgeInfo.targetNodeInfo</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/mnt/i/worktemp/Auburn/Research/dev/cogbre-vr/Assets/PUL/VizComponents/Abstraction 1/EdgeInfo.cs</li>
+<li>/mnt/i/worktemp/Auburn/Research/dev/cogbre-vr/Assets/PUL/VizComponents/Abstraction 1/<a class="el" href="EdgeInfo_8cs.html">EdgeInfo.cs</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

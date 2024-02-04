@@ -1,9 +1,12 @@
 <map id="PUL.MenuManager" name="PUL.MenuManager">
-<area shape="rect" id="node1" title=" " alt="" coords="329,171,473,197"/>
-<area shape="rect" id="node4" href="$classPUL_1_1GameManager.html" title=" " alt="" coords="196,260,343,287"/>
-<area shape="rect" id="node2" title=" " alt="" coords="251,5,375,32"/>
-<area shape="rect" id="node3" href="$classSpatialGraphManager.html" title=" " alt="" coords="232,81,395,108"/>
-<area shape="rect" id="node5" href="$classPUL_1_1GraphManager.html" title=" " alt="" coords="5,349,152,376"/>
-<area shape="rect" id="node6" href="$classPUL_1_1NexusClient.html" title=" " alt="" coords="443,349,573,376"/>
-<area shape="rect" id="node7" href="$classPUL_1_1OxideData.html" title=" " alt="" coords="487,81,607,108"/>
+<area shape="rect" id="node1" title=" " alt="" coords="515,195,659,221"/>
+<area shape="rect" id="node6" href="$classPUL_1_1GameManager.html" title=" " alt="" coords="808,240,955,267"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,245,129,272"/>
+<area shape="rect" id="node4" href="$classSpatialGraphManager.html" title=" " alt="" coords="179,93,341,120"/>
+<area shape="rect" id="node7" href="$classPUL_1_1GraphManager.html" title=" " alt="" coords="1101,188,1248,215"/>
+<area shape="rect" id="node8" href="$classPUL_1_1NexusClient.html" title=" " alt="" coords="1109,345,1240,372"/>
+<area shape="rect" id="node3" href="$classPUL_1_1OxideBinary.html" title=" " alt="" coords="195,43,325,69"/>
+<area shape="rect" id="node5" href="$classPUL_1_1OxideFunction.html" title=" " alt="" coords="188,144,332,171"/>
+<area shape="rect" id="node9" href="$classPUL_1_1OxideData.html" title=" " alt="" coords="200,355,320,381"/>
+<area shape="rect" id="node10" href="$classPUL_1_1OxideCollection.html" title=" " alt="" coords="183,195,337,221"/>
 </map>

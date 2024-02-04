@@ -1,4 +1,27 @@
 var searchData=
 [
-  ['disassemblyformatter_2',['DisassemblyFormatter',['../classDisassemblyFormatter.html',1,'']]]
+  ['backgroundcalculation_8',['backgroundCalculation',['../classPUL_1_1ForceDirectedGraph.html#a17ec1d04feb7cf57ef7f5004aa7a6d11',1,'PUL::ForceDirectedGraph']]],
+  ['balanceforcejob_9',['BalanceForceJob',['../structPUL_1_1ForceDirectedGraph_1_1BalanceForceJob.html',1,'PUL::ForceDirectedGraph']]],
+  ['basicblockdict_10',['basicBlockDict',['../classPUL_1_1OxideBinary.html#ab8fe66d0a9e7769c1b8dd5ad24936f21',1,'PUL.OxideBinary.basicBlockDict()'],['../classPUL_1_1OxideFunction.html#a4fa5ea2bfb0d869703575bedad547621',1,'PUL.OxideFunction.basicBlockDict()']]],
+  ['basicgraph_11',['BasicGraph',['../classPUL_1_1BasicGraph.html',1,'PUL']]],
+  ['basicgraph_2ecs_12',['BasicGraph.cs',['../BasicGraph_8cs.html',1,'']]],
+  ['binarybuttoncallback_13',['BinaryButtonCallback',['../classPUL_1_1MenuManager.html#a66440287a4fd89feb25a0a394bdd140b',1,'PUL::MenuManager']]],
+  ['binarybuttoncallbackcoroutine_14',['BinaryButtonCallbackCoroutine',['../classPUL_1_1MenuManager.html#abf56017261540681fac7be531d8a3aab',1,'PUL::MenuManager']]],
+  ['binarybuttondict_15',['binaryButtonDict',['../classPUL_1_1MenuManager.html#ad5c55e993cc1f06441de3021d8b5d817',1,'PUL::MenuManager']]],
+  ['binarycallgraphbutton_16',['binaryCallGraphButton',['../classPUL_1_1MenuManager.html#a84cb236799ea70adf904bebc5abb8a4f',1,'PUL::MenuManager']]],
+  ['binarycallgraphbuttoncallback_17',['BinaryCallGraphButtonCallback',['../classPUL_1_1MenuManager.html#a1fc3340da9e506862afe2778470e27ec',1,'PUL::MenuManager']]],
+  ['binaryfilestatsbutton_18',['binaryFileStatsButton',['../classPUL_1_1MenuManager.html#a6a36c00064ab785a5a0800f2a0ac3f3c',1,'PUL::MenuManager']]],
+  ['binaryfilestatsbuttoncallback_19',['BinaryFileStatsButtonCallback',['../classPUL_1_1MenuManager.html#adb6eb91194968470d8c561dffd97aa1f',1,'PUL::MenuManager']]],
+  ['binarygridobjectcollection_20',['BinaryGridObjectCollection',['../classPUL_1_1MenuManager.html#aec794d6f8e0627158568b84eb6ddad3c',1,'PUL::MenuManager']]],
+  ['binarylist_21',['binaryList',['../classPUL_1_1OxideCollection.html#af01536e985d6f585cf3a9f772dbe679e',1,'PUL::OxideCollection']]],
+  ['binarystringsbutton_22',['binaryStringsButton',['../classPUL_1_1MenuManager.html#abee50a7cdb9d6434e748cbfcf6c97d6b',1,'PUL::MenuManager']]],
+  ['binarystringsbuttoncallback_23',['BinaryStringsButtonCallback',['../classPUL_1_1MenuManager.html#a43908a9ddc8e0ab72bfc8cf014a9fdb1',1,'PUL::MenuManager']]],
+  ['buildbinarycallgraph_24',['BuildBinaryCallGraph',['../classPUL_1_1GraphManager.html#a3c3da2b1e5b94078d5e13090f702c37e',1,'PUL::GraphManager']]],
+  ['buildbinarycallgraphcoroutine_25',['BuildBinaryCallGraphCoroutine',['../classPUL_1_1GraphManager.html#a50f724d0a3757d3c1b7805123486fc3b',1,'PUL::GraphManager']]],
+  ['buildfunctioncontrolflowgraph_26',['BuildFunctionControlFlowGraph',['../classPUL_1_1GraphManager.html#a5a676a883bb7ba1648f6c0bd9a7a789a',1,'PUL::GraphManager']]],
+  ['buildfunctioncontrolflowgraphcoroutine_27',['BuildFunctionControlFlowGraphCoroutine',['../classPUL_1_1GraphManager.html#ad1d8e226627d2550311d02fa2e06d0d0',1,'PUL::GraphManager']]],
+  ['buildfunctioncontrolflowgraphfdg_28',['BuildFunctionControlFlowGraphFDG',['../classPUL_1_1GraphManager.html#a14f2307c22312606688c5f748e1aaa46',1,'PUL::GraphManager']]],
+  ['buildfunctioncontrolflowgraphfdgcoroutine_29',['BuildFunctionControlFlowGraphFDGCoroutine',['../classPUL_1_1GraphManager.html#a4754d169e8c02c1efd9294ce6851243e',1,'PUL::GraphManager']]],
+  ['buildgraphhandle_30',['buildGraphHandle',['../classPUL_1_1GraphManager.html#aafcd410a60a9a72ceb74a0dd065cc921',1,'PUL::GraphManager']]],
+  ['busytext_31',['busyText',['../classPUL_1_1MenuManager.html#ae87169f59c469b1eb90a19e69f3da8aa',1,'PUL::MenuManager']]]
 ];

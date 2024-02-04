@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['nexusclient_37',['NexusClient',['../classPUL_1_1NexusClient.html',1,'PUL']]],
-  ['nodeinfo_38',['NodeInfo',['../classPUL_1_1NodeInfo.html',1,'PUL']]]
+  ['menumanager_293',['MenuManager',['../classPUL_1_1MenuManager.html',1,'PUL']]],
+  ['menumanagereditor_294',['MenuManagerEditor',['../classMenuManagerEditor.html',1,'']]]
 ];
