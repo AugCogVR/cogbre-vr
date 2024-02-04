@@ -1,0 +1,6 @@
+<map id="SpatialNode" name="SpatialNode">
+<area shape="rect" id="node1" title=" " alt="" coords="5,260,107,287"/>
+<area shape="rect" id="node2" title=" " alt="" coords="23,5,147,32"/>
+<area shape="rect" id="node3" href="$classSpatialGraph.html" title=" " alt="" coords="72,171,179,197"/>
+<area shape="rect" id="node4" href="$classSpatialGraphManager.html" title=" " alt="" coords="123,81,285,108"/>
+</map>
