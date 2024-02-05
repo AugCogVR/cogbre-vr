@@ -18,12 +18,15 @@ namespace PUL
 
         // Holder for collection buttons
         public GridObjectCollection CollectionGridObjectCollection;
+        public ScrollingObjectCollection CollectionScrollingObject;
 
         // Holder for binary buttons
         public GridObjectCollection BinaryGridObjectCollection;
+        public ScrollingObjectCollection BinaryScrollingObject;
 
         // Holder for function buttons
         public GridObjectCollection FunctionGridObjectCollection;
+        public ScrollingObjectCollection FunctionScrollingObject;
 
         public GameObject binaryStringsButton;
 
@@ -221,10 +224,18 @@ namespace PUL
             {
                 UnityEngine.Object.Destroy(button);
             }
+
+            // Update grid objects and scrollable regions
+            // -> Binary panel
             binaryButtonDict = new Dictionary<OxideBinary, GameObject>();
-            functionButtonDict = new Dictionary<OxideFunction, GameObject>();
             BinaryGridObjectCollection.UpdateCollection();
+            BinaryScrollingObject.UpdateContent();
+            // -> Function panel
+            functionButtonDict = new Dictionary<OxideFunction, GameObject>();
             FunctionGridObjectCollection.UpdateCollection();
+            FunctionScrollingObject.UpdateContent();
+
+            // Update Status text at the bottom of the panels
             statusText.text = $"Loading binary info for collection {collection.name}";
 
             // Ensure the collection info is populated, now that it is selected
@@ -294,8 +305,14 @@ namespace PUL
             {
                 UnityEngine.Object.Destroy(button);
             }
+
+            // Update grid objects and scrolling region
+            // -> Function panel
             functionButtonDict = new Dictionary<OxideFunction, GameObject>();
             FunctionGridObjectCollection.UpdateCollection();
+            FunctionScrollingObject.UpdateContent();
+
+            // Update Status text at the bottom of the panels
             statusText.text = $"Loading function info for binary {binary.name}";
 
             // Ensure the binary info is populated, now that it is selected
@@ -320,7 +337,7 @@ namespace PUL
                 newButton.transform.parent = FunctionGridObjectCollection.transform;
                 newButton.transform.localEulerAngles = Vector3.zero;
                 newButton.transform.localScale = new Vector3(newButton.transform.localScale.x * UIPanel.transform.localScale.x, newButton.transform.localScale.y * UIPanel.transform.localScale.y, newButton.transform.localScale.z * UIPanel.transform.localScale.z);
-                newButton.transform.name = function.offset + ": Menu Button";
+                newButton.transform.name = $"{function.offset} ({function.name}) : Menu Button";
                 newButton.GetComponentInChildren<TextMeshPro>().text = createFunctionButtonText(function);
                 functionButtonDict[function] = newButton;
 
@@ -336,7 +353,11 @@ namespace PUL
 
                 if (++count > 10) break; // low limit for testing
             }
+
+            // Update grid objects and scrolling region
             FunctionGridObjectCollection.UpdateCollection();
+            FunctionScrollingObject.UpdateContent();
+
             unsetBusy();
         }
 

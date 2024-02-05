@@ -4047,8 +4047,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GameManager: {fileID: 972881827}
   CollectionGridObjectCollection: {fileID: 354631650}
+  CollectionScrollingObject: {fileID: 1034167684}
   BinaryGridObjectCollection: {fileID: 178763921}
+  BinaryScrollingObject: {fileID: 684563194}
   FunctionGridObjectCollection: {fileID: 1723004556}
+  FunctionScrollingObject: {fileID: 128566024}
   binaryStringsButton: {fileID: 1869331107}
   binaryFileStatsButton: {fileID: 1704038010}
   binaryCallGraphButton: {fileID: 1721431014}
