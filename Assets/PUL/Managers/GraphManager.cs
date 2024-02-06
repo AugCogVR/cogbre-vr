@@ -196,9 +196,11 @@ namespace PUL
             gameManager.menuManager.unsetBusy();
         }
 
-
-        // Save the "FDG" versions of these functions for reference; not using
-        // force-directed graph at this time but code will be handy in the future
+        // The "FDG" version of the Control Flow Graph works, but isn't very useful--
+        // highly recommend to continue using the Sugiyama version above-- 
+        // but keep this code here to periodically test FDG to ensure we 
+        // maintain it for future use. FDG will be good for visualization of 
+        // relational but non-hierarchical data.
         public void BuildFunctionControlFlowGraphFDG(OxideFunction function)
         {
             // Build the "handle" object that the user can use to move the whole graph around
