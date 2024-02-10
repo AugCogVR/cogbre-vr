@@ -394,14 +394,14 @@ namespace PUL
                             }
                             else 
                             {
-                                Debug.Log($"WARNING: reported function call target at offset {targetOffset} not found in instruction dict");
+                                // Debug.Log($"WARNING: reported function call target at offset {targetOffset} not found in instruction dict");
                             }
                         }
                         else 
                         {
                             // For some reason, some reported offsets for calls aren't in the disassembly...???
                             // e.g., "2595" in TASKMAN.EXE
-                            Debug.Log($"WARNING: reported function call at offset {sourceOffset} not found in instruction dict");
+                            // Debug.Log($"WARNING: reported function call at offset {sourceOffset} not found in instruction dict");
                         }
                     }
                 }                    
