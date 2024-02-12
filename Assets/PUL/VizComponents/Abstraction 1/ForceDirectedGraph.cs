@@ -80,7 +80,7 @@ namespace PUL
         }
 
         [PublicAPI]
-        public override void StartGraph()
+        public override void StartGraph(GameObject graphHandle)
         {
             foreach (NodeInfo node in nodes.Values)
             {

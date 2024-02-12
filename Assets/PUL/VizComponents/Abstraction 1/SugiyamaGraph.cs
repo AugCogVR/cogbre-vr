@@ -60,50 +60,85 @@ namespace PUL
         }
 
         [PublicAPI]
-        public override void StartGraph()
+        public override void StartGraph(GameObject graphHandle)
         {
-            StartCoroutine(StartGraphCoroutine());
+            StartCoroutine(StartGraphCoroutine(graphHandle));
         }
 
-        IEnumerator StartGraphCoroutine()
+        IEnumerator StartGraphCoroutine(GameObject graphHandle)
         {
             this.orientation = DEFAULT_ORIENTATION;
 
-            initialize();
+            initialize(graphHandle);
 
             yield return new WaitForEndOfFrame(); // put this somewhere smarter!
         }
 
-        public void initialize()
+        // Determine the placement of the nodes on a grid, then position the nodes in space
+        public void initialize(GameObject graphHandle)
         {
             if (!executed)
             {
+                // Determine the level placement for each node
                 List<List<CellWrapper>> graphLevels = runSugiyama();
 
+                // Keep track of min and max extents in X and Y dimensions so we can resize the 
+                // graph's overall collider after we place all the nodes.
+                BoxCollider collider = graphHandle.GetComponent<BoxCollider>();
+                float minX = -(collider.size.x / 2f);
+                float maxX = collider.size.x / 2f;
+                float minY = -(collider.size.y / 2f);
+                float maxY = collider.size.y / 2f;
+                // Debug.Log($"BEFORE MinX: {minX} MaxX: {maxX} MinY: {minY} MaxY: {maxY}");
+
+                // Place the nodes in space.
+                // First walk through each level
                 foreach (List<CellWrapper> level in graphLevels)
                 {
+                    // Then walk through each node in that level to determine grid position
                     foreach (CellWrapper wrapper in level)
                     {
                         NodeInfo vertex = wrapper.getVertexView();
 
+                        // Place the node based on its size and grid position
                         Vector3 size = vertex.nodeGameObject.GetComponent<Collider>().bounds.size;
+
+                        // Where to draw the graph in relation to the graph handle object's center
                         float xOffset = 0.25f;
                         float yOffset = -0.25f;
 
+                        // Place the nodes in either top-down or left-right orientation
                         if (orientation == Orientation.TOP)
                         {
                             float x = ((size.x + 0.2f) * wrapper.gridPosition) + xOffset;
                             float y = (-size.y * 2.0f * wrapper.level) + yOffset;
                             vertex.transform.localPosition = new Vector3(x, y, 0.0f);
+                            if ((x - (size.x / 2f)) < minX) minX = x - (size.x / 2f);
+                            if ((x + (size.x / 2f)) > maxX) maxX = x + (size.x / 2f);
+                            if ((y - (size.y / 2f)) < minY) minY = y - (size.y / 2f);
+                            if ((y + (size.y / 2f)) > maxY) maxY = y + (size.y / 2f);
                         }
                         else
                         {
                             float y = (-size.y * 2.0f * wrapper.gridPosition) + yOffset;
                             float x = ((size.x + 0.2f) * wrapper.level) + xOffset;
                             vertex.transform.localPosition = new Vector3(x, y, 0.0f);
+                            if ((x - (size.x / 2f)) < minX) minX = x - (size.x / 2f);
+                            if ((x + (size.x / 2f)) > maxX) maxX = x + (size.x / 2f);
+                            if ((y - (size.y / 2f)) < minY) minY = y - (size.y / 2f);
+                            if ((y + (size.y / 2f)) > maxY) maxY = y + (size.y / 2f);
                         }
                     }
                 }
+                // Debug.Log($" AFTER MinX: {minX} MaxX: {maxX} MinY: {minY} MaxY: {maxY}");
+
+                // Update size and local position of the overall graph collider 
+                float newSizeX = maxX - minX;
+                float newSizeY = maxY - minY;
+                collider.size = new Vector3(newSizeX, newSizeY, collider.size.z);
+                collider.center = new Vector3(minX + (newSizeX / 2f), minY + (newSizeY / 2f), collider.center.z);
+                Debug.Log($"NEW GRAPH COLLIDER CENTER {collider.center}");
+                Debug.Log($"NEW GRAPH COLLIDER SIZE {collider.size}");
             }
         }
 

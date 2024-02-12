@@ -47,7 +47,7 @@ namespace PUL
         }
 
         [PublicAPI]
-        public override void StartGraph()
+        public override void StartGraph(GameObject graphHandle)
         {
             StartCoroutine(StartGraphCoroutine());
         }

@@ -108,7 +108,7 @@ namespace PUL
             }
 
             // Let the graph position the nodes
-            graph.StartGraph();
+            graph.StartGraph(graphHandle);
 
             // Bring the graph back
             graphHandle.transform.position = new Vector3(graphHandle.transform.position.x,
@@ -184,7 +184,7 @@ namespace PUL
             }
 
             // Let the graph position the nodes
-            graph.StartGraph();
+            graph.StartGraph(graphHandle);
 
             // Bring the graph back
             graphHandle.transform.position = new Vector3(graphHandle.transform.position.x,
@@ -278,7 +278,7 @@ namespace PUL
             }
 
             // Let the graph position the nodes
-            graph.StartGraph();
+            graph.StartGraph(graphHandle);
 
             // Bring the graph back
             graphHandle.transform.position = new Vector3(graphHandle.transform.position.x,

@@ -100,7 +100,7 @@ namespace PUL
 
 
         [PublicAPI]
-        public virtual void StartGraph()
+        public virtual void StartGraph(GameObject graphHandle)
         {
             // Nothing to do for basic graph
         }
