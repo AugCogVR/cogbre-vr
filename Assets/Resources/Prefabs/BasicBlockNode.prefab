@@ -491,6 +491,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.x
       value: -0.088
       objectReference: {fileID: 0}
+    - target: {fileID: 7779420039263858268, guid: 937ce507dd7ee334ba569554e24adbdd, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7779420039263858270, guid: 937ce507dd7ee334ba569554e24adbdd, type: 3}
       propertyPath: m_Name
       value: BasicBlockNode
@@ -550,6 +554,10 @@ PrefabInstance:
     - target: {fileID: 7779420039263858272, guid: 937ce507dd7ee334ba569554e24adbdd, type: 3}
       propertyPath: m_Size.z
       value: 0.017423073
+      objectReference: {fileID: 0}
+    - target: {fileID: 7779420039263858272, guid: 937ce507dd7ee334ba569554e24adbdd, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7779420039263858272, guid: 937ce507dd7ee334ba569554e24adbdd, type: 3}
       propertyPath: m_Center.x
