@@ -19,14 +19,17 @@ namespace PUL
         // Holder for collection buttons
         public GridObjectCollection CollectionGridObjectCollection;
         public ScrollingObjectCollection CollectionScrollingObject;
+        public TextMeshPro CollectionSelectionText;
 
         // Holder for binary buttons
         public GridObjectCollection BinaryGridObjectCollection;
         public ScrollingObjectCollection BinaryScrollingObject;
+        public TextMeshPro BinarySelectionText;
 
         // Holder for function buttons
         public GridObjectCollection FunctionGridObjectCollection;
         public ScrollingObjectCollection FunctionScrollingObject;
+        public TextMeshPro FunctionSelectionText;
 
         public GameObject binaryStringsButton;
 
@@ -193,6 +196,11 @@ namespace PUL
 
             unsetBusy();
             CollectionGridObjectCollection.UpdateCollection();
+
+            CollectionSelectionText.text = "none";
+            BinarySelectionText.text = "none";
+            FunctionSelectionText.text = "none";
+
             initialized = true;
         }
 
@@ -202,8 +210,11 @@ namespace PUL
 
             // Set the selected collection, binary, function
             selectedCollection = collection;
+            CollectionSelectionText.text = collection.name;
             selectedBinary = null;
+            BinarySelectionText.text = "none";
             selectedFunction = null;
+            FunctionSelectionText.text = "none";
 
             // Remove highlights from all Collection buttons and hightlight the selected button
             foreach (KeyValuePair<OxideCollection, GameObject> buttonPair in collectionButtonDict)
@@ -286,7 +297,9 @@ namespace PUL
 
             // Set the selected binary and function
             selectedBinary = binary;
+            BinarySelectionText.text = binary.name;
             selectedFunction = null;
+            FunctionSelectionText.text = "none";
 
             // Remove highlights from all Binary buttons and hightlight the selected button
             foreach (KeyValuePair<OxideBinary, GameObject> buttonPair in binaryButtonDict)
@@ -442,6 +455,7 @@ namespace PUL
 
             // Set the selected function
             selectedFunction = function;
+            FunctionSelectionText.text = function.name;
 
             // Remove highlights from all Function buttons and hightlight the selected button
             foreach (KeyValuePair<OxideFunction, GameObject> buttonPair in functionButtonDict)
