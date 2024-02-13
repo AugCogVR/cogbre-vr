@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using TMPro;
+using Microsoft.MixedReality.Toolkit.UI;
 
 namespace PUL
 {
@@ -77,14 +78,25 @@ namespace PUL
                 // Skip disconnected functions for now
                 if ((function.sourceFunctionDict.Count == 0) && (function.targetFunctionDict.Count == 0)) continue;
 
+                // Create graph node 
                 GameObject graphNodePrefab = Resources.Load("Prefabs/FunctionNode") as GameObject;
-                GameObject gameObject = Instantiate(graphNodePrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
-                TextMeshPro nodeTitleTMP = gameObject.transform.Find("TextBar/TextTMP").gameObject.GetComponent<TextMeshPro>();
+                GameObject graphNode = Instantiate(graphNodePrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
+                TextMeshPro nodeTitleTMP = graphNode.transform.Find("TextBar/TextTMP").gameObject.GetComponent<TextMeshPro>();
                 nodeTitleTMP.text = function.name;
+
+                // Wire up selection button
+                GameObject selectionButton = graphNode.transform.Find("FunctionSelectButton").gameObject;
+                PressableButtonHoloLens2 buttonFunction = selectionButton.GetComponent<PressableButtonHoloLens2>();
+                buttonFunction.TouchBegin.AddListener(() => gameManager.menuManager.FunctionButtonCallback(binary, function, null));
+                Interactable distanceInteract = selectionButton.GetComponent<Interactable>();
+                distanceInteract.OnClick.AddListener(() => gameManager.menuManager.FunctionButtonCallback(binary, function, null));
+
                 // TEST: This is not necessary but is a good test of attaching a behavior and 
                 // is kind of fun. Recommend to comment it out!
                 // gameObject.AddComponent<TwistyBehavior>();
-                NodeInfo nodeInfo = graph.AddNodeToGraph(gameObject);
+
+                NodeInfo nodeInfo = graph.AddNodeToGraph(graphNode);
+                
                 functionNodeInfoDict[function] = nodeInfo;
                 yield return new WaitForEndOfFrame();
             }
@@ -151,16 +163,16 @@ namespace PUL
                 if ((basicBlock.sourceBasicBlockDict.Count == 0) && (basicBlock.targetBasicBlockDict.Count == 0)) continue;
 
                 GameObject graphNodePrefab = Resources.Load("Prefabs/BasicBlockNode") as GameObject;
-                GameObject gameObject = Instantiate(graphNodePrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
-                TextMeshPro nodeTitleTMP = gameObject.transform.Find("TitleBar/TitleTMP").gameObject.GetComponent<TextMeshPro>();
+                GameObject graphNode = Instantiate(graphNodePrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
+                TextMeshPro nodeTitleTMP = graphNode.transform.Find("TitleBar/TitleTMP").gameObject.GetComponent<TextMeshPro>();
                 nodeTitleTMP.text = basicBlock.offset;
-                TextMeshPro nodeContentTMP = gameObject.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
+                TextMeshPro nodeContentTMP = graphNode.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
                 nodeContentTMP.text = "";
                 foreach (OxideInstruction instruction in basicBlock.instructionDict.Values)
                 {
                     nodeContentTMP.text += $"<color=#777777>{instruction.offset} <color=#99FF99>{instruction.mnemonic} <color=#FFFFFF>{instruction.op_str}\n";
                 }
-                NodeInfo nodeInfo = graph.AddNodeToGraph(gameObject);
+                NodeInfo nodeInfo = graph.AddNodeToGraph(graphNode);
                 basicBlockNodeInfoDict[basicBlock] = nodeInfo;
                 yield return new WaitForEndOfFrame();
             }

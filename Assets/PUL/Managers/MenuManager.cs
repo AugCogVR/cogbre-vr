@@ -216,15 +216,13 @@ namespace PUL
             selectedFunction = null;
             FunctionSelectionText.text = "none";
 
-            // Remove highlights from all Collection buttons and hightlight the selected button
+            // Remove highlights from all Collection buttons
             foreach (KeyValuePair<OxideCollection, GameObject> buttonPair in collectionButtonDict)
             {
                 buttonPair.Value.GetComponentInChildren<TextMeshPro>(true).text = createCollectionButtonText(buttonPair.Key);
             }
+            // Hightlight the selected button
             collectionButton.GetComponentInChildren<TextMeshPro>().text = $"<size=125%><color=#FFFF00>{createCollectionButtonText(collection)}";
-            // // DGB: This code changes the color of the button's backplate but only for a few frames
-            // GameObject crap = collectionButton.transform.Find("BackPlate/Quad").gameObject;
-            // crap.GetComponent<Renderer>().material.color = Color.red;
 
             // Clear buttons and text display
             foreach (GameObject button in binaryButtonDict.Values)
@@ -301,7 +299,7 @@ namespace PUL
             selectedFunction = null;
             FunctionSelectionText.text = "none";
 
-            // Remove highlights from all Binary buttons and hightlight the selected button
+            // Remove highlights from all Binary buttons
             foreach (KeyValuePair<OxideBinary, GameObject> buttonPair in binaryButtonDict)
             {
                 // Need "true" argument to include inactive components -- the TMP is inactive for some reason
@@ -311,6 +309,7 @@ namespace PUL
                 // TextMeshPro label = buttonPair.Value.transform.Find("TextMeshPro").gameObject.GetComponent<TextMeshPro>();
                 // label.text = createBinaryButtonText(buttonPair.Key);
             }
+            // Hightlight the selected button
             binaryButton.GetComponentInChildren<TextMeshPro>().text = $"<color=#FFFF00>{createBinaryButtonText(binary)}";
 
             // Clear buttons and text display
@@ -457,14 +456,16 @@ namespace PUL
             selectedFunction = function;
             FunctionSelectionText.text = function.name;
 
-            // Remove highlights from all Function buttons and hightlight the selected button
+            // Remove highlights from all Function buttons
             foreach (KeyValuePair<OxideFunction, GameObject> buttonPair in functionButtonDict)
             {
                 // Need "true" argument to include inactive components -- the TMP is inactive for some reason
                 // TODO: Care more about why this is the case
                 buttonPair.Value.GetComponentInChildren<TextMeshPro>(true).text = createFunctionButtonText(buttonPair.Key);
             }
-            functionButton.GetComponentInChildren<TextMeshPro>().text = $"<color=#FFFF00>{createFunctionButtonText(function)}";
+            // Hightlight the selected button
+            if (functionButton != null) // TODO: Find and highlight selected button without needing to have it passed in as a parameter
+                functionButton.GetComponentInChildren<TextMeshPro>().text = $"<color=#FFFF00>{createFunctionButtonText(function)}";
 
             unsetBusy();
         }
