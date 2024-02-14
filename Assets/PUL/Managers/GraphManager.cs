@@ -18,7 +18,8 @@ namespace PUL
         // END: These values are wired up in the Unity Editor -> Menu Manager object
         // ====================================
 
-        IList<Component> graphList;
+        // Keep track of all the active graphs
+        IList<GameObject> graphList;
 
 
         void Awake()
@@ -28,7 +29,7 @@ namespace PUL
         // Start is called before the first frame update
         void Start()
         {
-            graphList = new List<Component>();
+            graphList = new List<GameObject>();
         }
 
         // Update is called once per frame
@@ -39,28 +40,46 @@ namespace PUL
         // Build the "handle" object that the user can use to move the whole graph around
         GameObject buildGraphHandle(string labelText)
         {
+            // Create the graph handle object at the spawn position and rotation
             GameObject graphHandlePrefab = Resources.Load("Prefabs/GraphHandle") as GameObject;
             GameObject graphHandle = Instantiate(graphHandlePrefab, gameManager.getSpawnPosition(), gameManager.getSpawnRotation());
+
+            // Set the label
             TextMeshPro nodeTitleTMP = graphHandle.transform.Find("TextBar/TextTMP").gameObject.GetComponent<TextMeshPro>();
             nodeTitleTMP.text = labelText;
             graphHandle.transform.SetParent(this.gameObject.transform, false);
+
+            // Wire up graph close button
+            GameObject closeButton = graphHandle.transform.Find("CloseGraphButton").gameObject;
+            PressableButtonHoloLens2 buttonFunction = closeButton.GetComponent<PressableButtonHoloLens2>();
+            buttonFunction.TouchBegin.AddListener(() => CloseGraphCallback(graphHandle));
+            Interactable distanceInteract = closeButton.GetComponent<Interactable>();
+            distanceInteract.OnClick.AddListener(() => CloseGraphCallback(graphHandle));
+
             return graphHandle;
+        }
+
+        // Close (destroy) a graph attached to the provided graphHandle
+        public void CloseGraphCallback(GameObject graphHandle)
+        {
+            graphList.Remove(graphHandle);
+            Destroy(graphHandle);
         }
 
         public void BuildBinaryCallGraph(OxideBinary binary)
         {
             // Build the "handle" object that the user can use to move the whole graph around
             GameObject graphHandle = buildGraphHandle($"Call Graph for {binary.name}");
+            graphList.Add(graphHandle);
 
             // Hide the graph until it's done
             graphHandle.transform.position = new Vector3(graphHandle.transform.position.x,
                                                          graphHandle.transform.position.y - 100f,
                                                          graphHandle.transform.position.z);
 
-            // Create a graph as a component of the graph handle, add it to our list, and set its parent to the graph handle
+            // Create a graph as a component of the graph handle and set its parent to the graph handle
             // HierarchicalGraph graph = graphHandle.AddComponent<HierarchicalGraph>();
             SugiyamaGraph graph = graphHandle.AddComponent<SugiyamaGraph>();
-            graphList.Add(graph);
 
             // Track the nodes create for each function
             // TODO: Promote this to a class-level value or put in class-level data structure later
@@ -136,16 +155,16 @@ namespace PUL
         {
             // Build the "handle" object that the user can use to move the whole graph around
             GameObject graphHandle = buildGraphHandle($"CFG for {function.parentBinary.name} / {function.name}");
+            graphList.Add(graphHandle);
 
             // Hide the graph until it's done
             graphHandle.transform.position = new Vector3(graphHandle.transform.position.x,
                                                          graphHandle.transform.position.y - 100f,
                                                          graphHandle.transform.position.z);
 
-            // Create a graph as a component of the graph handle, add it to our list, and set its parent to the graph handle
+            // Create a graph as a component of the graph handle and set its parent to the graph handle
             // HierarchicalGraph graph = graphHandle.AddComponent<HierarchicalGraph>();
             SugiyamaGraph graph = graphHandle.AddComponent<SugiyamaGraph>();
-            graphList.Add(graph);
 
             // Track the nodes create for each basic block            
             // TODO: Promote this to a class-level value or put in class-level data structure later
@@ -217,15 +236,15 @@ namespace PUL
         {
             // Build the "handle" object that the user can use to move the whole graph around
             GameObject graphHandle = buildGraphHandle($"CFG for {function.name}");
+            graphList.Add(graphHandle);
 
             // Hide the graph until it's done
             graphHandle.transform.position = new Vector3(graphHandle.transform.position.x,
                                                          graphHandle.transform.position.y - 100f,
                                                          graphHandle.transform.position.z);
 
-            // Create a graph as a component of the graph handle, add it to our list, and set its parent to the graph handle
+            // Create a graph as a component of the graph handle and set its parent to the graph handle
             ForceDirectedGraph graph = graphHandle.AddComponent<ForceDirectedGraph>();
-            graphList.Add(graph);
 
             // Track the nodes create for each basic block            
             // TODO: Promote this to a class-level value or put in class-level data structure later
