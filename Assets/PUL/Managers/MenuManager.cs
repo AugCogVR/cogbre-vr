@@ -196,7 +196,6 @@ namespace PUL
 
             unsetBusy();
             CollectionGridObjectCollection.UpdateCollection();
-
             CollectionSelectionText.text = "none";
             BinarySelectionText.text = "none";
             FunctionSelectionText.text = "none";
@@ -239,11 +238,12 @@ namespace PUL
             binaryButtonDict = new Dictionary<OxideBinary, GameObject>();
             BinaryGridObjectCollection.UpdateCollection();
             BinaryScrollingObject.UpdateContent();
+
             // -> Function panel
             functionButtonDict = new Dictionary<OxideFunction, GameObject>();
             FunctionGridObjectCollection.UpdateCollection();
             FunctionScrollingObject.UpdateContent();
-
+            
             // Update Status text at the bottom of the panels
             statusText.text = $"Loading binary info for collection {collection.name}";
 
@@ -286,6 +286,7 @@ namespace PUL
                 yield return new WaitForEndOfFrame();
             }
             BinaryGridObjectCollection.UpdateCollection();
+            BinaryScrollingObject.UpdateContent();
             unsetBusy();
         }
 
