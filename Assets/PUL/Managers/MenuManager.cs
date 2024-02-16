@@ -31,6 +31,10 @@ namespace PUL
         public ScrollingObjectCollection FunctionScrollingObject;
         public TextMeshPro FunctionSelectionText;
 
+        public GameObject binaryProgressIndicator;
+        public GameObject functionProgressIndicator;
+
+
         public GameObject binaryStringsButton;
 
         public GameObject binaryFileStatsButton;
@@ -205,6 +209,7 @@ namespace PUL
 
         public async void CollectionButtonCallback(OxideCollection collection, GameObject collectionButton)
         {
+
             if (!setBusy()) return;
 
             // Set the selected collection, binary, function
@@ -247,14 +252,19 @@ namespace PUL
             // Update Status text at the bottom of the panels
             statusText.text = $"Loading binary info for collection {collection.name}";
 
+            //set binary loading icon active
+            binaryProgressIndicator.SetActive(true);
             // Ensure the collection info is populated, now that it is selected
             collection = await GameManager.nexusClient.EnsureCollectionInfo(collection);
 
             // Resets oid information  // ???
             // ResetBinaryInformation();
 
+     
+            
             // Build buttons without blocking the UI
             StartCoroutine(CollectionButtonCallbackCoroutine(collection.binaryList));
+            
         }
 
         // Function that creates the objects that are associated with given collection
@@ -287,6 +297,7 @@ namespace PUL
             }
             BinaryGridObjectCollection.UpdateCollection();
             BinaryScrollingObject.UpdateContent();
+            binaryProgressIndicator.SetActive(false);
             unsetBusy();
         }
 
@@ -328,11 +339,15 @@ namespace PUL
             // Update Status text at the bottom of the panels
             statusText.text = $"Loading function info for binary {binary.name}";
 
+            //make loading icon appear
+            functionProgressIndicator.SetActive(true);
             // Ensure the binary info is populated, now that it is selected
             binary = await GameManager.nexusClient.EnsureBinaryInfo(binary);
 
+            
             // Build buttons without blocking the UI
             StartCoroutine(BinaryButtonCallbackCoroutine(binary));
+            
         }
 
         // Function that creates the objects that are associated with given binary
@@ -370,7 +385,7 @@ namespace PUL
             // Update grid objects and scrolling region
             FunctionGridObjectCollection.UpdateCollection();
             FunctionScrollingObject.UpdateContent();
-
+            functionProgressIndicator.SetActive(false);
             unsetBusy();
         }
 
