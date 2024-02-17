@@ -43,7 +43,7 @@ namespace PUL
             Transform lastSectionStart = (controlPoints[controlPoints.Count - 2]).transform;
             Transform lastSectionEnd = (controlPoints[controlPoints.Count - 1]).transform;
             float distance = Vector3.Distance(lastSectionStart.position, lastSectionEnd.position);
-            transform.position = Vector3.Lerp(lastSectionStart.position, lastSectionEnd.position, (distance - 0.15f) / distance);
+            transform.position = Vector3.Lerp(lastSectionStart.position, lastSectionEnd.position, (distance - 0.12f) / distance);
             // Set the arrow's heading toward the target transform
             transform.LookAt(lastSectionEnd);
             // Rotate the model to head the right way

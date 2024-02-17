@@ -110,8 +110,8 @@ namespace PUL
                         // Place the nodes in either top-down or left-right orientation
                         if (orientation == Orientation.TOP)
                         {
-                            float x = ((size.x + 0.2f) * wrapper.gridPosition) + xOffset;
-                            float y = (-size.y * 2.0f * wrapper.level) + yOffset;
+                            float x = ((size.x * 1.4f) * wrapper.gridPosition) + xOffset;
+                            float y = -(size.y * 1.4f * wrapper.level) + yOffset;
                             vertex.transform.localPosition = new Vector3(x, y, 0.0f);
                             if ((x - (size.x / 2f)) < minX) minX = x - (size.x / 2f);
                             if ((x + (size.x / 2f)) > maxX) maxX = x + (size.x / 2f);
@@ -120,8 +120,8 @@ namespace PUL
                         }
                         else
                         {
-                            float y = (-size.y * 2.0f * wrapper.gridPosition) + yOffset;
-                            float x = ((size.x + 0.2f) * wrapper.level) + xOffset;
+                            float y = -(size.y * 1.4f * wrapper.gridPosition) + yOffset;
+                            float x = ((size.x * 1.4f) * wrapper.level) + xOffset;
                             vertex.transform.localPosition = new Vector3(x, y, 0.0f);
                             if ((x - (size.x / 2f)) < minX) minX = x - (size.x / 2f);
                             if ((x + (size.x / 2f)) > maxX) maxX = x + (size.x / 2f);
