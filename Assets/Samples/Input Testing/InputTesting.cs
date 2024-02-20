@@ -77,3 +77,4 @@ public class InputTesting : MonoBehaviour, IMixedRealitySourceStateHandler, IMix
         Debug.Log("Source Input (CHANGED): " + eventData.MixedRealityInputAction.Description + $" ({eventData.InputData})");
     }
 }
+  
