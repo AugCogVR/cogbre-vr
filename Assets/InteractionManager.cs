@@ -42,9 +42,35 @@ public class InteractionManager : MonoBehaviour
         return reticleEndPosition; // Return the end position of the reticle
     }
 
+
+    //optimize this to take in several tags.
+    GameObject FindNearestGameObject(Vector3 targetPosition)
+    {
+        GameObject[] gameObjects = GameObject.FindGameObjectsWithTag("disassembly"); 
+        GameObject nearestGameObject = null;
+        float shortestDistance = Mathf.Infinity;
+
+        foreach (GameObject gameObject in gameObjects)
+        {
+            float distance = Vector3.Distance(gameObject.transform.position, targetPosition);
+
+            if (distance < shortestDistance)
+            {
+                shortestDistance = distance;
+                nearestGameObject = gameObject;
+            }
+        }
+        return nearestGameObject;
+    }
+
+
+
+
     // Update is called once per frame
     void Update()
-    {
-        Debug.LogWarning(FindCurrentReticlePos());
+        {
+            //Debug.LogWarning(FindCurrentReticlePos());
+            Debug.LogWarning(FindNearestGameObject(FindCurrentReticlePos()));
+        }
     }
-}
+

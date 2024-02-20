@@ -509,6 +509,7 @@ namespace PUL
             // Make a new slate
             GameObject slate = Instantiate(slatePrefab, GameManager.getSpawnPosition(), GameManager.getSpawnRotation());
             slateList.Add(slate);
+            slate.tag = "disassembly";
             TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
             TextMeshPro contentTMP = slate.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
             titleBarTMP.text = $"{binary.name} / {function.name} Disassembly\n{function.signature}";
