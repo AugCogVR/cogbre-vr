@@ -3,6 +3,8 @@ using Microsoft.MixedReality.Toolkit;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+
 
 public class InteractionManager : MonoBehaviour
 {
@@ -46,7 +48,7 @@ public class InteractionManager : MonoBehaviour
     //optimize this to take in several tags.
     GameObject FindNearestGameObject(Vector3 targetPosition)
     {
-        GameObject[] gameObjects = GameObject.FindGameObjectsWithTag("disassembly"); 
+        GameObject[] gameObjects = GameObject.FindGameObjectsWithTag("disassembly");
         GameObject nearestGameObject = null;
         float shortestDistance = Mathf.Infinity;
 
@@ -63,14 +65,33 @@ public class InteractionManager : MonoBehaviour
         return nearestGameObject;
     }
 
+    // Function to highlight the line of text
+
+    void HighlightLine(TextMeshPro text, int lineNumber)
+    {
+        //so there's no way to draw a rect naturally using tmpro, which i refuse to believe. regardless, this still needs work
+    }
 
 
+
+
+    public Camera mainCamera;
 
     // Update is called once per frame
     void Update()
+    {
+        GameObject nearestObject = FindNearestGameObject(FindCurrentReticlePos());
+        //temporary fix, eventually take in controller data as well.
+        if (nearestObject != null)
         {
-            //Debug.LogWarning(FindCurrentReticlePos());
-            Debug.LogWarning(FindNearestGameObject(FindCurrentReticlePos()));
+            TextMeshPro tmPro = nearestObject.transform.GetChild(3).GetComponent<TextMeshPro>();
+
+            if (tmPro != null)
+            {
+                int nearestLine = TMP_TextUtilities.FindNearestLine(tmPro, FindCurrentReticlePos(), mainCamera);
+               // HighlightLine(tmPro, nearestLine);
+            }
         }
     }
+}
 
