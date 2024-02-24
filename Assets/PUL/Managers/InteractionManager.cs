@@ -45,9 +45,11 @@ public class InteractionManager : MonoBehaviour
     }
 
 
-    //optimize this to take in several tags.
+    //optimized to find the neares game object within 0.1 units of space. a little bandaid-y, so fix later 
     GameObject FindNearestGameObject(Vector3 targetPosition)
     {
+        const float thresholdDistance = 0.1f; // Define the threshold distance
+
         GameObject[] gameObjects = GameObject.FindGameObjectsWithTag("disassembly");
         GameObject nearestGameObject = null;
         float shortestDistance = Mathf.Infinity;
@@ -56,21 +58,66 @@ public class InteractionManager : MonoBehaviour
         {
             float distance = Vector3.Distance(gameObject.transform.position, targetPosition);
 
-            if (distance < shortestDistance)
+            if (distance < shortestDistance && distance < thresholdDistance)
             {
                 shortestDistance = distance;
                 nearestGameObject = gameObject;
             }
         }
-        return nearestGameObject;
+
+        // Only return nearestGameObject if it's within the threshold distance
+        if (nearestGameObject != null && shortestDistance <= thresholdDistance)
+        {
+            Debug.Log("NearestGameObject - Works!");
+            return nearestGameObject;
+        }
+        else
+        {
+            return null; // Return null if no object is found within the threshold distance
+        }
     }
+
 
     // Function to highlight the line of text
-
-    void HighlightLine(TextMeshPro text, int lineNumber)
+    /*
+     * Still does not work... It embedding <u>'s within <u>'s, and that's screwing the formatting up like crazy. If anyone has a better idea of how to tackle this, please feel free to take this over.
+    public void HighlightLine(TextMeshPro text, int lineNumber)
+{
+    // Check if the provided line number is valid
+    if (lineNumber < 0 || lineNumber >= text.textInfo.lineCount)
     {
-        //so there's no way to draw a rect naturally using tmpro, which i refuse to believe. regardless, this still needs work
+        Debug.LogWarning("Invalid line number!");
+        return;
     }
+
+    // Get the index of the first character of the line
+    int lineIndex = text.textInfo.lineInfo[lineNumber].firstCharacterIndex;
+    // Get the number of characters in the line
+    int lineLength = text.textInfo.lineInfo[lineNumber].characterCount;
+
+    // Extract the line text
+    string lineText = text.text.Substring(lineIndex, lineLength);
+
+    // Check if the line is already highlighted
+    bool isHighlighted = lineText.Contains("<u>");
+
+    // Toggle highlighting
+    if (isHighlighted)
+    {
+        Debug.Log("HighlightText - Removing Highlight");
+        // Remove the highlighting tags
+        text.text = text.text.Remove(lineIndex, lineLength);
+        text.text = text.text.Insert(lineIndex, lineText.Replace("<u>", "").Replace("</u>", ""));
+    }
+    else
+    {
+        // Add highlighting tags
+        text.text = text.text.Remove(lineIndex, lineLength);
+        text.text = text.text.Insert(lineIndex, "<u>" + lineText + "</u>");
+    }
+}
+    */
+
 
 
 
@@ -89,7 +136,7 @@ public class InteractionManager : MonoBehaviour
             if (tmPro != null)
             {
                 int nearestLine = TMP_TextUtilities.FindNearestLine(tmPro, FindCurrentReticlePos(), mainCamera);
-               // HighlightLine(tmPro, nearestLine);
+               //HighlightLine(tmPro, nearestLine);
             }
         }
     }
