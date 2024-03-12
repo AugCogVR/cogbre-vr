@@ -75,6 +75,9 @@ namespace PUL
         // Update is called once per frame
         void Update()
         {
+            // Not the most elegant solution but it gets the job done... -L
+            spawnPoint.transform.LookAt(Camera.main.transform.position);
+            spawnPoint.transform.Rotate(Vector3.up * 180);
         }
 
         // Return the position of the spawn point.

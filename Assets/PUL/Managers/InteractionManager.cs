@@ -48,7 +48,7 @@ public class InteractionManager : MonoBehaviour
     //optimized to find the neares game object within 0.1 units of space. a little bandaid-y, so fix later 
     GameObject FindNearestGameObject(Vector3 targetPosition)
     {
-        const float thresholdDistance = 0.1f; // Define the threshold distance
+        const float thresholdDistance = 1000f; // Define the threshold distance || Logic is off here, figure out a way to rework this
 
         GameObject[] gameObjects = GameObject.FindGameObjectsWithTag("disassembly");
         GameObject nearestGameObject = null;
@@ -56,7 +56,7 @@ public class InteractionManager : MonoBehaviour
 
         foreach (GameObject gameObject in gameObjects)
         {
-            float distance = Vector3.Distance(gameObject.transform.position, targetPosition);
+                 float distance = Vector3.Distance(gameObject.transform.position, targetPosition);
 
             if (distance < shortestDistance && distance < thresholdDistance)
             {
@@ -68,7 +68,7 @@ public class InteractionManager : MonoBehaviour
         // Only return nearestGameObject if it's within the threshold distance
         if (nearestGameObject != null && shortestDistance <= thresholdDistance)
         {
-            Debug.Log("NearestGameObject - Works!");
+            // Debug.Log("NearestGameObject Returning: " + nearestGameObject.name);
             return nearestGameObject;
         }
         else
@@ -77,6 +77,33 @@ public class InteractionManager : MonoBehaviour
         }
     }
 
+
+    // Temporary solution, there has to be a more efficient manner to get line contents using TMPRO
+    // -L
+    string GetLineContents(string text, int line)
+    {
+        // Count number of \n
+        for (int i = 0; i < line; i++)
+        {
+            // -> Check for more \n
+            if(!text.Contains("\n"))
+                return "NONE";
+
+            // -> Cut out \n
+            int spacing = text.IndexOf("\n");
+            text = text.Substring(spacing + 2);
+        }
+
+        if (!text.Contains("\n"))
+            return text;
+        else
+            return text.Substring(0, text.IndexOf("\n"));
+    }
+
+
+    // Modify to replace formatting with highlight. Store new formatting
+    // Then its a simple check and swap to revert it
+    // -L
 
     // Function to highlight the line of text
     /*
@@ -127,18 +154,67 @@ public class InteractionManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        GameObject nearestObject = FindNearestGameObject(FindCurrentReticlePos());
+
+    }
+
+
+
+    // -> Vector to hold selected position
+    Vector3 highligtedPosition = Vector3.zero;
+    // -> Vector to hold index range
+    Vector2Int highlightIRange = Vector2Int.zero;
+
+    // Dictates when a highlight is started
+    public void HighlightIndividual()
+    {
+        highligtedPosition = FindCurrentReticlePos();
+
+        GameObject nearestObject = FindNearestGameObject(highligtedPosition);
         //temporary fix, eventually take in controller data as well.
         if (nearestObject != null)
         {
             TextMeshPro tmPro = nearestObject.transform.GetChild(3).GetComponent<TextMeshPro>();
+            // Debug.Log("Nearest Object: " + nearestObject);
 
             if (tmPro != null)
             {
-                int nearestLine = TMP_TextUtilities.FindNearestLine(tmPro, FindCurrentReticlePos(), mainCamera);
-               //HighlightLine(tmPro, nearestLine);
+                //int nearestLine = TMP_TextUtilities.FindNearestLine(tmPro, highligtedPosition, mainCamera);
+                // I was testing other commands to see if there was any better accuracy :) -L
+                // int intersectingLine = TMP_TextUtilities.FindIntersectingLine(tmPro, FindCurrentReticlePos(), mainCamera);
+                //HighlightLine(tmPro, nearestLine);
+                //Debug.Log($"Found Line ({nearestLine}): {GetLineContents(tmPro.text, nearestLine)} (Index {nearestIndex})");
+
+                // -> Highlighting a single word
+                int nearestIndex = TMP_TextUtilities.GetCursorIndexFromPosition(tmPro, highligtedPosition, mainCamera);
+                string workingText = tmPro.text;
+                highlightIRange = Vector2Int.one * nearestIndex;
+
+                // -> Find start of word
+                int overflowCheck = 0;
+                while(highlightIRange.x >= 0 && IsEndText(workingText[highlightIRange.x]) && overflowCheck < 1000)
+                {
+                    highlightIRange.x--;
+                    overflowCheck++;
+                }
+                while (highlightIRange.y < workingText.Length && IsEndText(workingText[highlightIRange.y]) && overflowCheck < 1000)
+                {
+                    highlightIRange.y++;
+                    overflowCheck++;
+                }
+
+                // -> Debug the selected word
+                Debug.Log($"Found Word: {workingText.Substring(highlightIRange.x, highlightIRange.y - highlightIRange.x)} ({highlightIRange})");
             }
+            else
+                Debug.Log("!!! NO TMPRO FOUND !!! (InteractionManager.cs)");
         }
+        else
+            Debug.Log("!!! NO NEAREST OBJECT FOUND !!! (InteractionManager.cs)");
+    }
+
+    bool IsEndText(char c)
+    {
+        return c != ' ' && c != '\n' && c != '>' && c != '<';
     }
 }
 

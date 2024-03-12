@@ -134,7 +134,7 @@ namespace PUL
 
         private string createBinaryButtonText(OxideBinary binary)
         {
-            return $"<size=145%><line-height=55%><b>{binary.name}</b>\n<size=60%>{binary.oid}\n<b>Size:</b> {binary.size}";
+            return $"<size=145%><line-height=55%><b>{binary.name}</b>\n<size=55%>{binary.oid}\n<size=65%><b>Size:</b> {binary.size}";
         }
 
         private string createFunctionButtonText(OxideFunction function)
