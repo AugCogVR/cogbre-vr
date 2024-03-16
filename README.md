@@ -98,7 +98,7 @@ The NexusClient periodically polls the server for updates using a separate threa
 
 ## Visualization Components
 
-The various components, behaviors, etc. that can/will be used to create the visualization are in Assets/PUL/VizComponents. Right now, it's a set of very basic and not particularly practical things mainly thrown together to get comfortable with how Unity works. 
+The various components, behaviors, etc. that can/will be used to create the visualization are in Assets/PUL/VizComponents. Right now, it's a set of very basic components to display code excerpts, call graphs, and control flow graphs. 
 
 
 
