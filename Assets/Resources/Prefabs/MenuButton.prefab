@@ -768,7 +768,7 @@ MonoBehaviour:
   interactable: {fileID: 8962121248065496619}
   seeItSayItLabel: {fileID: 0}
   seeItSayItLabelText: {fileID: 0}
-  iconStyle: 0
+  iconStyle: 3
   iconCharLabel: {fileID: 0}
   iconCharFont: {fileID: 0}
   iconChar: 0
