@@ -507,22 +507,41 @@ namespace PUL
             slateList.Add(slate);
             slate.tag = "disassembly";
             TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
-            TextMeshPro contentTMP = slate.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
+            // -> World Space TMP
+            //TextMeshPro contentTMP = slate.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
+
+            // -> Couldnt get transform.Find to work? Went with GetComponentInChildren, which is less efficient. Would like to figure out how to get .Find working again later -L
+            //TextMeshProUGUI contentTMP = slate.transform.Find("ContentTMP_UGUI").gameObject.GetComponent<TextMeshProUGUI>();
+            TextMeshProUGUI contentTMP = slate.GetComponentInChildren<TextMeshProUGUI>();
             titleBarTMP.text = $"{binary.name} / {function.name} Disassembly\n{function.signature}";
             contentTMP.text = "";
+
+            // -> Keeps track of the total number of lines, used for sizing text field for scroll rect.
+            float contentSize = 0;
+            float fontBuffer = 1.5f;
+
+            // -> Pulls and Sets information regarding the input field
+            // Used for highlighting
+            TMP_InputField inField = contentTMP.GetComponent<TMP_InputField>();
+            inField.text = contentTMP.text;
 
             // Walk through each basic block for this function and add instructions to text display
             foreach (OxideBasicBlock basicBlock in function.basicBlockDict.Values)
             {
                 foreach (OxideInstruction instruction in basicBlock.instructionDict.Values)
                 {
-                    contentTMP.text += $"<color=#777777>{instruction.offset} <color=#99FF99>{instruction.mnemonic} <color=#FFFFFF>{instruction.op_str}\n";
+                    inField.text += $"<color=#777777>{instruction.offset} <color=#99FF99>{instruction.mnemonic} <color=#FFFFFF>{instruction.op_str}\n";
+                    contentSize += contentTMP.fontSize + fontBuffer; 
                 }
-                contentTMP.text += $"<color=#000000>------------------------------------\n"; // separate blocks
+                inField.text += $"<color=#000000>------------------------------------\n"; // separate blocks
+                contentSize += contentTMP.fontSize + fontBuffer;
 
                 yield return new WaitForEndOfFrame(); // yield after each block instead of each instruction
             }
-            
+
+            contentTMP.rectTransform.sizeDelta = new Vector2(contentTMP.rectTransform.sizeDelta.x, contentSize);
+
+
             unsetBusy();
         }
 
@@ -663,7 +682,22 @@ namespace PUL
             GameObject slate = Instantiate(slatePrefab, GameManager.getSpawnPosition(), GameManager.getSpawnRotation());
             slateList.Add(slate);
             TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
-            TextMeshPro contentTMP = slate.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
+            //TextMeshPro contentTMP = slate.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
+
+            // ===============
+            // -> SEE DISASSEMBLY FUNC FOR EXPLANATION -L
+            TextMeshProUGUI contentTMP = slate.GetComponentInChildren<TextMeshProUGUI>();
+
+            // -> Keeps track of the total number of lines, used for sizing text field for scroll rect.
+            float contentSize = 0;
+            float fontBuffer = 1.5f;
+
+            // -> Pulls and Sets information regarding the input field
+            // Used for highlighting
+            TMP_InputField inField = contentTMP.GetComponent<TMP_InputField>();
+            inField.text = contentTMP.text;
+            // ===============
+
             titleBarTMP.text = $"{binary.name} / {function.name} Decompilation";
             contentTMP.text = "";
 
@@ -671,20 +705,33 @@ namespace PUL
             int indentLevel = 0;
             foreach (KeyValuePair<int, OxideDecompLine> item in function.decompDict)
             {
+
+                // !!! CHANGED contentTMP.text to inField.text
                 string code = item.Value.code;
                 if (code.Contains('}')) indentLevel--; // Q&D indenting
-                contentTMP.text += $"<color=#777777>{item.Key}: ";
+                inField.text += $"<color=#777777>{item.Key}: ";
                 for (int i = 0; i < indentLevel; i++) contentTMP.text += "    ";  // Q&D indenting
-                contentTMP.text += $"<color=#FFFFFF>{code}";
+                inField.text += $"<color=#FFFFFF>{code}";
                 foreach (int offset in item.Value.associatedInstructionDict.Keys)
                 {
-                    contentTMP.text += $"<color=#AAAA00> |{offset}|";        
+                    inField.text += $"<color=#AAAA00> |{offset}|";        
                 }
-                contentTMP.text += "\n";
+                inField.text += "\n";
+
+
+                // ===============
+                contentSize += contentTMP.fontSize + fontBuffer;
+                // ===============
+
+
                 if (code.Contains('{')) indentLevel++; // Q&D indenting
 
                 yield return new WaitForEndOfFrame(); 
             }
+
+            // ===============
+            contentTMP.rectTransform.sizeDelta = new Vector2(contentTMP.rectTransform.sizeDelta.x, contentSize);
+            // ===============
 
             unsetBusy();
         }

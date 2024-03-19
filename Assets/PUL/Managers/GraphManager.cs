@@ -274,6 +274,7 @@ namespace PUL
                 GameObject gameObject = Instantiate(graphNodePrefab, position, Quaternion.identity);
                 TextMeshPro nodeTitleTMP = gameObject.transform.Find("TitleBar/TitleTMP").gameObject.GetComponent<TextMeshPro>();
                 nodeTitleTMP.text = sourceBasicBlock.offset;
+                // -> World Space Text Mesh Pro
                 TextMeshPro nodeContentTMP = gameObject.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
                 nodeContentTMP.text = "";
                 foreach (OxideInstruction instruction in sourceBasicBlock.instructionDict.Values)
