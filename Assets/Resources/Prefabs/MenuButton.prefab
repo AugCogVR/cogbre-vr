@@ -1129,5 +1129,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defaultMaterials:
-  - {fileID: 2100000, guid: ec72a3a105768f746b556a8dfdae61a8, type: 2}
+  - {fileID: 2100000, guid: f40914b49f8741e39df5b08d3db15497, type: 2}
   cacheSharedMaterialsFromRenderer: 0
