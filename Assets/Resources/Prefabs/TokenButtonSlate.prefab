@@ -766,68 +766,6 @@ Transform:
   m_Father: {fileID: 2254001255270647810}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2700405045550445479
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3843991434144451560}
-  - component: {fileID: 2657457356879616402}
-  m_Layer: 0
-  m_Name: CollectionGridObjectCollection
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &3843991434144451560
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2700405045550445479}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.246, y: -0.0004, z: -0.0015}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 3516342126136688097}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2657457356879616402
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2700405045550445479}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf12ee76e7e00a44a9a84256760020e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nodeList: []
-  ignoreInactiveTransforms: 1
-  sortType: 0
-  surfaceType: 1
-  orientType: 0
-  layout: 1
-  anchor: 1
-  anchorAlongAxis: 0
-  columnAlignment: 0
-  rowAlignment: 0
-  radius: 2
-  radialRange: 180
-  distance: 0
-  rows: 0
-  columns: 1
-  cellWidth: 0.5
-  cellHeight: 0.05
-  assetVersion: 1
 --- !u!1 &2774165071819983858
 GameObject:
   m_ObjectHideFlags: 0
@@ -1136,7 +1074,7 @@ MonoBehaviour:
   maskEditMode: 0
   colliderEditMode: 0
   maskEnabled: 1
-  handDeltaScrollThreshold: 0.02
+  handDeltaScrollThreshold: 0.016
   releaseThresholdFront: 0.03
   releaseThresholdBack: 0.2
   releaseThresholdLeftRight: 0.2
@@ -1144,8 +1082,8 @@ MonoBehaviour:
   frontTouchDistance: 0.005
   scrollDirection: 0
   useOnPreRender: 0
-  velocityMultiplier: 0.008
-  velocityDampen: 0.9
+  velocityMultiplier: 0.02
+  velocityDampen: 0.0001
   typeOfVelocity: 0
   paginationCurve:
     serializedVersion: 2
@@ -1177,7 +1115,7 @@ MonoBehaviour:
   cellWidth: 1
   cellHeight: 0.5
   cellDepth: 2
-  bounceMultiplier: 0.1
+  bounceMultiplier: 0
   OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -1198,7 +1136,7 @@ MonoBehaviour:
   clippingObject: {fileID: 1398774734534125563}
   clipBox: {fileID: 2698537566171289524}
   disableClippedGameObjects: 1
-  disableClippedRenderers: 0
+  disableClippedRenderers: 1
 --- !u!65 &354799586873084499
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1569,8 +1507,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 3843991434144451560}
+  m_Children: []
   m_Father: {fileID: 2617370748730620620}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3325,7 +3262,7 @@ Transform:
   m_GameObject: {fileID: 7238801519295131563}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 4892744385330018787}
