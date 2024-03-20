@@ -400,15 +400,23 @@ namespace PUL
 
             // Get the info
             string contentString = await GameManager.nexusClient.RetrieveTextForArbitraryModule("strings", selectedBinary.oid, "{}", true);
-            // string contentString = await GameManager.nexusClient.RetrieveTextForArbitraryModule("ghidra_decmap", selectedBinary.oid, "{}", false);
 
             // Make a new slate
             GameObject slate = Instantiate(slatePrefab, GameManager.getSpawnPosition(), GameManager.getSpawnRotation());
             slateList.Add(slate);
             TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
-            TextMeshPro contentTMP = slate.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
-            titleBarTMP.text = $"Strings for {selectedBinary.name}";
-            contentTMP.text = contentString;
+
+            // Grab the content TMP
+            TextMeshProUGUI contentTMP = slate.GetComponentInChildren<TextMeshProUGUI>();
+            contentTMP.text = "";
+
+            // -> Pulls and Sets information regarding the input field
+            // Used for highlighting
+            TMP_InputField inField = contentTMP.GetComponent<TMP_InputField>();
+            inField.text = contentTMP.text;
+            int numLines = contentString.Split('\n').Length - 1;
+            inField.text = contentString;
+            contentTMP.rectTransform.sizeDelta = new Vector2(contentTMP.rectTransform.sizeDelta.x, numLines * (contentTMP.fontSize + 1.5f));
 
             unsetBusy();
         }
@@ -434,9 +442,19 @@ namespace PUL
             GameObject slate = Instantiate(slatePrefab, GameManager.getSpawnPosition(), GameManager.getSpawnRotation());
             slateList.Add(slate);
             TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
-            TextMeshPro contentTMP = slate.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
             titleBarTMP.text = $"File stats for {selectedBinary.name}";
-            contentTMP.text = contentString;
+
+            // Grab the content TMP
+            TextMeshProUGUI contentTMP = slate.GetComponentInChildren<TextMeshProUGUI>();
+            contentTMP.text = "";
+
+            // -> Pulls and Sets information regarding the input field
+            // Used for highlighting
+            TMP_InputField inField = contentTMP.GetComponent<TMP_InputField>();
+            inField.text = contentTMP.text;
+            int numLines = contentString.Split('\n').Length - 1;
+            inField.text = contentString;
+            contentTMP.rectTransform.sizeDelta = new Vector2(contentTMP.rectTransform.sizeDelta.x, numLines * (contentTMP.fontSize + 1.5f));
 
             unsetBusy();
         }
@@ -474,6 +492,7 @@ namespace PUL
                 // TODO: Care more about why this is the case
                 buttonPair.Value.GetComponentInChildren<TextMeshPro>(true).text = createFunctionButtonText(buttonPair.Key);
             }
+
             // Hightlight the selected button
             if (functionButton != null) // TODO: Find and highlight selected button without needing to have it passed in as a parameter
                 functionButton.GetComponentInChildren<TextMeshPro>().text = $"<color=#FFFF00>{createFunctionButtonText(function)}";
@@ -507,23 +526,20 @@ namespace PUL
             slateList.Add(slate);
             slate.tag = "disassembly";
             TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
-            // -> World Space TMP
-            //TextMeshPro contentTMP = slate.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
-
-            // -> Couldnt get transform.Find to work? Went with GetComponentInChildren, which is less efficient. Would like to figure out how to get .Find working again later -L
-            //TextMeshProUGUI contentTMP = slate.transform.Find("ContentTMP_UGUI").gameObject.GetComponent<TextMeshProUGUI>();
-            TextMeshProUGUI contentTMP = slate.GetComponentInChildren<TextMeshProUGUI>();
             titleBarTMP.text = $"{binary.name} / {function.name} Disassembly\n{function.signature}";
-            contentTMP.text = "";
 
-            // -> Keeps track of the total number of lines, used for sizing text field for scroll rect.
-            float contentSize = 0;
-            float fontBuffer = 1.5f;
+            // Grab the content TMP
+            TextMeshProUGUI contentTMP = slate.GetComponentInChildren<TextMeshProUGUI>();
+            contentTMP.text = "";
 
             // -> Pulls and Sets information regarding the input field
             // Used for highlighting
             TMP_InputField inField = contentTMP.GetComponent<TMP_InputField>();
             inField.text = contentTMP.text;
+
+            // -> Keeps track of the total number of lines, used for sizing text field for scroll rect.
+            float contentSize = 0;
+            float fontBuffer = 1.5f;
 
             // Walk through each basic block for this function and add instructions to text display
             foreach (OxideBasicBlock basicBlock in function.basicBlockDict.Values)
@@ -539,119 +555,9 @@ namespace PUL
                 yield return new WaitForEndOfFrame(); // yield after each block instead of each instruction
             }
 
+            // Adjust TMP transform to match content height
             contentTMP.rectTransform.sizeDelta = new Vector2(contentTMP.rectTransform.sizeDelta.x, contentSize);
 
-
-            unsetBusy();
-        }
-
-        // Make a button with the provided token string (and color) using the given prefab. 
-        // Size the button to fit the provided token. Attach the button to the given Slate
-        // and Container. Use and update the offset values that determine button placement relative 
-        // to the Slate object. 
-        GameObject MakeTokenButton(string token, string color, GameObject tokenButtonPrefab,
-                                   GameObject tokenButtonSlate, GameObject tokenButtonsContainer,
-                                   ref float xOffset, float yOffset, float zOffset, ref float maxYSize)
-        {
-            // Make a new token button
-            GameObject newButton = Instantiate(tokenButtonPrefab);
-            newButton.transform.SetParent(tokenButtonsContainer.transform);
-
-            // Find preferred TMP size for this token
-            TMP_Text tmp = newButton.GetComponentInChildren<TMP_Text>(); 
-            Vector2 prefTextSize = tmp.GetPreferredValues(token);
-            float xSize = prefTextSize.x * 1.2f;
-            float ySize = prefTextSize.y * 1.2f;
-
-            // Resize a bunch of stuff in the button. This sucks but I'm too dumb to find a more elegant way.
-            tmp.GetComponent<RectTransform>().sizeDelta = new Vector2(xSize, prefTextSize.y);
-            GameObject buttonVis = newButton.transform.Find("CompressableButtonVisuals").gameObject;
-            buttonVis.transform.localScale = new Vector3(xSize, buttonVis.transform.localScale.y, buttonVis.transform.localScale.z);
-            GameObject backplate = newButton.transform.Find("BackPlate").gameObject;
-            backplate.transform.localScale = new Vector3(xSize, backplate.transform.localScale.y, backplate.transform.localScale.z);
-            BoxCollider buttonCollider = newButton.GetComponent<BoxCollider>();
-            buttonCollider.size = new Vector3(xSize, buttonCollider.size.y, buttonCollider.size.z);
-
-            // Set the text and update mesh
-            tmp.text = $"<color={color}>{token}";
-            tmp.ForceMeshUpdate();
-
-            // Place the new button relative to the container
-            newButton.transform.localPosition = new Vector3(xOffset + (xSize / 2.0f), (yOffset - (ySize / 2.0f)), zOffset);
-            newButton.transform.localScale = new Vector3(newButton.transform.localScale.x * tokenButtonSlate.transform.localScale.x, newButton.transform.localScale.y * tokenButtonSlate.transform.localScale.y, newButton.transform.localScale.z * tokenButtonSlate.transform.localScale.z);
-            newButton.transform.localEulerAngles = Vector3.zero;
-            newButton.transform.name = $"{token} {newButton.transform.localPosition.x} {newButton.transform.localPosition.y}";
-
-            // Update the coordinates for the next token
-            xOffset += xSize + 0.02f;
-            if (ySize > maxYSize) maxYSize = ySize;
-
-            return newButton;
-        }
-
-        // Given a disassembly token button and context info, set its callback method. 
-        void SetDisassemblyTokenButtonCallback(GameObject newButton, OxideBinary binary, OxideFunction function, string token)
-        {
-            // Set button functions
-            // -> Physical Press
-            PressableButtonHoloLens2 buttonFunction = newButton.GetComponent<PressableButtonHoloLens2>();
-            buttonFunction.TouchEnd.AddListener(() => DisassemblyTokenButtonCallback(binary, function, token));
-            // -> Ray Press
-            Interactable distanceInteract = newButton.GetComponent<Interactable>();
-            distanceInteract.OnClick.AddListener(() => DisassemblyTokenButtonCallback(binary, function, token));
-        }
-
-        // Callback method for disassembly token buttons.
-        public void DisassemblyTokenButtonCallback(OxideBinary binary, OxideFunction function, string token)
-        {
-            statusText.text = $"Token: <B>{token}</B> from Binary {binary.name} / Function {function.name}";
-        }
-
-        // ALTERNATE version of the Disassembly callback that creates a scrolling object collection of buttons
-        // where the buttons are labelled with the tokens of the disassembly
-        IEnumerator FunctionDisassemblyButtonCallbackCoroutine_ALT(OxideBinary binary, OxideFunction function)
-        {
-            // Make a new slate
-            GameObject tokenButtonSlatePrefab = Resources.Load("Prefabs/TokenButtonSlate") as GameObject;
-            GameObject tokenButtonSlate = Instantiate(tokenButtonSlatePrefab, GameManager.getSpawnPosition(), GameManager.getSpawnRotation());
-
-            // Set title
-            TextMeshPro titleBarTMP = tokenButtonSlate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
-            TextMeshPro contentTMP = tokenButtonSlate.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
-            titleBarTMP.text = $"{binary.name} / {function.name} Disassembly\n{function.signature}";
-            contentTMP.text = "";
-
-            // Find critical slate components
-            ScrollingObjectCollection tokenButtonScrollingObjectCollection = tokenButtonSlate.GetComponentInChildren<ScrollingObjectCollection>();
-            GameObject tokenButtonsContainer = tokenButtonScrollingObjectCollection.transform.Find("Container").gameObject;           
-            GameObject tokenButtonPrefab = Resources.Load("Prefabs/TokenButton") as GameObject;
-
-            // Walk through each basic block for this function and add token buttons to the slate
-            float yOffset = 0.0f; 
-            float zOffset = -0.01f;
-            foreach (OxideBasicBlock basicBlock in function.basicBlockDict.Values)
-            {
-                foreach (OxideInstruction instruction in basicBlock.instructionDict.Values)
-                {
-                    float xOffset = 0f; 
-                    float maxYSize = 0f;
-                    GameObject newButton = MakeTokenButton(instruction.offset, "#777777", tokenButtonPrefab, tokenButtonSlate, tokenButtonsContainer, ref xOffset, yOffset, zOffset, ref maxYSize);
-                    SetDisassemblyTokenButtonCallback(newButton, binary, function, instruction.offset);
-                    newButton = MakeTokenButton(instruction.mnemonic, "#99FF99", tokenButtonPrefab, tokenButtonSlate, tokenButtonsContainer, ref xOffset, yOffset, zOffset, ref maxYSize);
-                    SetDisassemblyTokenButtonCallback(newButton, binary, function, instruction.mnemonic);
-                    string[] tokens = instruction.op_str.Split(new char[] {' ', ','}, StringSplitOptions.RemoveEmptyEntries);
-                    foreach (string token in tokens)
-                    {
-                        newButton = MakeTokenButton(token, "#FFFFFF", tokenButtonPrefab, tokenButtonSlate, tokenButtonsContainer, ref xOffset, yOffset, zOffset, ref maxYSize);
-                        SetDisassemblyTokenButtonCallback(newButton, binary, function, token);
-                    }
-                    yOffset -= (maxYSize * 1.2f); // move down for next line
-                }
-
-                yield return new WaitForEndOfFrame(); // yield after each block instead of each instruction
-            }
-            tokenButtonScrollingObjectCollection.UpdateContent();
-            
             unsetBusy();
         }
 
@@ -682,56 +588,43 @@ namespace PUL
             GameObject slate = Instantiate(slatePrefab, GameManager.getSpawnPosition(), GameManager.getSpawnRotation());
             slateList.Add(slate);
             TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
-            //TextMeshPro contentTMP = slate.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
-
-            // ===============
-            // -> SEE DISASSEMBLY FUNC FOR EXPLANATION -L
+            titleBarTMP.text = $"{binary.name} / {function.name} Decompilation";
+ 
+            // Grab the content TMP
             TextMeshProUGUI contentTMP = slate.GetComponentInChildren<TextMeshProUGUI>();
-
-            // -> Keeps track of the total number of lines, used for sizing text field for scroll rect.
-            float contentSize = 0;
-            float fontBuffer = 1.5f;
+            contentTMP.text = "";
 
             // -> Pulls and Sets information regarding the input field
             // Used for highlighting
             TMP_InputField inField = contentTMP.GetComponent<TMP_InputField>();
             inField.text = contentTMP.text;
-            // ===============
 
-            titleBarTMP.text = $"{binary.name} / {function.name} Decompilation";
-            contentTMP.text = "";
+            // -> Keeps track of the total number of lines, used for sizing text field for scroll rect.
+            float contentSize = 0;
+            float fontBuffer = 1.5f;
 
             // Walk through decompilation and create text display
             int indentLevel = 0;
             foreach (KeyValuePair<int, OxideDecompLine> item in function.decompDict)
             {
-
-                // !!! CHANGED contentTMP.text to inField.text
                 string code = item.Value.code;
                 if (code.Contains('}')) indentLevel--; // Q&D indenting
                 inField.text += $"<color=#777777>{item.Key}: ";
-                for (int i = 0; i < indentLevel; i++) contentTMP.text += "    ";  // Q&D indenting
+                for (int i = 0; i < indentLevel; i++) inField.text += "    ";  // Q&D indenting
                 inField.text += $"<color=#FFFFFF>{code}";
                 foreach (int offset in item.Value.associatedInstructionDict.Keys)
                 {
                     inField.text += $"<color=#AAAA00> |{offset}|";        
                 }
                 inField.text += "\n";
-
-
-                // ===============
                 contentSize += contentTMP.fontSize + fontBuffer;
-                // ===============
-
-
                 if (code.Contains('{')) indentLevel++; // Q&D indenting
 
                 yield return new WaitForEndOfFrame(); 
             }
 
-            // ===============
+            // Adjust TMP transform to match content height
             contentTMP.rectTransform.sizeDelta = new Vector2(contentTMP.rectTransform.sizeDelta.x, contentSize);
-            // ===============
 
             unsetBusy();
         }
@@ -755,6 +648,126 @@ namespace PUL
             // Uncomment this line to test the Force-Directed Graph. 
             // GameManager.graphManager.BuildFunctionControlFlowGraphFDG(selectedFunction);
         }
+
+
+        // HUGE BLOCK OF COMMENTED-OUT CODE BELOW: Generates a slate full of buttons, one button per token,
+        // for a disassembly listing. It's terribly inefficient and tanks the frame rate but it does
+        // let us select individual tokens in the text. 
+        // Assuming we can get the text input field approach working, this code will never 
+        // be live again. 
+
+        // // HELPER FUNCTION FOR FunctionDisassemblyButtonCallbackCoroutine_ALT
+        // // Make a button with the provided token string (and color) using the given prefab. 
+        // // Size the button to fit the provided token. Attach the button to the given Slate
+        // // and Container. Use and update the offset values that determine button placement relative 
+        // // to the Slate object. 
+        // GameObject MakeTokenButton(string token, string color, GameObject tokenButtonPrefab,
+        //                            GameObject tokenButtonSlate, GameObject tokenButtonsContainer,
+        //                            ref float xOffset, float yOffset, float zOffset, ref float maxYSize)
+        // {
+        //     // Make a new token button
+        //     GameObject newButton = Instantiate(tokenButtonPrefab);
+        //     newButton.transform.SetParent(tokenButtonsContainer.transform);
+
+        //     // Find preferred TMP size for this token
+        //     TMP_Text tmp = newButton.GetComponentInChildren<TMP_Text>(); 
+        //     Vector2 prefTextSize = tmp.GetPreferredValues(token);
+        //     float xSize = prefTextSize.x * 1.2f;
+        //     float ySize = prefTextSize.y * 1.2f;
+
+        //     // Resize a bunch of stuff in the button. This sucks but I'm too dumb to find a more elegant way.
+        //     tmp.GetComponent<RectTransform>().sizeDelta = new Vector2(xSize, prefTextSize.y);
+        //     GameObject buttonVis = newButton.transform.Find("CompressableButtonVisuals").gameObject;
+        //     buttonVis.transform.localScale = new Vector3(xSize, buttonVis.transform.localScale.y, buttonVis.transform.localScale.z);
+        //     GameObject backplate = newButton.transform.Find("BackPlate").gameObject;
+        //     backplate.transform.localScale = new Vector3(xSize, backplate.transform.localScale.y, backplate.transform.localScale.z);
+        //     BoxCollider buttonCollider = newButton.GetComponent<BoxCollider>();
+        //     buttonCollider.size = new Vector3(xSize, buttonCollider.size.y, buttonCollider.size.z);
+
+        //     // Set the text and update mesh
+        //     tmp.text = $"<color={color}>{token}";
+        //     tmp.ForceMeshUpdate();
+
+        //     // Place the new button relative to the container
+        //     newButton.transform.localPosition = new Vector3(xOffset + (xSize / 2.0f), (yOffset - (ySize / 2.0f)), zOffset);
+        //     newButton.transform.localScale = new Vector3(newButton.transform.localScale.x * tokenButtonSlate.transform.localScale.x, newButton.transform.localScale.y * tokenButtonSlate.transform.localScale.y, newButton.transform.localScale.z * tokenButtonSlate.transform.localScale.z);
+        //     newButton.transform.localEulerAngles = Vector3.zero;
+        //     newButton.transform.name = $"{token} {newButton.transform.localPosition.x} {newButton.transform.localPosition.y}";
+
+        //     // Update the coordinates for the next token
+        //     xOffset += xSize + 0.02f;
+        //     if (ySize > maxYSize) maxYSize = ySize;
+
+        //     return newButton;
+        // }
+
+        // // HELPER FUNCTION FOR FunctionDisassemblyButtonCallbackCoroutine_ALT
+        // // Given a disassembly token button and context info, set its callback method. 
+        // void SetDisassemblyTokenButtonCallback(GameObject newButton, OxideBinary binary, OxideFunction function, string token)
+        // {
+        //     // Set button functions
+        //     // -> Physical Press
+        //     PressableButtonHoloLens2 buttonFunction = newButton.GetComponent<PressableButtonHoloLens2>();
+        //     buttonFunction.TouchEnd.AddListener(() => DisassemblyTokenButtonCallback(binary, function, token));
+        //     // -> Ray Press
+        //     Interactable distanceInteract = newButton.GetComponent<Interactable>();
+        //     distanceInteract.OnClick.AddListener(() => DisassemblyTokenButtonCallback(binary, function, token));
+        // }
+
+        // // HELPER FUNCTION FOR FunctionDisassemblyButtonCallbackCoroutine_ALT
+        // // Callback method for disassembly token buttons.
+        // public void DisassemblyTokenButtonCallback(OxideBinary binary, OxideFunction function, string token)
+        // {
+        //     statusText.text = $"Token: <B>{token}</B> from Binary {binary.name} / Function {function.name}";
+        // }
+
+        // // ALTERNATE version of the Disassembly callback that creates a scrolling object collection of buttons
+        // // where the buttons are labelled with the tokens of the disassembly
+        // IEnumerator FunctionDisassemblyButtonCallbackCoroutine_ALT(OxideBinary binary, OxideFunction function)
+        // {
+        //     // Make a new slate
+        //     GameObject tokenButtonSlatePrefab = Resources.Load("Prefabs/TokenButtonSlate") as GameObject;
+        //     GameObject tokenButtonSlate = Instantiate(tokenButtonSlatePrefab, GameManager.getSpawnPosition(), GameManager.getSpawnRotation());
+
+        //     // Set title
+        //     TextMeshPro titleBarTMP = tokenButtonSlate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
+        //     TextMeshPro contentTMP = tokenButtonSlate.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
+        //     titleBarTMP.text = $"{binary.name} / {function.name} Disassembly\n{function.signature}";
+        //     contentTMP.text = "";
+
+        //     // Find critical slate components
+        //     ScrollingObjectCollection tokenButtonScrollingObjectCollection = tokenButtonSlate.GetComponentInChildren<ScrollingObjectCollection>();
+        //     GameObject tokenButtonsContainer = tokenButtonScrollingObjectCollection.transform.Find("Container").gameObject;           
+        //     GameObject tokenButtonPrefab = Resources.Load("Prefabs/TokenButton") as GameObject;
+
+        //     // Walk through each basic block for this function and add token buttons to the slate
+        //     float yOffset = 0.0f; 
+        //     float zOffset = -0.01f;
+        //     foreach (OxideBasicBlock basicBlock in function.basicBlockDict.Values)
+        //     {
+        //         foreach (OxideInstruction instruction in basicBlock.instructionDict.Values)
+        //         {
+        //             float xOffset = 0f; 
+        //             float maxYSize = 0f;
+        //             GameObject newButton = MakeTokenButton(instruction.offset, "#777777", tokenButtonPrefab, tokenButtonSlate, tokenButtonsContainer, ref xOffset, yOffset, zOffset, ref maxYSize);
+        //             SetDisassemblyTokenButtonCallback(newButton, binary, function, instruction.offset);
+        //             newButton = MakeTokenButton(instruction.mnemonic, "#99FF99", tokenButtonPrefab, tokenButtonSlate, tokenButtonsContainer, ref xOffset, yOffset, zOffset, ref maxYSize);
+        //             SetDisassemblyTokenButtonCallback(newButton, binary, function, instruction.mnemonic);
+        //             string[] tokens = instruction.op_str.Split(new char[] {' ', ','}, StringSplitOptions.RemoveEmptyEntries);
+        //             foreach (string token in tokens)
+        //             {
+        //                 newButton = MakeTokenButton(token, "#FFFFFF", tokenButtonPrefab, tokenButtonSlate, tokenButtonsContainer, ref xOffset, yOffset, zOffset, ref maxYSize);
+        //                 SetDisassemblyTokenButtonCallback(newButton, binary, function, token);
+        //             }
+        //             yOffset -= (maxYSize * 1.2f); // move down for next line
+        //         }
+
+        //         yield return new WaitForEndOfFrame(); // yield after each block instead of each instruction
+        //     }
+        //     tokenButtonScrollingObjectCollection.UpdateContent();
+            
+        //     unsetBusy();
+        // }        
     }
 }
 
