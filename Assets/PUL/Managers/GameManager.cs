@@ -73,16 +73,15 @@ namespace PUL
             spawnPoint.transform.localPosition = new Vector3(0.9f, 0.25f, 0);
 
             // Start out looking at the menu -- very convenient for testing -- yell at me if it breaks things -- DGB
-            Camera.main.transform.position = new Vector3(-7f, 2f, 0f);
+            Camera.main.transform.position = new Vector3(-7f, 2f, -1.5f);
         }
 
         // Update is called once per frame
         void Update()
         {
             // Not the most elegant solution but it gets the job done... -L
-            // DGB: I commented this out because it was breaking transforms on slate instantiations for reasons I haven't figured out yet, sorry
-            // spawnPoint.transform.LookAt(Camera.main.transform.position);
-            // spawnPoint.transform.Rotate(Vector3.up * 180);
+            spawnPoint.transform.LookAt(Camera.main.transform.position);
+            spawnPoint.transform.Rotate(Vector3.up * 180);
         }
 
         // Return the position of the spawn point.
