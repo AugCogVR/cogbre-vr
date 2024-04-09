@@ -357,12 +357,12 @@ GameObject:
   - component: {fileID: 3452010943554727690}
   - component: {fileID: 6923262853571073704}
   m_Layer: 0
-  m_Name: Canvas
+  m_Name: Dictation Debug Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &9102205872506370198
 RectTransform:
   m_ObjectHideFlags: 0
@@ -626,16 +626,28 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 281842855361537980, guid: f7848356a597b9147bb2a12c168d95fe, type: 3}
+      propertyPath: m_Name
+      value: Notepad Canvas
+      objectReference: {fileID: 0}
     - target: {fileID: 1479646633939023528, guid: f7848356a597b9147bb2a12c168d95fe, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1873740624501364844, guid: f7848356a597b9147bb2a12c168d95fe, type: 3}
       propertyPath: m_Value
-      value: 1.024
+      value: 1.026
       objectReference: {fileID: 0}
     - target: {fileID: 1873740624501364844, guid: f7848356a597b9147bb2a12c168d95fe, type: 3}
       propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3334065749154881177, guid: f7848356a597b9147bb2a12c168d95fe, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3348296648048042585, guid: f7848356a597b9147bb2a12c168d95fe, type: 3}
+      propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4022160693336993333, guid: f7848356a597b9147bb2a12c168d95fe, type: 3}
@@ -692,7 +704,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6482398134801877468, guid: f7848356a597b9147bb2a12c168d95fe, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7238801519295131563, guid: f7848356a597b9147bb2a12c168d95fe, type: 3}
       propertyPath: m_Name
@@ -762,18 +774,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 184ef9e9b628e1b4283ec565d58610a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isRecording: 0
+  notepadText: {fileID: 8174152733387461321}
   dh: {fileID: 3740950221823847200}
-  tmproHyp: {fileID: 7205075835613329802}
-  tmproRes: {fileID: 8077210008260761677}
-  tmproComp: {fileID: 7723196210027065920}
-  buttonText: {fileID: 1474451095671827685}
+  dictationButtonTMP: {fileID: 0}
+  dictationHypothesisTMP: {fileID: 0}
+  dictationResultTMP: {fileID: 0}
+  dictationCompleteTMP: {fileID: 0}
 --- !u!4 &7333274435921048849 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5472536650021397482, guid: f7848356a597b9147bb2a12c168d95fe, type: 3}
   m_PrefabInstance: {fileID: 3330232882912433915}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &7908719963821595040
+--- !u!114 &8174152733387461321 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6865510804369376306, guid: f7848356a597b9147bb2a12c168d95fe, type: 3}
+  m_PrefabInstance: {fileID: 3330232882912433915}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1001 &5088355091168821839
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -786,7 +809,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8770522307406083397, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
       propertyPath: m_text
-      value: <b>Start Dictation</b>
+      value: <b>Open Keyboard</b>
       objectReference: {fileID: 0}
     - target: {fileID: 8770522307406083397, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
       propertyPath: m_sharedMaterial
@@ -842,6 +865,147 @@ PrefabInstance:
       objectReference: {fileID: 6938480575061837730}
     - target: {fileID: 8770522309334129639, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OpenKeyboard
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522309334129639, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Notepad, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522309334129640, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: m_Name
+      value: Keyboard Button (TEMP)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522309334129640, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522309334129643, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522309334129643, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2.3646429
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522309334129643, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2.5057
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522309334129643, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.2577881
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522309334129643, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.1042
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522309334129643, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.428
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522309334129643, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.0331
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522309334129643, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522309334129643, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522309334129643, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522309334129643, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522309334129643, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522309334129643, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522309334129643, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+--- !u!1001 &7908719963821595040
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 7333274435921048849}
+    m_Modifications:
+    - target: {fileID: 8770522307405568769, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522307406083397, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: m_text
+      value: <b>Start Dictation</b>
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522307406083397, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 21202819797275496, guid: 6a84f857bec7e7345843ae29404c57ce, type: 2}
+    - target: {fileID: 8770522307406083397, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: m_HorizontalAlignment
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522307406083399, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 21202819797275496, guid: 6a84f857bec7e7345843ae29404c57ce, type: 2}
+    - target: {fileID: 8770522308509782684, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522308697849697, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522309334129633, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: ButtonPressed.m_PersistentCalls.m_Calls.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522309334129633, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: ButtonPressed.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522309334129633, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: ButtonPressed.m_PersistentCalls.m_Calls.Array.data[2].m_Target
+      value: 
+      objectReference: {fileID: 6938480575061837730}
+    - target: {fileID: 8770522309334129633, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: ButtonPressed.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522309334129633, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: ButtonPressed.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: toggleDictation
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522309334129633, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: ButtonPressed.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
+      value: Notepad, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522309334129633, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: ButtonPressed.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522309334129639, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 6938480575061837730}
+    - target: {fileID: 8770522309334129639, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: toggleDictation
       objectReference: {fileID: 0}
     - target: {fileID: 8770522309334129639, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
@@ -850,7 +1014,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8770522309334129640, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
       propertyPath: m_Name
-      value: ObjectButton Variant
+      value: Dictation Button
+      objectReference: {fileID: 0}
+    - target: {fileID: 8770522309334129640, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8770522309334129643, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
       propertyPath: m_RootOrder
@@ -910,14 +1078,3 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
---- !u!114 &1474451095671827685 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8770522307406083397, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
-  m_PrefabInstance: {fileID: 7908719963821595040}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9541d86e2fd84c1d9990edf0852d74ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

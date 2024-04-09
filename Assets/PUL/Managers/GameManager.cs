@@ -9,6 +9,7 @@ using TMPro;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Inputs;
 using UnityEngine.InputSystem.Utilities;
+using Microsoft.MixedReality.Toolkit.Experimental.UI;
 
 namespace PUL
 {
@@ -29,6 +30,8 @@ namespace PUL
         // END: These values are wired up in the Unity Editor -> MenuManager object
         // ====================================
 
+        // Holds refrence to the program keyboard
+        public MixedRealityKeyboard keyboard;
         
         // Spawn point for new slates, graphs, etc. 
         private GameObject spawnPoint;

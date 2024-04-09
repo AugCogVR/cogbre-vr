@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,7 +10,6 @@ using PUL;
 // CONVENTION IN THIS FILE:
 // CID or cid = oxide collection
 // OID or oid = oxide binary
-
 [CustomEditor(typeof(MenuManager))]
 public class MenuManagerEditor : Editor
 {
@@ -75,3 +75,4 @@ public class MenuManagerEditor : Editor
         }
     }
 }
+#endif
