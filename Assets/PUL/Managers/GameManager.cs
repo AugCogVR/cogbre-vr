@@ -1,15 +1,6 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Microsoft.MixedReality.Toolkit.UI;
-using Microsoft.MixedReality.Toolkit.Utilities;
-using UnityEngine.InputSystem;
-using TMPro;
-using UnityEngine.XR.Interaction.Toolkit;
-using UnityEngine.XR.Interaction.Toolkit.Inputs;
-using UnityEngine.InputSystem.Utilities;
 using Microsoft.MixedReality.Toolkit.Experimental.UI;
+using TMPro;
 
 namespace PUL
 {
@@ -29,9 +20,6 @@ namespace PUL
 
         // END: These values are wired up in the Unity Editor -> MenuManager object
         // ====================================
-
-        // Holds refrence to the program keyboard
-        public MixedRealityKeyboard keyboard;
         
         // Spawn point for new slates, graphs, etc. 
         private GameObject spawnPoint;
@@ -50,6 +38,13 @@ namespace PUL
                 return _instance;
             }
         }
+
+        // Values for handling the keyboard
+        [Header("Keyboard")]
+        public float keyboardDist = 1;
+        public float keyboardScale = 0.2f;
+        public float keyboardVertOffset = -1;
+        TMP_InputField kbInputField = null;
 
         private void Awake()
         {
@@ -97,6 +92,28 @@ namespace PUL
         public Quaternion getSpawnRotation()
         {
             return spawnPoint.transform.rotation;
+        }
+
+        // Opens up keyboard in view
+        public void ShowKeyboard()
+        {
+            NonNativeKeyboard keyboard = NonNativeKeyboard.Instance;
+            keyboard.PresentKeyboard();
+            keyboard.RepositionKeyboard(Camera.main.transform.position + (Camera.main.transform.forward * keyboardDist) + (Vector3.down * keyboardVertOffset));
+            keyboard.transform.localScale = Vector3.one * keyboardScale;
+        }
+        public void ShowKeyboard(TextMeshProUGUI modField)
+        {
+            ShowKeyboard();
+            NonNativeKeyboard.Instance.OnKeyboardValueKeyPressed += _ => { modField.text = NonNativeKeyboard.Instance.InputField.text; };
+        }
+        public void ShowKeyboard(TMP_InputField modField)
+        {
+            ShowKeyboard();
+            kbInputField = NonNativeKeyboard.Instance.InputField;
+            NonNativeKeyboard.Instance.InputField = modField;
+            // -> On text submitted save input text?
+            // -> Maybe unique function just to work with notepad?
         }
     }
 }

@@ -1,9 +1,5 @@
-using Microsoft.MixedReality.Toolkit.Experimental.UI;
 using Microsoft.MixedReality.Toolkit.Input;
 using PUL;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -11,10 +7,9 @@ using UnityEngine;
 public class Notepad : MonoBehaviour
 {
     public TextMeshProUGUI notepadText = null;
-
+    public TMP_InputField notepadInputField = null;
 
     [Header("Keyboard")]
-    public MixedRealityKeyboard keyboard = null;
     public GameObject openKeyboardButton = null;
 
     [Header("Dictation")]
@@ -31,22 +26,15 @@ public class Notepad : MonoBehaviour
         // Pulls dictation handler if none is found
         if (dh == null)
             dh = gameObject.GetComponent<DictationHandler>();
-        // Pulls keyboard if null
-        if (keyboard == null)
-            keyboard = GameManager.Instance.keyboard;
-    }
-
-    public void Update()
-    {
-        if(keyboard != null)
-            notepadText.text = keyboard.Text;
     }
 
     public void OpenKeyboard()
     {
         Debug.Log("OPENING KEYBOARD");
-        keyboard.ShowKeyboard();
-        openKeyboardButton.SetActive(false);
+        if (notepadInputField == null)
+            GameManager.Instance.ShowKeyboard(notepadText);
+        else
+            GameManager.Instance.ShowKeyboard(notepadInputField);
     }
 
 
