@@ -1,3 +1,4 @@
+using Microsoft.MixedReality.Toolkit.Experimental.UI;
 using Microsoft.MixedReality.Toolkit.Input;
 using PUL;
 using TMPro;
@@ -31,10 +32,20 @@ public class Notepad : MonoBehaviour
     public void OpenKeyboard()
     {
         Debug.Log("OPENING KEYBOARD");
-        if (notepadInputField == null)
-            GameManager.Instance.ShowKeyboard(notepadText);
-        else
-            GameManager.Instance.ShowKeyboard(notepadInputField);
+        GameManager.Instance.ShowKeyboard();
+        if (notepadInputField != null)
+        {
+            // Still updates on close, need to figure out a method to keep text
+            NonNativeKeyboard.Instance.OnTextUpdated += _ => { 
+                // Band aid solution. doesn't allow for the addition of text
+                // -> Make string that contains the working text and the total text, whenever the keyboard is closed, update the total text with current working text
+                // --> Biggest problem here will be going back and editing the total text. Working on a solution...
+                if(NonNativeKeyboard.Instance.InputField.text != "")
+                    notepadInputField.text = NonNativeKeyboard.Instance.InputField.text; 
+            };
+            //NonNativeKeyboard.Instance.OnClosed += _ => ; Save text here
+        }
+
     }
 
 

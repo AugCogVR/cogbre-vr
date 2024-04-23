@@ -102,18 +102,5 @@ namespace PUL
             keyboard.RepositionKeyboard(Camera.main.transform.position + (Camera.main.transform.forward * keyboardDist) + (Vector3.down * keyboardVertOffset));
             keyboard.transform.localScale = Vector3.one * keyboardScale;
         }
-        public void ShowKeyboard(TextMeshProUGUI modField)
-        {
-            ShowKeyboard();
-            NonNativeKeyboard.Instance.OnKeyboardValueKeyPressed += _ => { modField.text = NonNativeKeyboard.Instance.InputField.text; };
-        }
-        public void ShowKeyboard(TMP_InputField modField)
-        {
-            ShowKeyboard();
-            kbInputField = NonNativeKeyboard.Instance.InputField;
-            NonNativeKeyboard.Instance.InputField = modField;
-            // -> On text submitted save input text?
-            // -> Maybe unique function just to work with notepad?
-        }
     }
 }
