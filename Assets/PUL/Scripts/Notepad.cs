@@ -12,6 +12,11 @@ public class Notepad : MonoBehaviour
 
     [Header("Keyboard")]
     public GameObject openKeyboardButton = null;
+    public NonNativeKeyboard keyboard = null;
+
+    [Header("Content")]
+    public string containedText = ""; // This text gets updated everytime enter is pressed. Gets loaded into keyboard when opened.
+    public string workingText = ""; // This text gets updated every key press, cleared when enter is pressed
 
     [Header("Dictation")]
     bool isRecording = false;
@@ -33,22 +38,54 @@ public class Notepad : MonoBehaviour
     {
         Debug.Log("OPENING KEYBOARD");
         GameManager.Instance.ShowKeyboard();
+
+        // Check (and fix) if the keyboard instance is null
+        if (keyboard == null)
+            keyboard = NonNativeKeyboard.Instance;
+        
+        // -> Bind functions
         if (notepadInputField != null)
         {
+            // Loads contained text into keyboard
+            keyboard.OnPlacement += PlaceText;
             // Still updates on close, need to figure out a method to keep text
-            NonNativeKeyboard.Instance.OnTextUpdated += _ => { 
+            keyboard.OnTextUpdated += _ => {
                 // Band aid solution. doesn't allow for the addition of text
                 // -> Make string that contains the working text and the total text, whenever the keyboard is closed, update the total text with current working text
                 // --> Biggest problem here will be going back and editing the total text. Working on a solution...
-                if(NonNativeKeyboard.Instance.InputField.text != "")
-                    notepadInputField.text = NonNativeKeyboard.Instance.InputField.text; 
+                if (keyboard.InputField.text != "")
+                    notepadInputField.text = workingText = keyboard.InputField.text;
             };
-            //NonNativeKeyboard.Instance.OnClosed += _ => ; Save text here
+            // Handles event when text is submitted
+            keyboard.OnTextSubmitted += SubmitText;
+            // Handles event when text is canceled
+            keyboard.OnClosed += CloseText;
         }
 
     }
 
-
+    private void PlaceText(object sender, System.EventArgs e)
+    {
+        #if(WRITE_CONSOLE)
+            Debug.Log($"Placing Text: From type {sender.GetType()} with arguments {e}");
+        #endif
+        keyboard.InputField.text = containedText;
+        keyboard.InputField.MoveTextEnd(false);
+    }
+    private void SubmitText(object sender, System.EventArgs e)
+    {
+        #if (WRITE_CONSOLE)
+            Debug.Log($"Submitting Text: From type {sender.GetType()} with arguments {e}");
+        #endif
+        containedText = workingText;
+    }
+    private void CloseText(object sender, System.EventArgs e)
+    {
+        #if (WRITE_CONSOLE)
+            Debug.Log($"Submitting Text: From type {sender.GetType()} with arguments {e}");
+#endif
+        notepadInputField.text = containedText;
+    }
 
     // Toggles dictation on and off
     public void toggleDictation()
