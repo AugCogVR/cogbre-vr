@@ -748,6 +748,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7238801519295131563, guid: f7848356a597b9147bb2a12c168d95fe, type: 3}
       propertyPath: m_Name
+      value: Notepad Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 8500370577710674441, guid: f7848356a597b9147bb2a12c168d95fe, type: 3}
+      propertyPath: m_text
       value: Notepad
       objectReference: {fileID: 0}
     - target: {fileID: 8500370577710674441, guid: f7848356a597b9147bb2a12c168d95fe, type: 3}

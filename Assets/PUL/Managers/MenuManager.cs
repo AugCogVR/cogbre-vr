@@ -6,6 +6,7 @@ using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using TMPro;
 using Microsoft.MixedReality.Toolkit.UI;
+using static Microsoft.MixedReality.Toolkit.Experimental.UI.KeyboardKeyFunc;
 
 namespace PUL
 {
@@ -559,6 +560,22 @@ namespace PUL
             contentTMP.rectTransform.sizeDelta = new Vector2(contentTMP.rectTransform.sizeDelta.x, contentSize);
 
             unsetBusy();
+        }
+
+        // Outputs the capa_results call to a slate, used for better visualization of the data we are working with
+        // -> Just using void right now while in the testing phases
+        void FunctionCapaOutputCallbackCoroutine_Visualizer(OxideBinary binary)
+        {
+            // Make a new slate
+            GameObject slate = Instantiate(slatePrefab, GameManager.getSpawnPosition(), GameManager.getSpawnRotation());
+            slateList.Add(slate);
+            slate.tag = "disassembly";
+            TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
+            titleBarTMP.text = $"{binary.name} Capa Output";
+
+            // Pull Capa information and spit out into the slate
+
+
         }
 
         public async void FunctionDecompilationButtonCallback()
