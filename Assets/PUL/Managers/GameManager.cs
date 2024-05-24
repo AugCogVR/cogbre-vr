@@ -18,7 +18,9 @@ namespace PUL
 
         public GraphManager graphManager;
 
-        // END: These values are wired up in the Unity Editor -> MenuManager object
+        public TextManager textManager;
+
+        // END: These values are wired up in the Unity Editor -> Game Manager object
         // ====================================
         
         // Spawn point for new slates, graphs, etc. 

@@ -407,6 +407,13 @@ namespace PUL
             slateList.Add(slate);
             TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
 
+            // Wire up copy button
+            GameObject copyButton = slate.transform.Find("TitleBar/Buttons/CopyButton").gameObject;
+            PressableButtonHoloLens2 buttonFunction = copyButton.GetComponent<PressableButtonHoloLens2>();
+            buttonFunction.TouchBegin.AddListener(() => GameManager.textManager.TextCopyCallback());
+            Interactable distanceInteract = copyButton.GetComponent<Interactable>();
+            buttonFunction.TouchBegin.AddListener(() => GameManager.textManager.TextCopyCallback());
+
             // Grab the content TMP
             TextMeshProUGUI contentTMP = slate.GetComponentInChildren<TextMeshProUGUI>();
             contentTMP.text = "";
