@@ -62,7 +62,7 @@ namespace PUL
         public GameObject UIPanel;
 
         //refers to the graph manager
-        public SpatialGraphManager graphManager;
+        // public SpatialGraphManager graphManager;
 
         // END: These values are wired up in the Unity Editor -> Menu Manager object
         // ====================================
@@ -407,13 +407,6 @@ namespace PUL
             slateList.Add(slate);
             TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
 
-            // Wire up copy button
-            GameObject copyButton = slate.transform.Find("TitleBar/Buttons/CopyButton").gameObject;
-            PressableButtonHoloLens2 buttonFunction = copyButton.GetComponent<PressableButtonHoloLens2>();
-            buttonFunction.TouchBegin.AddListener(() => GameManager.textManager.TextCopyCallback());
-            Interactable distanceInteract = copyButton.GetComponent<Interactable>();
-            buttonFunction.TouchBegin.AddListener(() => GameManager.textManager.TextCopyCallback());
-
             // Grab the content TMP
             TextMeshProUGUI contentTMP = slate.GetComponentInChildren<TextMeshProUGUI>();
             contentTMP.text = "";
@@ -425,6 +418,13 @@ namespace PUL
             int numLines = contentString.Split('\n').Length - 1;
             inField.text = contentString;
             contentTMP.rectTransform.sizeDelta = new Vector2(contentTMP.rectTransform.sizeDelta.x, numLines * (contentTMP.fontSize + 1.5f));
+
+            // Wire up copy button
+            GameObject copyButton = slate.transform.Find("TitleBar/Buttons/CopyButton").gameObject;
+            PressableButtonHoloLens2 buttonFunction = copyButton.GetComponent<PressableButtonHoloLens2>();
+            buttonFunction.TouchBegin.AddListener(() => GameManager.textManager.TextCopyCallback(inField));
+            Interactable distanceInteract = copyButton.GetComponent<Interactable>();
+            distanceInteract.OnClick.AddListener(() => GameManager.textManager.TextCopyCallback(inField));
 
             unsetBusy();
         }

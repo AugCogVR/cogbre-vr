@@ -31,11 +31,13 @@ namespace PUL
         {
         }
 
-        public void TextCopyCallback()
+        public void TextCopyCallback(TMP_InputField inField )
         {
             string selectedText = "whatever";
 
             Debug.Log($"TO NOTEPAD: {selectedText}");
+
+            notepad.notepadInputField.text += selectedText + "\n";
         }   
 
 
