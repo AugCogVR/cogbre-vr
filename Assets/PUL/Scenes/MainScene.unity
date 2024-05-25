@@ -302,7 +302,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 16
+  m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 180, y: 0, z: 0}
 --- !u!1 &23248253
 GameObject:
@@ -366,7 +366,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 17
+  m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &32110106
 MonoBehaviour:
@@ -1249,7 +1249,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &100118152
 GameObject:
@@ -1411,7 +1411,7 @@ Transform:
   - {fileID: 1456444863}
   - {fileID: 1961155087}
   m_Father: {fileID: 0}
-  m_RootOrder: 20
+  m_RootOrder: 21
   m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
 --- !u!114 &100118156
 MonoBehaviour:
@@ -2531,7 +2531,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!224 &213994939 stripped
 RectTransform:
@@ -3771,6 +3771,244 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 419919575}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!21 &441899119
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: MRTK_Standard_DarkGray (Instance)
+  m_Shader: {fileID: 4800000, guid: 5bdea20278144b11916d77503ba1467a, type: 3}
+  m_ValidKeywords:
+  - _BORDER_LIGHT
+  - _BORDER_LIGHT_USES_HOVER_COLOR
+  - _DIRECTIONAL_LIGHT
+  - _DISABLE_ALBEDO_MAP
+  - _HOVER_LIGHT
+  - _SPECULAR_HIGHLIGHTS
+  m_InvalidKeywords:
+  - _SPECULARHIGHLIGHTS_ON
+  - _USEAMBIENT_ON
+  - _USEDIFFUSE_ON
+  - _USEMAINCOLOR_ON
+  m_LightmapFlags: 1
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 2000
+  stringTagMap:
+    RenderType: Opaque
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ChannelMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CubeMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _GlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _IridescentSpectrumMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecularMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AlbedoAlphaMode: 0
+    - _AlbedoAssignedAtRuntime: 0
+    - _AlphaTest: 0
+    - _BlendOp: 0
+    - _BlendedClippingWidth: 1
+    - _BorderLight: 1
+    - _BorderLightOpaque: 0
+    - _BorderLightOpaqueAlpha: 1
+    - _BorderLightReplacesAlbedo: 0
+    - _BorderLightUsesHoverColor: 1
+    - _BorderMinValue: 0.1
+    - _BorderWidth: 0.5
+    - _BumpScale: 1
+    - _CalibrationSpaceReflections: 0
+    - _ClippingBorder: 0
+    - _ClippingBorderWidth: 0.025
+    - _ClippingPlane: 0
+    - _ClippingPlaneBorder: 0
+    - _ClippingPlaneBorderWidth: 0.025
+    - _ColorWriteMask: 15
+    - _Cull: 2
+    - _CullMode: 2
+    - _CustomMode: 0
+    - _Cutoff: 0.5
+    - _DetailNormalMapScale: 1
+    - _DirectionalLight: 1
+    - _DstBlend: 0
+    - _EdgeSmoothingValue: 0.002
+    - _EnableChannelMap: 0
+    - _EnableEmission: 0
+    - _EnableHoverColorOpaqueOverride: 0
+    - _EnableHoverColorOverride: 0
+    - _EnableLocalSpaceTriplanarMapping: 0
+    - _EnableNormalMap: 0
+    - _EnableProximityLightColorOverride: 0
+    - _EnableSSAA: 0
+    - _EnableTriplanarMapping: 0
+    - _EnvironmentColorIntensity: 0.5
+    - _EnvironmentColorThreshold: 1.5
+    - _EnvironmentColoring: 0
+    - _FadeBeginDistance: 0.85
+    - _FadeCompleteDistance: 0.5
+    - _FadeMinValue: 0
+    - _FluentLightIntensity: 1
+    - _ForcePerPixel: 0
+    - _Gloss: 1
+    - _GlossMapScale: 1
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _HoverLight: 1
+    - _HoverLightOpaque: 0
+    - _IgnoreZScale: 0
+    - _IndependentCorners: 0
+    - _InnerGlow: 0
+    - _InnerGlowPower: 4
+    - _InstancedColor: 0
+    - _Iridescence: 0
+    - _IridescenceAngle: -0.78
+    - _IridescenceIntensity: 0.5
+    - _IridescenceThreshold: 0.05
+    - _MainTex_OFFSET: 0
+    - _MainTex_SCALE: 0
+    - _Metallic: 0
+    - _MipmapBias: -2
+    - _Mode: 0
+    - _NearLightFade: 0
+    - _NearPlaneFade: 0
+    - _NormalMapScale: 1
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
+    - _ProximityLight: 0
+    - _ProximityLightSubtractive: 0
+    - _ProximityLightTwoSided: 0
+    - _ReflectionScale: 2
+    - _Reflections: 0
+    - _Refraction: 0
+    - _RefractiveIndex: 1.1
+    - _RenderQueueOverride: -1
+    - _RimLight: 0
+    - _RimPower: 0.7
+    - _RoundCornerMargin: 0
+    - _RoundCornerRadius: 0.25
+    - _RoundCorners: 0
+    - _Shade4: 0
+    - _Smoothness: 0.5
+    - _SmoothnessTextureChannel: 0
+    - _Specular: 10
+    - _SpecularHighlights: 1
+    - _SphericalHarmonics: 0
+    - _SrcBlend: 1
+    - _Stencil: 0
+    - _StencilComparison: 0
+    - _StencilOperation: 0
+    - _StencilReference: 0
+    - _TriplanarMappingBlendSharpness: 4
+    - _UVSec: 0
+    - _UseAmbient: 1
+    - _UseBumpMap: 0
+    - _UseDiffuse: 1
+    - _UseEmissionColor: 0
+    - _UseEmissionMap: 0
+    - _UseEmissionTex: 0
+    - _UseGlossMap: 0
+    - _UseMainColor: 1
+    - _UseMainTex: 0
+    - _UseOcclusionMap: 0
+    - _UseReflections: 0
+    - _UseRimLighting: 0
+    - _UseSpecular: 0
+    - _UseSpecularMap: 0
+    - _UseVertexColor: 0
+    - _VertexColors: 0
+    - _VertexExtrusion: 0
+    - _VertexExtrusionSmoothNormals: 0
+    - _VertexExtrusionValue: 0
+    - _ZOffsetFactor: 0
+    - _ZOffsetUnits: 0
+    - _ZTest: 4
+    - _ZWrite: 1
+    m_Colors:
+    - _ClipPlane: {r: 0, g: 1, b: 0, a: 0}
+    - _ClippingBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
+    - _ClippingPlaneBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
+    - _Color: {r: 0.25, g: 0.25, b: 0.25, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
+    - _EnvironmentColorX: {r: 1, g: 0, b: 0, a: 1}
+    - _EnvironmentColorY: {r: 0, g: 1, b: 0, a: 1}
+    - _EnvironmentColorZ: {r: 0, g: 0, b: 1, a: 1}
+    - _HoverColorOpaqueOverride: {r: 1, g: 1, b: 1, a: 1}
+    - _HoverColorOverride: {r: 0.3019608, g: 0.3019608, b: 0.3, a: 0.003921569}
+    - _InnerGlowColor: {r: 1, g: 1, b: 1, a: 0.75}
+    - _ProximityLightCenterColorOverride: {r: 1, g: 0, b: 0, a: 0}
+    - _ProximityLightMiddleColorOverride: {r: 0, g: 1, b: 0, a: 0.5}
+    - _ProximityLightOuterColorOverride: {r: 0, g: 0, b: 1, a: 1}
+    - _RimColor: {r: 1, g: 1, b: 1, a: 1}
+    - _RoundCornersRadius: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
+    - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _SpecularColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _TextureScaleOffset: {r: 1, g: 1, b: 0, a: 0}
+  m_BuildTextureStacks: []
 --- !u!1 &451813510
 GameObject:
   m_ObjectHideFlags: 0
@@ -4853,7 +5091,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 21
+  m_RootOrder: 22
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &535552548
 GameObject:
@@ -5252,211 +5490,6 @@ Transform:
   m_Father: {fileID: 1943995287}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!21 &595630672
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: HolographicButtonContentCageProximity (Instance)
-  m_Shader: {fileID: 4800000, guid: 5bdea20278144b11916d77503ba1467a, type: 3}
-  m_ValidKeywords:
-  - _ALPHABLEND_ON
-  - _BORDER_LIGHT
-  - _BORDER_LIGHT_USES_HOVER_COLOR
-  - _DISABLE_ALBEDO_MAP
-  - _HOVER_LIGHT
-  - _METALLIC_TEXTURE_ALBEDO_CHANNEL_A
-  - _NEAR_LIGHT_FADE
-  - _NEAR_PLANE_FADE
-  - _PROXIMITY_LIGHT
-  - _PROXIMITY_LIGHT_TWO_SIDED
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 1
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
-  stringTagMap:
-    RenderType: Fade
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _BumpMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _ChannelMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailAlbedoMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailMask:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailNormalMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _EmissionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _IridescentSpectrumMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _LightMapTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 1443b22b919aede4ca14ca5e3bf81096, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MetallicGlossMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NormalMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _OcclusionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _ParallaxMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _AlbedoAlphaMode: 1
-    - _AlbedoAlphaSmoothness: 0
-    - _AlbedoAssignedAtRuntime: 0
-    - _BlendOp: 0
-    - _BlendedClippingWidth: 0.0001
-    - _BorderLight: 1
-    - _BorderLightOpaque: 0
-    - _BorderLightOpaqueAlpha: 1
-    - _BorderLightReplacesAlbedo: 0
-    - _BorderLightUsesHoverColor: 1
-    - _BorderMinValue: 1
-    - _BorderWidth: 0.06
-    - _BorderWidthHorizontal: 0.1
-    - _BorderWidthVertical: 0.1
-    - _BumpScale: 1
-    - _ClippingBorder: 0
-    - _ClippingBorderWidth: 0.025
-    - _ClippingBox: 0
-    - _ClippingPlane: 0
-    - _ClippingPlaneBorder: 0
-    - _ClippingPlaneBorderWidth: 0.025
-    - _ClippingSphere: 0
-    - _ColorWriteMask: 15
-    - _CullMode: 2
-    - _CustomMode: 2
-    - _Cutoff: 0.5
-    - _DetailNormalMapScale: 1
-    - _DirectionalLight: 0
-    - _DstBlend: 1
-    - _EdgeSmoothingValue: 0.002
-    - _EnableChannelMap: 0
-    - _EnableEmission: 0
-    - _EnableHoverColorOpaqueOverride: 0
-    - _EnableHoverColorOverride: 0
-    - _EnableLightMap: 0
-    - _EnableLocalSpaceTriplanarMapping: 0
-    - _EnableNormalMap: 0
-    - _EnableProximityLightColorOverride: 0
-    - _EnableSSAA: 0
-    - _EnableTriplanarMapping: 0
-    - _EnvironmentColorIntensity: 0.5
-    - _EnvironmentColorThreshold: 1.5
-    - _EnvironmentColoring: 0
-    - _FadeBeginDistance: 0.0101
-    - _FadeCompleteDistance: 0.2
-    - _FadeMinValue: 0
-    - _FluentLightIntensity: 1
-    - _GlossMapScale: 1
-    - _Glossiness: 0.5
-    - _GlossyReflections: 1
-    - _HoverLight: 1
-    - _HoverLightOpaque: 0
-    - _IgnoreZScale: 0
-    - _IndependentCorners: 0
-    - _InnerGlow: 0
-    - _InnerGlowPower: 12
-    - _InstancedColor: 0
-    - _Iridescence: 0
-    - _IridescenceAngle: -0.78
-    - _IridescenceIntensity: 0.5
-    - _IridescenceThreshold: 0.05
-    - _Metallic: 0
-    - _MipmapBias: -2
-    - _Mode: 4
-    - _NearLightFade: 1
-    - _NearPlaneFade: 1
-    - _NormalMapScale: 1
-    - _OcclusionStrength: 1
-    - _Parallax: 0.02
-    - _ProximityLight: 1
-    - _ProximityLightSubtractive: 0
-    - _ProximityLightTwoSided: 1
-    - _Reflections: 0
-    - _Refraction: 0
-    - _RefractiveIndex: 1.1
-    - _RenderQueueOverride: -1
-    - _RimLight: 0
-    - _RimPower: 5.83
-    - _RoundCornerMargin: 0
-    - _RoundCornerRadius: 0.25
-    - _RoundCorners: 0
-    - _Smoothness: 0.5
-    - _SmoothnessTextureChannel: 0
-    - _SpecularHighlights: 0
-    - _SphericalHarmonics: 0
-    - _SrcBlend: 1
-    - _Stencil: 0
-    - _StencilComparison: 0
-    - _StencilOperation: 0
-    - _StencilReference: 0
-    - _TriplanarMappingBlendSharpness: 4
-    - _UVSec: 0
-    - _VertexColors: 0
-    - _VertexExtrusion: 0
-    - _VertexExtrusionSmoothNormals: 0
-    - _VertexExtrusionValue: 0
-    - _ZOffsetFactor: 0
-    - _ZOffsetUnits: 0
-    - _ZTest: 4
-    - _ZWrite: 0
-    m_Colors:
-    - _ClipPlane: {r: 0, g: 1, b: 0, a: 0}
-    - _ClippingBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
-    - _ClippingPlaneBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
-    - _Color: {r: 0, g: 0, b: 0, a: 0}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
-    - _EnvironmentColorX: {r: 1, g: 0, b: 0, a: 1}
-    - _EnvironmentColorY: {r: 0, g: 1, b: 0, a: 1}
-    - _EnvironmentColorZ: {r: 0, g: 0, b: 1, a: 1}
-    - _HoverColor: {r: 1, g: 0, b: 0, a: 1}
-    - _HoverColorOpaqueOverride: {r: 1, g: 1, b: 1, a: 1}
-    - _HoverColorOverride: {r: 1, g: 1, b: 1, a: 1}
-    - _InnerGlowColor: {r: 1, g: 1, b: 1, a: 0.98039216}
-    - _ProximityLightCenterColorOverride: {r: 1, g: 0, b: 0, a: 0}
-    - _ProximityLightMiddleColorOverride: {r: 0, g: 1, b: 0, a: 0.5}
-    - _ProximityLightOuterColorOverride: {r: 0, g: 0, b: 1, a: 1}
-    - _RimColor: {r: 1, g: 1, b: 1, a: 0.497}
-    - _RoundCornersRadius: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
-  m_BuildTextureStacks: []
 --- !u!1 &596749965
 GameObject:
   m_ObjectHideFlags: 0
@@ -5524,7 +5557,6 @@ MonoBehaviour:
   ObjectButtonPrefab: {fileID: 8770522309334129640, guid: b5c99fdafe5c55647aa10aebd7e1acf1, type: 3}
   slatePrefab: {fileID: 7238801519295131563, guid: f7848356a597b9147bb2a12c168d95fe, type: 3}
   UIPanel: {fileID: 475612916}
-  graphManager: {fileID: 32110106}
   initialized: 0
 --- !u!1 &630060596
 GameObject:
@@ -5830,7 +5862,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &678563275
 PrefabInstance:
@@ -7338,7 +7370,7 @@ Transform:
   - {fileID: 316307399}
   - {fileID: 2094206100}
   m_Father: {fileID: 0}
-  m_RootOrder: 22
+  m_RootOrder: 23
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &719877224
 GameObject:
@@ -7436,7 +7468,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 180}
 --- !u!1 &720760222
 GameObject:
@@ -7534,7 +7566,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
 --- !u!1 &727252781
 GameObject:
@@ -9347,111 +9379,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0012925, y: 0.74801373, z: 6}
   m_Center: {x: 0.1654123, y: 1.301393, z: -0.09514889}
---- !u!21 &921118077
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: seguisb SDF Material (Instance)
-  m_Shader: {fileID: 4800000, guid: 1c504b73bf66872479cd1215fb5ce0fe, type: 3}
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _BumpMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Cube:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _FaceTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 28013742671525116, guid: 6a84f857bec7e7345843ae29404c57ce, type: 2}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _OutlineTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _Ambient: 0.5
-    - _Bevel: 0.5
-    - _BevelClamp: 0
-    - _BevelOffset: 0
-    - _BevelRoundness: 0
-    - _BevelWidth: 0
-    - _BumpFace: 0
-    - _BumpOutline: 0
-    - _ColorMask: 15
-    - _Diffuse: 0.5
-    - _FaceDilate: 0
-    - _FaceUVSpeedX: 0
-    - _FaceUVSpeedY: 0
-    - _GlowInner: 0.05
-    - _GlowOffset: 0
-    - _GlowOuter: 0.05
-    - _GlowPower: 0.75
-    - _GradientScale: 6
-    - _LightAngle: 3.1416
-    - _MaskSoftnessX: 0
-    - _MaskSoftnessY: 0
-    - _OutlineSoftness: 0
-    - _OutlineUVSpeedX: 0
-    - _OutlineUVSpeedY: 0
-    - _OutlineWidth: 0
-    - _PerspectiveFilter: 0.875
-    - _Reflectivity: 10
-    - _ScaleRatioA: 0.8333333
-    - _ScaleRatioB: 0.6770833
-    - _ScaleRatioC: 0.6770833
-    - _ScaleX: 1
-    - _ScaleY: 1
-    - _ShaderFlags: 0
-    - _Sharpness: 0
-    - _SpecularPower: 2
-    - _Stencil: 0
-    - _StencilComp: 8
-    - _StencilOp: 0
-    - _StencilReadMask: 255
-    - _StencilWriteMask: 255
-    - _TextureHeight: 512
-    - _TextureWidth: 512
-    - _UnderlayDilate: 0
-    - _UnderlayOffsetX: 0
-    - _UnderlayOffsetY: 0
-    - _UnderlaySoftness: 0
-    - _VertexOffsetX: 0
-    - _VertexOffsetY: 0
-    - _WeightBold: 0.75
-    - _WeightNormal: 0
-    - _ZWrite: 1
-    m_Colors:
-    - _ClipRect: {r: -32767, g: -32767, b: 32767, a: 32767}
-    - _EnvMatrixRotation: {r: 0, g: 0, b: 0, a: 0}
-    - _FaceColor: {r: 1, g: 1, b: 1, a: 1}
-    - _GlowColor: {r: 0, g: 1, b: 0, a: 0.5}
-    - _MaskCoord: {r: 0, g: 0, b: 32767, a: 32767}
-    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
-    - _ReflectFaceColor: {r: 0, g: 0, b: 0, a: 1}
-    - _ReflectOutlineColor: {r: 0, g: 0, b: 0, a: 1}
-    - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
-    - _UnderlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-  m_BuildTextureStacks: []
 --- !u!1 &922740017
 GameObject:
   m_ObjectHideFlags: 0
@@ -10292,7 +10219,7 @@ MonoBehaviour:
   nexusClient: {fileID: 112237087}
   menuManager: {fileID: 596749967}
   graphManager: {fileID: 1860348423}
-  textManager: {fileID: 0}
+  textManager: {fileID: 1336355990}
   keyboardDist: 1
   keyboardScale: 0.001
   keyboardVertOffset: 0.2
@@ -10713,244 +10640,6 @@ Transform:
   m_Father: {fileID: 1721431015}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!21 &1033016423
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: MRTK_Standard_DarkGray (Instance)
-  m_Shader: {fileID: 4800000, guid: 5bdea20278144b11916d77503ba1467a, type: 3}
-  m_ValidKeywords:
-  - _BORDER_LIGHT
-  - _BORDER_LIGHT_USES_HOVER_COLOR
-  - _DIRECTIONAL_LIGHT
-  - _DISABLE_ALBEDO_MAP
-  - _HOVER_LIGHT
-  - _SPECULAR_HIGHLIGHTS
-  m_InvalidKeywords:
-  - _SPECULARHIGHLIGHTS_ON
-  - _USEAMBIENT_ON
-  - _USEDIFFUSE_ON
-  - _USEMAINCOLOR_ON
-  m_LightmapFlags: 1
-  m_EnableInstancingVariants: 1
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
-  stringTagMap:
-    RenderType: Opaque
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _BumpMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _ChannelMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _CubeMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailAlbedoMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailMask:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailNormalMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _EmissionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _EmissionTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _GlossMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _IridescentSpectrumMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MetallicGlossMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NormalMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _OcclusionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _ParallaxMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SpecularMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _AlbedoAlphaMode: 0
-    - _AlbedoAssignedAtRuntime: 0
-    - _AlphaTest: 0
-    - _BlendOp: 0
-    - _BlendedClippingWidth: 1
-    - _BorderLight: 1
-    - _BorderLightOpaque: 0
-    - _BorderLightOpaqueAlpha: 1
-    - _BorderLightReplacesAlbedo: 0
-    - _BorderLightUsesHoverColor: 1
-    - _BorderMinValue: 0.1
-    - _BorderWidth: 0.5
-    - _BumpScale: 1
-    - _CalibrationSpaceReflections: 0
-    - _ClippingBorder: 0
-    - _ClippingBorderWidth: 0.025
-    - _ClippingPlane: 0
-    - _ClippingPlaneBorder: 0
-    - _ClippingPlaneBorderWidth: 0.025
-    - _ColorWriteMask: 15
-    - _Cull: 2
-    - _CullMode: 2
-    - _CustomMode: 0
-    - _Cutoff: 0.5
-    - _DetailNormalMapScale: 1
-    - _DirectionalLight: 1
-    - _DstBlend: 0
-    - _EdgeSmoothingValue: 0.002
-    - _EnableChannelMap: 0
-    - _EnableEmission: 0
-    - _EnableHoverColorOpaqueOverride: 0
-    - _EnableHoverColorOverride: 0
-    - _EnableLocalSpaceTriplanarMapping: 0
-    - _EnableNormalMap: 0
-    - _EnableProximityLightColorOverride: 0
-    - _EnableSSAA: 0
-    - _EnableTriplanarMapping: 0
-    - _EnvironmentColorIntensity: 0.5
-    - _EnvironmentColorThreshold: 1.5
-    - _EnvironmentColoring: 0
-    - _FadeBeginDistance: 0.85
-    - _FadeCompleteDistance: 0.5
-    - _FadeMinValue: 0
-    - _FluentLightIntensity: 1
-    - _ForcePerPixel: 0
-    - _Gloss: 1
-    - _GlossMapScale: 1
-    - _Glossiness: 0.5
-    - _GlossyReflections: 1
-    - _HoverLight: 1
-    - _HoverLightOpaque: 0
-    - _IgnoreZScale: 0
-    - _IndependentCorners: 0
-    - _InnerGlow: 0
-    - _InnerGlowPower: 4
-    - _InstancedColor: 0
-    - _Iridescence: 0
-    - _IridescenceAngle: -0.78
-    - _IridescenceIntensity: 0.5
-    - _IridescenceThreshold: 0.05
-    - _MainTex_OFFSET: 0
-    - _MainTex_SCALE: 0
-    - _Metallic: 0
-    - _MipmapBias: -2
-    - _Mode: 0
-    - _NearLightFade: 0
-    - _NearPlaneFade: 0
-    - _NormalMapScale: 1
-    - _OcclusionStrength: 1
-    - _Parallax: 0.02
-    - _ProximityLight: 0
-    - _ProximityLightSubtractive: 0
-    - _ProximityLightTwoSided: 0
-    - _ReflectionScale: 2
-    - _Reflections: 0
-    - _Refraction: 0
-    - _RefractiveIndex: 1.1
-    - _RenderQueueOverride: -1
-    - _RimLight: 0
-    - _RimPower: 0.7
-    - _RoundCornerMargin: 0
-    - _RoundCornerRadius: 0.25
-    - _RoundCorners: 0
-    - _Shade4: 0
-    - _Smoothness: 0.5
-    - _SmoothnessTextureChannel: 0
-    - _Specular: 10
-    - _SpecularHighlights: 1
-    - _SphericalHarmonics: 0
-    - _SrcBlend: 1
-    - _Stencil: 0
-    - _StencilComparison: 0
-    - _StencilOperation: 0
-    - _StencilReference: 0
-    - _TriplanarMappingBlendSharpness: 4
-    - _UVSec: 0
-    - _UseAmbient: 1
-    - _UseBumpMap: 0
-    - _UseDiffuse: 1
-    - _UseEmissionColor: 0
-    - _UseEmissionMap: 0
-    - _UseEmissionTex: 0
-    - _UseGlossMap: 0
-    - _UseMainColor: 1
-    - _UseMainTex: 0
-    - _UseOcclusionMap: 0
-    - _UseReflections: 0
-    - _UseRimLighting: 0
-    - _UseSpecular: 0
-    - _UseSpecularMap: 0
-    - _UseVertexColor: 0
-    - _VertexColors: 0
-    - _VertexExtrusion: 0
-    - _VertexExtrusionSmoothNormals: 0
-    - _VertexExtrusionValue: 0
-    - _ZOffsetFactor: 0
-    - _ZOffsetUnits: 0
-    - _ZTest: 4
-    - _ZWrite: 1
-    m_Colors:
-    - _ClipPlane: {r: 0, g: 1, b: 0, a: 0}
-    - _ClippingBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
-    - _ClippingPlaneBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
-    - _Color: {r: 0.25, g: 0.25, b: 0.25, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
-    - _EnvironmentColorX: {r: 1, g: 0, b: 0, a: 1}
-    - _EnvironmentColorY: {r: 0, g: 1, b: 0, a: 1}
-    - _EnvironmentColorZ: {r: 0, g: 0, b: 1, a: 1}
-    - _HoverColorOpaqueOverride: {r: 1, g: 1, b: 1, a: 1}
-    - _HoverColorOverride: {r: 0.3019608, g: 0.3019608, b: 0.3, a: 0.003921569}
-    - _InnerGlowColor: {r: 1, g: 1, b: 1, a: 0.75}
-    - _ProximityLightCenterColorOverride: {r: 1, g: 0, b: 0, a: 0}
-    - _ProximityLightMiddleColorOverride: {r: 0, g: 1, b: 0, a: 0.5}
-    - _ProximityLightOuterColorOverride: {r: 0, g: 0, b: 1, a: 1}
-    - _RimColor: {r: 1, g: 1, b: 1, a: 1}
-    - _RoundCornersRadius: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
-    - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _SpecularColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _TextureScaleOffset: {r: 1, g: 1, b: 0, a: 0}
-  m_BuildTextureStacks: []
 --- !u!1 &1034167680
 GameObject:
   m_ObjectHideFlags: 0
@@ -12351,6 +12040,211 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1183321372}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!21 &1197889413
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: HolographicButtonContentCageProximity (Instance)
+  m_Shader: {fileID: 4800000, guid: 5bdea20278144b11916d77503ba1467a, type: 3}
+  m_ValidKeywords:
+  - _ALPHABLEND_ON
+  - _BORDER_LIGHT
+  - _BORDER_LIGHT_USES_HOVER_COLOR
+  - _DISABLE_ALBEDO_MAP
+  - _HOVER_LIGHT
+  - _METALLIC_TEXTURE_ALBEDO_CHANNEL_A
+  - _NEAR_LIGHT_FADE
+  - _NEAR_PLANE_FADE
+  - _PROXIMITY_LIGHT
+  - _PROXIMITY_LIGHT_TWO_SIDED
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3000
+  stringTagMap:
+    RenderType: Fade
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ChannelMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _IridescentSpectrumMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _LightMapTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 1443b22b919aede4ca14ca5e3bf81096, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AlbedoAlphaMode: 1
+    - _AlbedoAlphaSmoothness: 0
+    - _AlbedoAssignedAtRuntime: 0
+    - _BlendOp: 0
+    - _BlendedClippingWidth: 0.0001
+    - _BorderLight: 1
+    - _BorderLightOpaque: 0
+    - _BorderLightOpaqueAlpha: 1
+    - _BorderLightReplacesAlbedo: 0
+    - _BorderLightUsesHoverColor: 1
+    - _BorderMinValue: 1
+    - _BorderWidth: 0.06
+    - _BorderWidthHorizontal: 0.1
+    - _BorderWidthVertical: 0.1
+    - _BumpScale: 1
+    - _ClippingBorder: 0
+    - _ClippingBorderWidth: 0.025
+    - _ClippingBox: 0
+    - _ClippingPlane: 0
+    - _ClippingPlaneBorder: 0
+    - _ClippingPlaneBorderWidth: 0.025
+    - _ClippingSphere: 0
+    - _ColorWriteMask: 15
+    - _CullMode: 2
+    - _CustomMode: 2
+    - _Cutoff: 0.5
+    - _DetailNormalMapScale: 1
+    - _DirectionalLight: 0
+    - _DstBlend: 1
+    - _EdgeSmoothingValue: 0.002
+    - _EnableChannelMap: 0
+    - _EnableEmission: 0
+    - _EnableHoverColorOpaqueOverride: 0
+    - _EnableHoverColorOverride: 0
+    - _EnableLightMap: 0
+    - _EnableLocalSpaceTriplanarMapping: 0
+    - _EnableNormalMap: 0
+    - _EnableProximityLightColorOverride: 0
+    - _EnableSSAA: 0
+    - _EnableTriplanarMapping: 0
+    - _EnvironmentColorIntensity: 0.5
+    - _EnvironmentColorThreshold: 1.5
+    - _EnvironmentColoring: 0
+    - _FadeBeginDistance: 0.0101
+    - _FadeCompleteDistance: 0.2
+    - _FadeMinValue: 0
+    - _FluentLightIntensity: 1
+    - _GlossMapScale: 1
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _HoverLight: 1
+    - _HoverLightOpaque: 0
+    - _IgnoreZScale: 0
+    - _IndependentCorners: 0
+    - _InnerGlow: 0
+    - _InnerGlowPower: 12
+    - _InstancedColor: 0
+    - _Iridescence: 0
+    - _IridescenceAngle: -0.78
+    - _IridescenceIntensity: 0.5
+    - _IridescenceThreshold: 0.05
+    - _Metallic: 0
+    - _MipmapBias: -2
+    - _Mode: 4
+    - _NearLightFade: 1
+    - _NearPlaneFade: 1
+    - _NormalMapScale: 1
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
+    - _ProximityLight: 1
+    - _ProximityLightSubtractive: 0
+    - _ProximityLightTwoSided: 1
+    - _Reflections: 0
+    - _Refraction: 0
+    - _RefractiveIndex: 1.1
+    - _RenderQueueOverride: -1
+    - _RimLight: 0
+    - _RimPower: 5.83
+    - _RoundCornerMargin: 0
+    - _RoundCornerRadius: 0.25
+    - _RoundCorners: 0
+    - _Smoothness: 0.5
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 0
+    - _SphericalHarmonics: 0
+    - _SrcBlend: 1
+    - _Stencil: 0
+    - _StencilComparison: 0
+    - _StencilOperation: 0
+    - _StencilReference: 0
+    - _TriplanarMappingBlendSharpness: 4
+    - _UVSec: 0
+    - _VertexColors: 0
+    - _VertexExtrusion: 0
+    - _VertexExtrusionSmoothNormals: 0
+    - _VertexExtrusionValue: 0
+    - _ZOffsetFactor: 0
+    - _ZOffsetUnits: 0
+    - _ZTest: 4
+    - _ZWrite: 0
+    m_Colors:
+    - _ClipPlane: {r: 0, g: 1, b: 0, a: 0}
+    - _ClippingBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
+    - _ClippingPlaneBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
+    - _Color: {r: 0, g: 0, b: 0, a: 0}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
+    - _EnvironmentColorX: {r: 1, g: 0, b: 0, a: 1}
+    - _EnvironmentColorY: {r: 0, g: 1, b: 0, a: 1}
+    - _EnvironmentColorZ: {r: 0, g: 0, b: 1, a: 1}
+    - _HoverColor: {r: 1, g: 0, b: 0, a: 1}
+    - _HoverColorOpaqueOverride: {r: 1, g: 1, b: 1, a: 1}
+    - _HoverColorOverride: {r: 1, g: 1, b: 1, a: 1}
+    - _InnerGlowColor: {r: 1, g: 1, b: 1, a: 0.98039216}
+    - _ProximityLightCenterColorOverride: {r: 1, g: 0, b: 0, a: 0}
+    - _ProximityLightMiddleColorOverride: {r: 0, g: 1, b: 0, a: 0.5}
+    - _ProximityLightOuterColorOverride: {r: 0, g: 0, b: 1, a: 1}
+    - _RimColor: {r: 1, g: 1, b: 1, a: 0.497}
+    - _RoundCornersRadius: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
+  m_BuildTextureStacks: []
 --- !u!1 &1209372657
 GameObject:
   m_ObjectHideFlags: 0
@@ -12881,6 +12775,17 @@ Transform:
   m_Father: {fileID: 1721431015}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1328766816 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6938480575061837730, guid: c580c3bd5148ba34e87d86f1a74760b1, type: 3}
+  m_PrefabInstance: {fileID: 4962140108774780826}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 184ef9e9b628e1b4283ec565d58610a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1329529021
 GameObject:
   m_ObjectHideFlags: 0
@@ -13062,6 +12967,51 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1332909238}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1336355989
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1336355991}
+  - component: {fileID: 1336355990}
+  m_Layer: 0
+  m_Name: Text Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1336355990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1336355989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f78174219d36d0547a83204018dbe3bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  notepad: {fileID: 1328766816}
+--- !u!4 &1336355991
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1336355989}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!21 &1341254425
 Material:
   serializedVersion: 8
@@ -14205,7 +14155,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5472536650021397482, guid: f7848356a597b9147bb2a12c168d95fe, type: 3}
       propertyPath: m_RootOrder
-      value: 18
+      value: 19
       objectReference: {fileID: 0}
     - target: {fileID: 5472536650021397482, guid: f7848356a597b9147bb2a12c168d95fe, type: 3}
       propertyPath: m_LocalPosition.x
@@ -15421,8 +15371,156 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 19
+  m_RootOrder: 20
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!21 &1510041620
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: MRTK_PressableInteractablesButtonBox (Instance)
+  m_Shader: {fileID: 4800000, guid: 5bdea20278144b11916d77503ba1467a, type: 3}
+  m_ValidKeywords:
+  - _ALPHABLEND_ON
+  - _BORDER_LIGHT
+  - _DISABLE_ALBEDO_MAP
+  - _NEAR_LIGHT_FADE
+  - _NEAR_PLANE_FADE
+  m_InvalidKeywords:
+  - USE_GLOBAL_LEFT_INDEX_ON
+  - USE_GLOBAL_RIGHT_INDEX_ON
+  - _BLOB_ENABLE_2__ON
+  - _BLOB_ENABLE__ON
+  - _ENABLE_FADE__ON
+  - _SMOOTH_ACTIVE_FACE__ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3000
+  stringTagMap:
+    RenderType: Fade
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _ChannelMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _IridescentSpectrumMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AlbedoAlphaMode: 0
+    - _AlbedoAssignedAtRuntime: 0
+    - _BlendOp: 0
+    - _BlendedClippingWidth: 0.0001
+    - _BorderLight: 1
+    - _BorderLightOpaque: 0
+    - _BorderLightOpaqueAlpha: 1
+    - _BorderLightReplacesAlbedo: 0
+    - _BorderLightUsesHoverColor: 0
+    - _BorderMinValue: 1
+    - _BorderWidth: 0.08
+    - _ClippingBorder: 0
+    - _ClippingBorderWidth: 0.025
+    - _ClippingBox: 0
+    - _ClippingPlane: 0
+    - _ClippingSphere: 0
+    - _ColorWriteMask: 15
+    - _CullMode: 2
+    - _CustomMode: 2
+    - _Cutoff: 0.5
+    - _DirectionalLight: 0
+    - _DstBlend: 1
+    - _EdgeSmoothingValue: 0.0001
+    - _EnableChannelMap: 0
+    - _EnableEmission: 0
+    - _EnableHoverColorOverride: 0
+    - _EnableLocalSpaceTriplanarMapping: 0
+    - _EnableNormalMap: 0
+    - _EnableProximityLightColorOverride: 0
+    - _EnableSSAA: 0
+    - _EnableTriplanarMapping: 0
+    - _EnvironmentColorIntensity: 0.5
+    - _EnvironmentColorThreshold: 1.5
+    - _EnvironmentColoring: 0
+    - _FadeBeginDistance: 0.01
+    - _FadeCompleteDistance: 0.05
+    - _FadeMinValue: 0
+    - _FluentLightIntensity: 1
+    - _HoverLight: 0
+    - _IgnoreZScale: 0
+    - _IndependentCorners: 0
+    - _InnerGlow: 0
+    - _InnerGlowPower: 24.5
+    - _InstancedColor: 0
+    - _Iridescence: 0
+    - _IridescenceAngle: -0.78
+    - _IridescenceIntensity: 0.5
+    - _IridescenceThreshold: 0.05
+    - _Metallic: 0
+    - _MipmapBias: -2
+    - _Mode: 4
+    - _NearLightFade: 1
+    - _NearPlaneFade: 1
+    - _NormalMapScale: 1
+    - _ProximityLight: 0
+    - _ProximityLightSubtractive: 0
+    - _ProximityLightTwoSided: 0
+    - _Reflections: 0
+    - _Refraction: 0
+    - _RefractiveIndex: 0
+    - _RenderQueueOverride: -1
+    - _RimLight: 0
+    - _RimPower: 0.25
+    - _RoundCornerMargin: 0.01
+    - _RoundCornerRadius: 0.25
+    - _RoundCorners: 0
+    - _Smoothness: 0.5
+    - _SpecularHighlights: 0
+    - _SphericalHarmonics: 0
+    - _SrcBlend: 1
+    - _Stencil: 0
+    - _StencilComparison: 0
+    - _StencilOperation: 0
+    - _StencilReference: 0
+    - _TriplanarMappingBlendSharpness: 4
+    - _VertexColors: 0
+    - _VertexExtrusion: 0
+    - _VertexExtrusionSmoothNormals: 0
+    - _VertexExtrusionValue: 0
+    - _ZOffsetFactor: 0
+    - _ZOffsetUnits: 0
+    - _ZTest: 4
+    - _ZWrite: 0
+    m_Colors:
+    - _ClippingBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
+    - _Color: {r: 0.1254902, g: 0.1254902, b: 0.1254902, a: 0}
+    - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
+    - _EnvironmentColorX: {r: 1, g: 0, b: 0, a: 1}
+    - _EnvironmentColorY: {r: 0, g: 1, b: 0, a: 1}
+    - _EnvironmentColorZ: {r: 0, g: 0, b: 1, a: 1}
+    - _HoverColorOverride: {r: 1, g: 1, b: 1, a: 1}
+    - _InnerGlowColor: {r: 1, g: 1, b: 1, a: 0.5568628}
+    - _ProximityLightCenterColorOverride: {r: 1, g: 0, b: 0, a: 0}
+    - _ProximityLightMiddleColorOverride: {r: 0, g: 1, b: 0, a: 0.5}
+    - _ProximityLightOuterColorOverride: {r: 0, g: 0, b: 1, a: 1}
+    - _RimColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _RoundCornersRadius: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
+  m_BuildTextureStacks: []
 --- !u!1 &1511808472
 GameObject:
   m_ObjectHideFlags: 0
@@ -17016,7 +17114,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 90}
 --- !u!1 &1681003468
 GameObject:
@@ -22180,154 +22278,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1998552272}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
---- !u!21 &2005220696
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: MRTK_PressableInteractablesButtonBox (Instance)
-  m_Shader: {fileID: 4800000, guid: 5bdea20278144b11916d77503ba1467a, type: 3}
-  m_ValidKeywords:
-  - _ALPHABLEND_ON
-  - _BORDER_LIGHT
-  - _DISABLE_ALBEDO_MAP
-  - _NEAR_LIGHT_FADE
-  - _NEAR_PLANE_FADE
-  m_InvalidKeywords:
-  - USE_GLOBAL_LEFT_INDEX_ON
-  - USE_GLOBAL_RIGHT_INDEX_ON
-  - _BLOB_ENABLE_2__ON
-  - _BLOB_ENABLE__ON
-  - _ENABLE_FADE__ON
-  - _SMOOTH_ACTIVE_FACE__ON
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 1
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
-  stringTagMap:
-    RenderType: Fade
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _ChannelMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _IridescentSpectrumMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NormalMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _AlbedoAlphaMode: 0
-    - _AlbedoAssignedAtRuntime: 0
-    - _BlendOp: 0
-    - _BlendedClippingWidth: 0.0001
-    - _BorderLight: 1
-    - _BorderLightOpaque: 0
-    - _BorderLightOpaqueAlpha: 1
-    - _BorderLightReplacesAlbedo: 0
-    - _BorderLightUsesHoverColor: 0
-    - _BorderMinValue: 1
-    - _BorderWidth: 0.08
-    - _ClippingBorder: 0
-    - _ClippingBorderWidth: 0.025
-    - _ClippingBox: 0
-    - _ClippingPlane: 0
-    - _ClippingSphere: 0
-    - _ColorWriteMask: 15
-    - _CullMode: 2
-    - _CustomMode: 2
-    - _Cutoff: 0.5
-    - _DirectionalLight: 0
-    - _DstBlend: 1
-    - _EdgeSmoothingValue: 0.0001
-    - _EnableChannelMap: 0
-    - _EnableEmission: 0
-    - _EnableHoverColorOverride: 0
-    - _EnableLocalSpaceTriplanarMapping: 0
-    - _EnableNormalMap: 0
-    - _EnableProximityLightColorOverride: 0
-    - _EnableSSAA: 0
-    - _EnableTriplanarMapping: 0
-    - _EnvironmentColorIntensity: 0.5
-    - _EnvironmentColorThreshold: 1.5
-    - _EnvironmentColoring: 0
-    - _FadeBeginDistance: 0.01
-    - _FadeCompleteDistance: 0.05
-    - _FadeMinValue: 0
-    - _FluentLightIntensity: 1
-    - _HoverLight: 0
-    - _IgnoreZScale: 0
-    - _IndependentCorners: 0
-    - _InnerGlow: 0
-    - _InnerGlowPower: 24.5
-    - _InstancedColor: 0
-    - _Iridescence: 0
-    - _IridescenceAngle: -0.78
-    - _IridescenceIntensity: 0.5
-    - _IridescenceThreshold: 0.05
-    - _Metallic: 0
-    - _MipmapBias: -2
-    - _Mode: 4
-    - _NearLightFade: 1
-    - _NearPlaneFade: 1
-    - _NormalMapScale: 1
-    - _ProximityLight: 0
-    - _ProximityLightSubtractive: 0
-    - _ProximityLightTwoSided: 0
-    - _Reflections: 0
-    - _Refraction: 0
-    - _RefractiveIndex: 0
-    - _RenderQueueOverride: -1
-    - _RimLight: 0
-    - _RimPower: 0.25
-    - _RoundCornerMargin: 0.01
-    - _RoundCornerRadius: 0.25
-    - _RoundCorners: 0
-    - _Smoothness: 0.5
-    - _SpecularHighlights: 0
-    - _SphericalHarmonics: 0
-    - _SrcBlend: 1
-    - _Stencil: 0
-    - _StencilComparison: 0
-    - _StencilOperation: 0
-    - _StencilReference: 0
-    - _TriplanarMappingBlendSharpness: 4
-    - _VertexColors: 0
-    - _VertexExtrusion: 0
-    - _VertexExtrusionSmoothNormals: 0
-    - _VertexExtrusionValue: 0
-    - _ZOffsetFactor: 0
-    - _ZOffsetUnits: 0
-    - _ZTest: 4
-    - _ZWrite: 0
-    m_Colors:
-    - _ClippingBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
-    - _Color: {r: 0.1254902, g: 0.1254902, b: 0.1254902, a: 0}
-    - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
-    - _EnvironmentColorX: {r: 1, g: 0, b: 0, a: 1}
-    - _EnvironmentColorY: {r: 0, g: 1, b: 0, a: 1}
-    - _EnvironmentColorZ: {r: 0, g: 0, b: 1, a: 1}
-    - _HoverColorOverride: {r: 1, g: 1, b: 1, a: 1}
-    - _InnerGlowColor: {r: 1, g: 1, b: 1, a: 0.5568628}
-    - _ProximityLightCenterColorOverride: {r: 1, g: 0, b: 0, a: 0}
-    - _ProximityLightMiddleColorOverride: {r: 0, g: 1, b: 0, a: 0.5}
-    - _ProximityLightOuterColorOverride: {r: 0, g: 0, b: 1, a: 1}
-    - _RimColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _RoundCornersRadius: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
-  m_BuildTextureStacks: []
 --- !u!1 &2011447987
 GameObject:
   m_ObjectHideFlags: 0
@@ -23473,6 +23423,111 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 2134779209}
   m_maskType: 0
+--- !u!21 &2137302029
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: seguisb SDF Material (Instance)
+  m_Shader: {fileID: 4800000, guid: 1c504b73bf66872479cd1215fb5ce0fe, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Cube:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FaceTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 28013742671525116, guid: 6a84f857bec7e7345843ae29404c57ce, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OutlineTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Ambient: 0.5
+    - _Bevel: 0.5
+    - _BevelClamp: 0
+    - _BevelOffset: 0
+    - _BevelRoundness: 0
+    - _BevelWidth: 0
+    - _BumpFace: 0
+    - _BumpOutline: 0
+    - _ColorMask: 15
+    - _Diffuse: 0.5
+    - _FaceDilate: 0
+    - _FaceUVSpeedX: 0
+    - _FaceUVSpeedY: 0
+    - _GlowInner: 0.05
+    - _GlowOffset: 0
+    - _GlowOuter: 0.05
+    - _GlowPower: 0.75
+    - _GradientScale: 6
+    - _LightAngle: 3.1416
+    - _MaskSoftnessX: 0
+    - _MaskSoftnessY: 0
+    - _OutlineSoftness: 0
+    - _OutlineUVSpeedX: 0
+    - _OutlineUVSpeedY: 0
+    - _OutlineWidth: 0
+    - _PerspectiveFilter: 0.875
+    - _Reflectivity: 10
+    - _ScaleRatioA: 0.8333333
+    - _ScaleRatioB: 0.6770833
+    - _ScaleRatioC: 0.6770833
+    - _ScaleX: 1
+    - _ScaleY: 1
+    - _ShaderFlags: 0
+    - _Sharpness: 0
+    - _SpecularPower: 2
+    - _Stencil: 0
+    - _StencilComp: 8
+    - _StencilOp: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
+    - _TextureHeight: 512
+    - _TextureWidth: 512
+    - _UnderlayDilate: 0
+    - _UnderlayOffsetX: 0
+    - _UnderlayOffsetY: 0
+    - _UnderlaySoftness: 0
+    - _VertexOffsetX: 0
+    - _VertexOffsetY: 0
+    - _WeightBold: 0.75
+    - _WeightNormal: 0
+    - _ZWrite: 1
+    m_Colors:
+    - _ClipRect: {r: -32767, g: -32767, b: 32767, a: 32767}
+    - _EnvMatrixRotation: {r: 0, g: 0, b: 0, a: 0}
+    - _FaceColor: {r: 1, g: 1, b: 1, a: 1}
+    - _GlowColor: {r: 0, g: 1, b: 0, a: 0.5}
+    - _MaskCoord: {r: 0, g: 0, b: 32767, a: 32767}
+    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+    - _ReflectFaceColor: {r: 0, g: 0, b: 0, a: 1}
+    - _ReflectOutlineColor: {r: 0, g: 0, b: 0, a: 1}
+    - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
+    - _UnderlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_BuildTextureStacks: []
 --- !u!1 &2142493964
 GameObject:
   m_ObjectHideFlags: 0
@@ -23674,19 +23729,19 @@ PrefabInstance:
     - target: {fileID: 4551538802621372750, guid: c580c3bd5148ba34e87d86f1a74760b1, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 1033016423}
+      objectReference: {fileID: 441899119}
     - target: {fileID: 4551538802622936840, guid: c580c3bd5148ba34e87d86f1a74760b1, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 921118077}
+      objectReference: {fileID: 2137302029}
     - target: {fileID: 4551538803591237843, guid: c580c3bd5148ba34e87d86f1a74760b1, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 595630672}
+      objectReference: {fileID: 1197889413}
     - target: {fileID: 4551538803914439982, guid: c580c3bd5148ba34e87d86f1a74760b1, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2005220696}
+      objectReference: {fileID: 1510041620}
     - target: {fileID: 5350908063798196560, guid: c580c3bd5148ba34e87d86f1a74760b1, type: 3}
       propertyPath: m_Name
       value: Notepad
