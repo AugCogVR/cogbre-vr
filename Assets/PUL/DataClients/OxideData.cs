@@ -141,6 +141,9 @@ namespace PUL
         // Decomp lines associated with this function, indexed by line number
         public SortedDictionary<int, OxideDecompLine> decompDict { get; set; }
 
+        // List of capabilities identified in this function
+        public IList<string> capaList { get; set; } 
+
         public OxideFunction(string name, string offset, string signature)
         {
             this.name = name;

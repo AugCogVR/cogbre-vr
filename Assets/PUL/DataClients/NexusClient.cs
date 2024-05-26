@@ -316,6 +316,7 @@ namespace PUL
                             }
                             function.sourceFunctionDict = new SortedDictionary<int, OxideFunction>();
                             function.targetFunctionDict = new SortedDictionary<int, OxideFunction>();
+                            function.capaList = new List<string>(); // create the list here, but fill it in later
                         }
                     }
                 }
@@ -405,6 +406,28 @@ namespace PUL
                         }
                     }
                 }                    
+
+                // ADDITIONAL ACTIVITIES 
+                // Load Capa-identified capability strings into respective function objects
+                string capaJsonString = await NexusSyncTask($"[\"oxide_retrieve\", \"capa_results\", [\"{binary.oid}\"], {{}}]");
+                if (capaJsonString != null) 
+                {
+                    JsonData capaJson = JsonMapper.ToObject(capaJsonString)[binary.oid]["capa_capabilities"];
+                    foreach (KeyValuePair<string, JsonData> item in capaJson)
+                    {
+                        string capability = (string)item.Key;
+                        // Debug.Log($"CAPA capability identified: {capability}");
+                        foreach (JsonData offset in item.Value)
+                        {
+                            int offsetInt = (int)offset;
+                            // Debug.Log($"CAPA func offset: {offsetInt}");
+                            if (binary.functionDict.ContainsKey(offsetInt))
+                                binary.functionDict[offsetInt].capaList.Add(item.Key);
+                            else
+                                Debug.Log($"CAPA capability \"{capability}\" at func offset {offsetInt}: FUNCTION NOT FOUND AT OFFSET!");
+                        }
+                    }
+                }
 
                 Debug.Log($"=== For binary {binary.name}: {binary.functionDict.Keys.Count} functions, {binary.basicBlockDict.Keys.Count} basic blocks, {binary.instructionDict.Keys.Count} instructions.");
                 return binary; 
