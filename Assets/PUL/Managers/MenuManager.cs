@@ -406,6 +406,7 @@ namespace PUL
             GameObject slate = Instantiate(slatePrefab, GameManager.getSpawnPosition(), GameManager.getSpawnRotation());
             slateList.Add(slate);
             TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
+            titleBarTMP.text = $"Strings for {selectedBinary.name}";
 
             // Grab the content TMP
             TextMeshProUGUI contentTMP = slate.GetComponentInChildren<TextMeshProUGUI>();
@@ -420,11 +421,12 @@ namespace PUL
             contentTMP.rectTransform.sizeDelta = new Vector2(contentTMP.rectTransform.sizeDelta.x, numLines * (contentTMP.fontSize + 1.5f));
 
             // Wire up copy button
+            DynamicScrollbarHandler dynamicScrollbarHandler = slate.GetComponentInChildren<DynamicScrollbarHandler>();
             GameObject copyButton = slate.transform.Find("TitleBar/Buttons/CopyButton").gameObject;
             PressableButtonHoloLens2 buttonFunction = copyButton.GetComponent<PressableButtonHoloLens2>();
-            buttonFunction.TouchBegin.AddListener(() => GameManager.textManager.TextCopyCallback(inField));
+            buttonFunction.TouchBegin.AddListener(() => GameManager.textManager.TextCopyCallback(dynamicScrollbarHandler));
             Interactable distanceInteract = copyButton.GetComponent<Interactable>();
-            distanceInteract.OnClick.AddListener(() => GameManager.textManager.TextCopyCallback(inField));
+            distanceInteract.OnClick.AddListener(() => GameManager.textManager.TextCopyCallback(dynamicScrollbarHandler));
 
             unsetBusy();
         }

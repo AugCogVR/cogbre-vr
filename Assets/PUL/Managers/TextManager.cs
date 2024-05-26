@@ -31,13 +31,14 @@ namespace PUL
         {
         }
 
-        public void TextCopyCallback(TMP_InputField inField )
+        public void TextCopyCallback(DynamicScrollbarHandler dynamicScrollbarHandler)
         {
-            string selectedText = "whatever";
-
-            Debug.Log($"TO NOTEPAD: {selectedText}");
-
-            notepad.notepadInputField.text += selectedText + "\n";
+            string selectedText = dynamicScrollbarHandler.selectedInfo;
+            if (selectedText.Length > 0)
+            {
+                Debug.Log($"TO NOTEPAD: {selectedText}");
+                notepad.notepadInputField.text += selectedText + "\n";
+            }
         }   
 
 
