@@ -36,7 +36,7 @@ namespace PUL
         void Awake()
         {
             pacingCounter = 0;
-            userId = "User123"; // LATER: allow for multiple user IDs when we have multiple users!
+            userId = "default"; // TO DO: allow for multiple user IDs when we have multiple users!
         }
 
         // Start is called before the first frame update
@@ -50,11 +50,11 @@ namespace PUL
         {
             // pacingCounter = braindead dumb mechanism to throttle polling
             pacingCounter++;
-            int pacingCounterLimit = 1000;
+            int pacingCounterLimit = 100; // TO DO: fix arbitrary hard-coded value
             if (pacingCounter > pacingCounterLimit)
             {
                 pacingCounter = 0;
-                NexusUpdate();
+                NexusSessionUpdate();
             }
         }
 
@@ -85,15 +85,20 @@ namespace PUL
             gameManager.menuManager.MenuInit();
         }
 
-        private async void NexusUpdate()
+        // Update this user's activity in the Nexus. Should be called periodically.
+        private async void NexusSessionUpdate()
         {
-            string whatever = await NexusSyncTask("[\"get_session_update\"]");
+            Vector3 headpos = Camera.main.transform.position;
+            // Vector3 headrot = Camera.main.transform.rotation.eulerAngles;
+            string response = await NexusSyncTask($"[\"session_update\", \"{headpos.x}\", \"{headpos.y}\", \"{headpos.z}\"]");
         }
 
+        // Create and async Task to call the Nexus API and return the response
         private async Task<string> NexusSyncTask(string command)
         {
             try
             {
+                // TO DO: fix hardcoded IP address
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:5000/sync_portal");
                 request.ContentType = "application/json";
                 request.Method = "POST";
