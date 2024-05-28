@@ -758,7 +758,8 @@ PrefabInstance:
       propertyPath: m_margin.z
       value: -12.41506
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1105421450897659823, guid: f7848356a597b9147bb2a12c168d95fe, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: f7848356a597b9147bb2a12c168d95fe, type: 3}
 --- !u!1 &4233278025952370771 stripped
 GameObject:

@@ -58,6 +58,9 @@ namespace PUL
         // The Slate prefeb we instantiate for function disassembly
         public GameObject slatePrefab;
 
+        // The Tooltip prefeb we instantiate for function disassembly
+        public GameObject tooltipPrefab;
+
         // The UI panel
         public GameObject UIPanel;
 
@@ -155,6 +158,25 @@ namespace PUL
             distanceInteract.OnClick.AddListener(() => GameManager.textManager.TextCopyCallback(dynamicScrollbarHandler));
 
             return slate;
+        }
+
+        private GameObject makeAToolTip(string title, string contents, GameObject parentSlate)
+        {
+            // Make a new tooltip
+            GameObject tooltip = Instantiate(tooltipPrefab, Vector3.zero, GameManager.getSpawnRotation(), parentSlate.transform);
+            tooltip.name = "Tooltip_" + contents.Substring(0, 5);
+            tooltip.transform.localPosition = Vector3.left * 0.15f;
+
+            // Push in contents
+            ToolTip ttContents = tooltip.GetComponent<ToolTip>();
+            ttContents.ToolTipText = $"<color=yellow><u><b>{title}</b></u></color>\n{contents}";
+            ttContents.FontSize = 45;
+
+            // Point to the slate
+            ToolTipConnector ttConnector = tooltip.GetComponent<ToolTipConnector>();
+            ttConnector.Target = parentSlate;
+
+            return tooltip;
         }
 
         private string createCollectionButtonText(OxideCollection collection)
@@ -535,7 +557,7 @@ namespace PUL
             // -> Keeps track of the total number of lines, used for sizing text field for scroll rect.
             float contentSize = 0;
             float fontBuffer = 1.5f;
-
+            
             // Walk through each basic block for this function and add instructions to text display
             foreach (OxideBasicBlock basicBlock in function.basicBlockDict.Values)
             {
@@ -553,19 +575,29 @@ namespace PUL
             // Adjust TMP transform to match content height
             contentTMP.rectTransform.sizeDelta = new Vector2(contentTMP.rectTransform.sizeDelta.x, contentSize);
 
+            // Write to capa output
+            FunctionCapaOutput(function, slate);
+
             unsetBusy();
         }
 
         // Outputs the capa_results call to a slate, used for better visualization of the data we are working with
         // -> Just using void right now while in the testing phases
-        void FunctionCapaOutputCallbackCoroutine_Visualizer(OxideBinary binary)
+        void FunctionCapaOutput(OxideFunction function, GameObject tooltipParent)
         {
-            // Make a new slate
-            GameObject slate = makeASlate($"{binary.name} Capa Output", "");
+            // Check to see if a slate should be made
+            if (function.capaList.Count <= 0)
+                return;
+
+            // Log contents in capalist
+            string contents = "";
 
             // Pull Capa information and spit out into the slate
+            foreach (string capaOut in function.capaList)
+                contents += capaOut;
 
-
+            // Make a new tooltip
+            GameObject tooltip = makeAToolTip("Capa Results", contents, tooltipParent);
         }
 
         public async void FunctionDecompilationButtonCallback()
