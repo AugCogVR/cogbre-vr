@@ -90,7 +90,7 @@ namespace PUL
         {
             Vector3 headpos = Camera.main.transform.position;
             // Vector3 headrot = Camera.main.transform.rotation.eulerAngles;
-            string response = await NexusSyncTask($"[\"session_update\", \"{headpos.x}\", \"{headpos.y}\", \"{headpos.z}\"]");
+            string response = await NexusSyncTask($"[\"session_update\", \"headpos\", \"{headpos.x}\", \"{headpos.y}\", \"{headpos.z}\"]");
         }
 
         // Create and async Task to call the Nexus API and return the response
