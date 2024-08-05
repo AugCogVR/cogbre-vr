@@ -25,6 +25,9 @@ namespace PUL
         // END: These values are wired up in the Unity Editor -> Nexus Client object
         // ====================================
 
+        public List<string> ignoreCollection = new List<string>(); // List of collection names to ignore when booting. Debugging tool used to exempt big collections early in development
+
+
 
         public int pacingCounter; // braindead dumb mechanism to throttle polling
 
@@ -72,7 +75,15 @@ namespace PUL
             oxideData = new OxideData();
             foreach (string collectionName in collectionNameList)
             {
+                // Ignore function. Debug
+                if (ignoreCollection.Contains(collectionName))
+                {
+                    Debug.LogWarning($"NexusClient -> Ignoring collection {collectionName}");
+                    continue;
+                }
+
                 string collectionId = await NexusSyncTask($"[\"oxide_get_cid_from_name\", \"{collectionName}\"]");
+
                 collectionId = collectionId.Replace("\"", ""); // remove extraneous quotes 
                 // Build collection object with missing info. We'll fill it in 
                 // if user ever selects this collection.
