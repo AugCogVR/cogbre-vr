@@ -1,5 +1,6 @@
 using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.Input;
+using PUL;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -105,10 +106,13 @@ public class ControllerManager : MonoBehaviour, IMixedRealitySourceStateHandler,
     // -> Checks when the touchpad changes
     public delegate void OnTouchpadChanged(Vector2 value);
     public OnTouchpadChanged onTouchpadChanged;
+    public delegate void OnTouchpadPressed();
+    public OnTouchpadPressed onTouchpadPressed;
 
 
     // ----- Delegate Controllers -----
     // Source detected and source lost methods pulled from https://learn.microsoft.com/en-us/windows/mixed-reality/mrtk-unity/mrtk2/features/input/input-events?view=mrtkunity-2022-05
+    int sourceCount = 0;
     public void OnSourceDetected(SourceStateEventData eventData)
     {
         var hand = eventData.Controller;
@@ -116,7 +120,11 @@ public class ControllerManager : MonoBehaviour, IMixedRealitySourceStateHandler,
         // Only react to Controller input sources
         if (hand != null)
         {
-            Debug.Log("Source detected: " + hand.ControllerHandedness + $"  ({hand})");
+            Debug.Log("Source detected: " + hand.ControllerHandedness + $"  ({hand}) [{hand.InputSource.SourceName}]");
+
+            // Check if the connected source is the simulated hand
+            if (hand.InputSource.SourceName.Equals("Simulated GGV None Hand"))
+                GameManager.Instance.runningSimulated = true;
         }
     }
     public void OnSourceLost(SourceStateEventData eventData)
@@ -156,9 +164,13 @@ public class ControllerManager : MonoBehaviour, IMixedRealitySourceStateHandler,
             onTriggerPressed?.Invoke();
         }
         // -> Grip Pressed
-        if (eventData.MixedRealityInputAction.Description == "Grip Press")
+        else if (eventData.MixedRealityInputAction.Description == "Grip Press")
         {
             onGripPressed?.Invoke();
+        }
+        else if (eventData.MixedRealityInputAction.Description == "Touchpad Action")
+        {
+            onTouchpadPressed?.Invoke();
         }
     }
 

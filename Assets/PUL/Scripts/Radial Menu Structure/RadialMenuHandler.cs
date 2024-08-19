@@ -1,4 +1,5 @@
 using Microsoft.MixedReality.Toolkit.Input;
+using PUL;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -19,13 +20,14 @@ public class RadialMenuHandler : MonoBehaviour
     // -> These objects are called Radial Menu Options. They act as tabs that appear in the radial menu that can be selected.
     // A few objects will extend off of these options.
     // -> The first of these objects is the Radial Menu SubMenu (Extends Radial Menu Option). When selected it will load up a sub menu, with new options. It will also allow the user to navigate backwards through the menu hierarchy.
-    // -> The next of these objects is the Radial Menu Function. This one will perform a basic function when selected
     // - L
 
     // Defines the options contained in the menu
     public RadialMenuOption[] menuOptions = new RadialMenuOption[8];
+    public bool allowDebugInputs = false;
     public KeyCode debugOpen = KeyCode.Z;
-
+    public KeyCode debugSelect = KeyCode.X;
+    [Space]
     // Stores the users input point
     public Vector2 inputPosition = Vector2.zero; 
     // Defines the area in the radial menu where inputs are ignored. Used for the back button in sub menus
@@ -38,13 +40,20 @@ public class RadialMenuHandler : MonoBehaviour
     bool cursorDead = false;
 
     // Models used in the menu
-    
+    // Holds the graphic parent
+    public GameObject radialMenuModelParent = null;
+    // Holds refrence for the cursor in menu
+    public GameObject cursorObject = null;
+    // Holds refrence to the placement distance of pie infographics
+    public float pGraphicDistance = 0.6f;
+
 
     // Start is called before the first frame update
     void Start()
     {
         // Bind debug to controller manager delegate
         ControllerManager.Instance.onTouchpadChanged += TouchpadEvent;
+        ControllerManager.Instance.onTouchpadPressed += SelectEvent;
 
         // Build the menu
         BuildMenu();
@@ -52,13 +61,6 @@ public class RadialMenuHandler : MonoBehaviour
     // Sets the properties in Radial Menu Options used for the menu
     void BuildMenu()
     {
-        // Debug list of items used for testing the menu
-        for (int i = 0; i < menuOptions.Length; i++)
-        {
-            RadialMenuOption option = new RadialMenuOption();
-            option.title += " " + i;
-            menuOptions[i] = option;
-        }
 
         // Get options
         int oCount = OptionCount();
@@ -70,7 +72,7 @@ public class RadialMenuHandler : MonoBehaviour
         // Get the size of each pie
         float pieSize = (float)360 / oCount;
         // Get the origin and working rotation
-        float cRot = 90;
+        float cRot = 180;
         // Set the rotation
         for (int i = 0; i < menuOptions.Length; i++)
             if (menuOptions[i] != null)
@@ -78,54 +80,96 @@ public class RadialMenuHandler : MonoBehaviour
                 // Get a normalized rotation
                 float rad = Mathf.Deg2Rad * cRot;
                 menuOptions[i].rotation = Mathf.Atan2(Mathf.Sin(rad), Mathf.Cos(rad));
+                menuOptions[i].size = pieSize * Mathf.Deg2Rad;
+                menuOptions[i].graphicDist = pGraphicDistance;
                 cRot -= pieSize;
+
+                menuOptions[i].OnBuild();
             }
     }
+
+    // Makes sure values are set properly based on scale
+    float storedScale = 1;
 
     private void OnDisable()
     {
         // Make sure to unbind all delegates
         ControllerManager.Instance.onTouchpadChanged -= TouchpadEvent;
+        ControllerManager.Instance.onTouchpadPressed -= SelectEvent;
     }
 
     private void TouchpadEvent(Vector2 value)
     {
-        Debug.Log("Radial Menu -> Touchpad Value " + value);
-        inputPosition = value;
+        inputPosition = value * storedScale;
         UpdateHover();
     }
+    private void SelectEvent()
+    {
+        // Get the hovered option and run the associated select method
+        if(hoveredOption < menuOptions.Length)
+        {
+            menuOptions[hoveredOption].OnSelect();
+        }
+        else
+        {
+            Debug.LogError($"Radial Menu Handler (Select Event) -> Hovered option {hoveredOption} is out of range. Menu option length is {menuOptions.Length}");
+        }
+    }
+
     Vector2 mousePosition = Vector2.zero; // Current mouse position
     Vector2 lMousePosition = Vector2.zero; // Mouse position last frame
-    Vector2 mouseTimeout = Vector2.one * 7.5f;
+    Vector2 mouseTimeout = Vector2.one * 3f;
     float mouseSpeed = 0.005f;
     private void TrackMouse()
     {
+        // Fall out early if mouse isn't allowed
+        // -> This will later be controlled by tracking the bootup state (simulation vs headset)
+        if (!allowDebugInputs)
+            return;
+
         // Check for debug key press
         if (!Input.GetKey(debugOpen))
+        {
+            // Check for timeout
+            if(mouseTimeout.x > 0)
+                mouseTimeout.x -= Time.deltaTime;
+            else
+                ResetInput();
+
+            // Disable menu
+            radialMenuModelParent.SetActive(false);
+
             return;
+        }
+        // Enable menu
+        radialMenuModelParent.SetActive(true);
+        // Position in front of the main camera
+        Transform camTransform = Camera.main.transform;
+        radialMenuModelParent.transform.position = camTransform.position + (camTransform.forward * 4);
+        radialMenuModelParent.transform.LookAt(camTransform.position);
+        radialMenuModelParent.transform.localEulerAngles = radialMenuModelParent.transform.localEulerAngles + new Vector3(-90, 0, 180);
+
+        // Reset timeout
+        mouseTimeout.x = mouseTimeout.y;
 
         // Get the current mouse position
         mousePosition = Input.mousePosition;
         // Get the mouse difference
         Vector2 mDif = (mousePosition - lMousePosition) * mouseSpeed;
-        
-        // Check for timeout
-        if(mDif == Vector2.zero)
-            mouseTimeout.x -= Time.deltaTime;
-        if(mouseTimeout.x < 0)
-        {
-            ResetInput();
-            mouseTimeout.x = mouseTimeout.y;
-            return;
-        }
 
-        
         // Set input position
         inputPosition = new Vector2(Mathf.Clamp(inputPosition.x + mDif.x, -1, 1), Mathf.Clamp(inputPosition.y + mDif.y, -1, 1));
         // Set last mouse position
         lMousePosition = mousePosition;
 
         UpdateHover();
+
+        // Check for a selection
+        if (Input.GetKeyDown(debugSelect))
+        {
+            SelectEvent();
+            return;
+        }
     }
 
     // Run ONLY if the simulation mode is running
@@ -133,6 +177,9 @@ public class RadialMenuHandler : MonoBehaviour
     private void Update()
     {
         TrackMouse();
+
+        // Check if the game is running in simulation
+        allowDebugInputs = GameManager.Instance.runningSimulated;
     }
 
     // Checks for the currently selected menu option
@@ -143,10 +190,17 @@ public class RadialMenuHandler : MonoBehaviour
         {
             cursorDead = true;
             cursorRotation = 0;
+            cursorObject.SetActive(false);
             return;
         }
         else
             cursorDead = false;
+
+
+        // Update the cursor
+        if (!cursorObject.activeSelf)
+            cursorObject.SetActive(true);
+        cursorObject.transform.localPosition = new Vector3(inputPosition.x, 0.01f, inputPosition.y);
 
         // Get the rotation of the cursor
         cursorRotation = Mathf.Atan2(inputPosition.y, inputPosition.x);
@@ -184,6 +238,7 @@ public class RadialMenuHandler : MonoBehaviour
         hoveredOption = 0;
         cursorDead = true;
         cursorRotation = 0;
+        cursorObject.SetActive(false);
     }
 
     // Count the options in the Menu Option list that aren't null
@@ -200,10 +255,10 @@ public class RadialMenuHandler : MonoBehaviour
     // This is used to build the test version of the menu. For debugging purposes
     private void OnDrawGizmos()
     {
-        Vector3 menuPosition = transform.position;
+        Vector3 menuPosition = new Vector3(transform.position.x, 10, transform.position.z);
         // Place menu center
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(menuPosition, 1f);
+        Gizmos.DrawWireSphere(menuPosition, storedScale);
         // -> Draws deadzone
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(menuPosition, deadRadius);

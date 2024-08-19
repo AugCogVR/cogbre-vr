@@ -41,6 +41,10 @@ namespace PUL
             }
         }
 
+        // Values used for quick flag checks
+        [Header("Quick Flags")]
+        public bool runningSimulated = false;
+
         // Values for handling the keyboard
         [Header("Keyboard")]
         public float keyboardDist = 1;
@@ -62,8 +66,6 @@ namespace PUL
                 _instance = this;
             }
             DontDestroyOnLoad(this);
-
-            // !!!! Add some function to detect the state in which the game is started (using a headset or debugging with keyboard and mouse) !!!
         }
 
         // Start is called before the first frame update
