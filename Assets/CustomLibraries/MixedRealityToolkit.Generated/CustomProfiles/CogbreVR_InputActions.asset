@@ -61,4 +61,4 @@ MonoBehaviour:
     axisConstraint: 0
   - id: 16
     description: Touchpad Action
-    axisConstraint: 4
+    axisConstraint: 2

@@ -39,6 +39,9 @@ public class RadialMenuHandler : MonoBehaviour
     // Flags if the cursor is in the dead zone
     bool cursorDead = false;
 
+    // Holds information about the input source
+    private uint controllerSourceId = 0;
+
     // Models used in the menu
     // Holds the graphic parent
     public GameObject radialMenuModelParent = null;
@@ -73,7 +76,7 @@ public class RadialMenuHandler : MonoBehaviour
         float pieSize = (float)360 / oCount;
         // Get the origin and working rotation
         float cRot = 180;
-        // Set the rotation
+        // Set the rotation of pies
         for (int i = 0; i < menuOptions.Length; i++)
             if (menuOptions[i] != null)
             {
@@ -86,6 +89,9 @@ public class RadialMenuHandler : MonoBehaviour
 
                 menuOptions[i].OnBuild();
             }
+
+        // Set model to inactive
+        radialMenuModelParent.SetActive(false);
     }
 
     // Makes sure values are set properly based on scale
@@ -98,15 +104,30 @@ public class RadialMenuHandler : MonoBehaviour
         ControllerManager.Instance.onTouchpadPressed -= SelectEvent;
     }
 
-    private void TouchpadEvent(Vector2 value)
+    private void TouchpadEvent(uint sourceID, Vector2 value)
     {
+        // If a source id is set then only allow inputs from said source
+        if (CheckInputSource(sourceID))
+            return;
+
+        Debug.Log("Radial Menu Handler -> Touchpad Event run");
+
+        // Update input and log source
         inputPosition = value * storedScale;
+        controllerSourceId = sourceID;
+
         UpdateHover();
     }
-    private void SelectEvent()
+    private void SelectEvent(uint sourceID)
     {
+        // If a source id is set then only allow inputs from said source
+        if (CheckInputSource(sourceID))
+            return;
+        // Do nothing if the cursor is dead
+        if (cursorDead) return;
+
         // Get the hovered option and run the associated select method
-        if(hoveredOption < menuOptions.Length)
+        if (hoveredOption < menuOptions.Length)
         {
             menuOptions[hoveredOption].OnSelect();
         }
@@ -116,11 +137,18 @@ public class RadialMenuHandler : MonoBehaviour
         }
     }
 
+    // Checks if the input source is 0 or if the source id is our current source
+    private bool CheckInputSource(uint sourceID)
+    {
+        return controllerSourceId != 0 && sourceID != controllerSourceId;
+    }
+
+
     Vector2 mousePosition = Vector2.zero; // Current mouse position
     Vector2 lMousePosition = Vector2.zero; // Mouse position last frame
     Vector2 mouseTimeout = Vector2.one * 3f;
     float mouseSpeed = 0.005f;
-    private void TrackMouse()
+    private void KB_TrackMouse()
     {
         // Fall out early if mouse isn't allowed
         // -> This will later be controlled by tracking the bootup state (simulation vs headset)
@@ -167,7 +195,7 @@ public class RadialMenuHandler : MonoBehaviour
         // Check for a selection
         if (Input.GetKeyDown(debugSelect))
         {
-            SelectEvent();
+            SelectEvent(0);
             return;
         }
     }
@@ -176,7 +204,11 @@ public class RadialMenuHandler : MonoBehaviour
     // -> Not yet implemented. Falls back to tracking debug key
     private void Update()
     {
-        TrackMouse();
+        KB_TrackMouse();
+
+        // Tracks the controller's radial menu
+        VR_PositionMenu();
+        VR_TimeoutMenu();
 
         // Check if the game is running in simulation
         allowDebugInputs = GameManager.Instance.runningSimulated;
@@ -185,22 +217,18 @@ public class RadialMenuHandler : MonoBehaviour
     // Checks for the currently selected menu option
     void UpdateHover()
     {
+        // Update the cursor
+        cursorObject.transform.localPosition = new Vector3(inputPosition.x, 0.01f, inputPosition.y);
+
         // Check if the cursor is in the dead zone. If so throw early
         if (Vector3.Distance(transform.position, (Vector3)inputPosition + transform.position) < deadRadius || inputPosition == Vector2.zero)
         {
             cursorDead = true;
             cursorRotation = 0;
-            cursorObject.SetActive(false);
             return;
         }
         else
             cursorDead = false;
-
-
-        // Update the cursor
-        if (!cursorObject.activeSelf)
-            cursorObject.SetActive(true);
-        cursorObject.transform.localPosition = new Vector3(inputPosition.x, 0.01f, inputPosition.y);
 
         // Get the rotation of the cursor
         cursorRotation = Mathf.Atan2(inputPosition.y, inputPosition.x);
@@ -227,6 +255,63 @@ public class RadialMenuHandler : MonoBehaviour
         }
         // Select sIndex
         hoveredOption = sIndex;
+    }
+
+    // Positions the menu on the hand if debug is not allowed
+    // -> Has an overflow that surpresses the allignment when disabled. This allows for smoother positioning when first enabling
+    void VR_PositionMenu(bool allowWhenDisabled = false)
+    {
+        // Check if we are in debug mode
+        if (allowDebugInputs)
+            return;
+        // Makes sure the model is active before moving it
+        if (!radialMenuModelParent.activeSelf && !allowWhenDisabled)
+            return;
+
+        // Pull the position of the hand
+        IMixedRealityController tController = ControllerManager.Instance.GetController(controllerSourceId);
+        // Check if the controller is null
+        if (tController == null)
+            return;
+        Vector3 controllerPosition = tController.Visualizer.GameObjectProxy.transform.position;
+        // Move, rotate, and scale model
+        radialMenuModelParent.transform.position = controllerPosition + (Vector3.up * 0.1f);
+        radialMenuModelParent.transform.LookAt(Camera.main.transform.position);
+        radialMenuModelParent.transform.localEulerAngles = radialMenuModelParent.transform.localEulerAngles + new Vector3(-90, 0, 180);
+        radialMenuModelParent.transform.localScale = Vector3.one * 0.15f;
+    }
+
+    // Handles the active state of the radial menu model
+    Vector2 vrTimeout = Vector2.one * 0.1f;
+    void VR_TimeoutMenu()
+    {
+        // Check if we are in debug mode
+        if (allowDebugInputs)
+            return;
+
+        // Check if the trackpad is being touched
+        if (inputPosition != Vector2.zero)
+        {
+            VR_PositionMenu(true);
+            radialMenuModelParent.SetActive(true);
+            vrTimeout.x = vrTimeout.y;
+            return;
+        }
+        // Check if the menu has timed out
+        if(vrTimeout.x < 0)
+        {
+            radialMenuModelParent.SetActive(false);
+            vrTimeout.x = 0;
+            controllerSourceId = 0;
+            return;
+        }
+        else if(vrTimeout.x == 0)
+        {
+            return;
+        }
+
+        // Reduce the vrTimeout
+        vrTimeout.x -= Time.deltaTime;
     }
 
     // Resets input variables for the menu
