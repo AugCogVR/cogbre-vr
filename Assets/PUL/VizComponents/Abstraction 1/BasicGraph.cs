@@ -48,8 +48,8 @@ namespace PUL
 
             // Attach line renderer
             LineRenderer lineRenderer = graphEdge.AddComponent<LineRenderer>();
-            lineRenderer.startWidth = 0.01f;
-            lineRenderer.endWidth = 0.01f;
+            lineRenderer.startWidth = 0.005f;
+            lineRenderer.endWidth = 0.005f;
             // This is apparently the new location for the "default-line" material per some rando on the internet
             lineRenderer.material = new Material(Shader.Find("Legacy Shaders/Particles/Alpha Blended Premultiply"));
 

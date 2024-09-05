@@ -338,6 +338,7 @@ public class RadialMenuHandler : MonoBehaviour
         return count;
     }
     // This is used to build the test version of the menu. For debugging purposes
+    #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         Vector3 menuPosition = new Vector3(transform.position.x, 10, transform.position.z);
@@ -377,4 +378,5 @@ public class RadialMenuHandler : MonoBehaviour
 
         Handles.Label(menuPosition, $"Rotation: {cursorRotation}\nHovered: {menuOptions[hoveredOption].title}", tStyle);
     }
+    #endif
 }
