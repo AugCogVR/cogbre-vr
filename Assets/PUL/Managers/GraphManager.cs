@@ -102,7 +102,12 @@ namespace PUL
                 GameObject graphNode = Instantiate(graphNodePrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
                 TextMeshPro nodeTitleTMP = graphNode.transform.Find("TextBar/TextTMP").gameObject.GetComponent<TextMeshPro>();
                 nodeTitleTMP.text = function.name;
-
+                graphNode.GetComponent<CapaFlags>().flags = function.capaList;
+                if(function.capaList.Count > 0)
+                {
+                    
+                    graphNode.GetComponent<CapaFlags>().functionCube.GetComponent<Renderer>().material.color = Color.gray;
+                }
                 // Wire up selection button
                 GameObject selectionButton = graphNode.transform.Find("FunctionSelectButton").gameObject;
                 PressableButtonHoloLens2 buttonFunction = selectionButton.GetComponent<PressableButtonHoloLens2>();
