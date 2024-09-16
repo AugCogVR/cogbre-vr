@@ -28,7 +28,7 @@ public class CapaFlags : MonoBehaviour
                 flagObjects[2].SetActive(true);
                 return;
             }
-            else if (count > 15 && count < 21)
+            else if (count > 15)
             {
                 flagObjects[3].SetActive(true);
                 return;
