@@ -576,14 +576,14 @@ namespace PUL
             contentTMP.rectTransform.sizeDelta = new Vector2(contentTMP.rectTransform.sizeDelta.x, contentSize);
 
             // Write to capa output
-            FunctionCapaOutput(function, slate);
+            //FunctionCapaOutput(function, slate); -- REMOVED REFERENCE. Replacing this with a reference to the graph handle of the Call Graph, where CAPA is more applicable. 
 
             unsetBusy();
         }
 
         // Outputs the capa_results call to a slate, used for better visualization of the data we are working with
         // -> Just using void right now while in the testing phases
-        void FunctionCapaOutput(OxideFunction function, GameObject tooltipParent)
+        void FunctionCapaOutput(OxideFunction function, GameObject CurrentSlate)
         {
             // Check to see if a slate should be made
             if (function.capaList.Count <= 0)
@@ -597,7 +597,7 @@ namespace PUL
                 contents += capaOut;
 
             // Make a new tooltip
-            GameObject tooltip = makeAToolTip("Capa Results", contents, tooltipParent);
+            GameObject Slate = makeASlate("Capa Results", contents);
         }
 
         public async void FunctionDecompilationButtonCallback()

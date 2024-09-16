@@ -108,6 +108,7 @@ namespace PUL
                     
                     graphNode.GetComponent<CapaFlags>().functionCube.GetComponent<Renderer>().material.color = Color.gray;
                 }
+                graphNode.GetComponent<CapaFlags>().AssignFlagGameObject();
                 // Wire up selection button
                 GameObject selectionButton = graphNode.transform.Find("FunctionSelectButton").gameObject;
                 PressableButtonHoloLens2 buttonFunction = selectionButton.GetComponent<PressableButtonHoloLens2>();
