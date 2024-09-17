@@ -14,6 +14,7 @@ namespace PUL
         // NOTE: These values are wired up in the Unity Editor -> Graph Manager object
 
         public GameManager gameManager;
+        public float graphHandleScale = 1f;
 
         // END: These values are wired up in the Unity Editor -> Menu Manager object
         // ====================================
@@ -152,6 +153,9 @@ namespace PUL
                                                          graphHandle.transform.position.y + 100f,
                                                          graphHandle.transform.position.z);
 
+            // Scale the graph
+            graphHandle.transform.localScale = Vector3.one * graphHandleScale;
+
             // Assume this action to build the graph originated from a menu call,
             // so signal its completion. 
             gameManager.menuManager.unsetBusy();
@@ -227,6 +231,9 @@ namespace PUL
             graphHandle.transform.position = new Vector3(graphHandle.transform.position.x,
                                                          graphHandle.transform.position.y + 100f,
                                                          graphHandle.transform.position.z);
+
+            // Scale the graph
+            graphHandle.transform.localScale = Vector3.one * graphHandleScale;
 
             // Assume this action to build the graph originated from a menu call,
             // so signal its completion. 
@@ -322,6 +329,9 @@ namespace PUL
             graphHandle.transform.position = new Vector3(graphHandle.transform.position.x,
                                                          graphHandle.transform.position.y + 100f,
                                                          graphHandle.transform.position.z);
+
+            // Scale the graph
+            graphHandle.transform.localScale = Vector3.one * graphHandleScale;
 
             // Assume this action to build the graph originated from a menu call,
             // so signal its completion. 
