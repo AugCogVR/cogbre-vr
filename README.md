@@ -10,6 +10,8 @@ This is a Unity-based front-end to provide an immersive and egocentric experienc
 
 https://github.com/AugCogVR/cogbre-vr/assets/47375670/48e72e8d-ccbe-4ea5-a3ac-bf2c7f67b8ab
 
+[![Video](https://img.youtube.com/vi/1WJEy9Earzw/maxresdefault.jpg)](https://www.youtube.com/watch?v=1WJEy9Earzw)
+
 Built and tested with the Unity 2021.3.4f1 LTS editor.
 
 # Getting Started
