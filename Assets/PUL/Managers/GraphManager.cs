@@ -104,12 +104,19 @@ namespace PUL
                 TextMeshPro nodeTitleTMP = graphNode.transform.Find("TextBar/TextTMP").gameObject.GetComponent<TextMeshPro>();
                 nodeTitleTMP.text = function.name;
                 graphNode.GetComponent<CapaFlags>().flags = function.capaList;
-                if(function.capaList.Count > 0)
-                {
-                    
-                    graphNode.GetComponent<CapaFlags>().functionCube.GetComponent<Renderer>().material.color = Color.gray;
+                if (function.capaList != null)
+                { 
+                    if (function.capaList.Count > 0)
+                    {           
+                        graphNode.GetComponent<CapaFlags>().functionCube.GetComponent<Renderer>().material.color = Color.gray;
+                    }
+                    graphNode.GetComponent<CapaFlags>().AssignFlagGameObject();
                 }
-                graphNode.GetComponent<CapaFlags>().AssignFlagGameObject();
+                else
+                {
+                    Debug.Log($"BuildBinaryCallGraphCoroutine: capaList null!");
+                }
+                
                 // Wire up selection button
                 GameObject selectionButton = graphNode.transform.Find("FunctionSelectButton").gameObject;
                 PressableButtonHoloLens2 buttonFunction = selectionButton.GetComponent<PressableButtonHoloLens2>();
