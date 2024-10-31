@@ -138,6 +138,7 @@ namespace PUL
             {
                 // Log any exceptions that occur during the request
                 Debug.LogError("Exception during NexusSyncTask: " + e.Message);
+
                 return null; // Return null or an empty string as a default value on error
             }
         } 

@@ -157,6 +157,9 @@ namespace PUL
             Interactable distanceInteract = copyButton.GetComponent<Interactable>();
             distanceInteract.OnClick.AddListener(() => GameManager.textManager.TextCopyCallback(dynamicScrollbarHandler));
 
+            // Log slate to GameManager
+            GameManager.Instance.AddSlate(slate);
+
             return slate;
         }
 

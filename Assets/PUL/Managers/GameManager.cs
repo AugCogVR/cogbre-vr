@@ -1,6 +1,7 @@
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Experimental.UI;
 using TMPro;
+using System.Collections.Generic;
 
 namespace PUL
 {
@@ -51,6 +52,10 @@ namespace PUL
         public float keyboardScale = 0.2f;
         public float keyboardVertOffset = -1;
         TMP_InputField kbInputField = null;
+
+        [Header("Slate Logging")]
+        public List<SlateData> activeSlates = new List<SlateData>(); // I later want this to be a list of a unique class structure, with gameobject as an element.
+        public float slatePadding = 0.6f;
 
         private void Awake()
         {
@@ -107,6 +112,61 @@ namespace PUL
             keyboard.PresentKeyboard();
             keyboard.RepositionKeyboard(Camera.main.transform.position + (Camera.main.transform.forward * keyboardDist) + (Vector3.down * keyboardVertOffset));
             keyboard.transform.localScale = Vector3.one * keyboardScale;
+        }
+
+        // Add a default slate to the log
+        public void AddSlate(GameObject obj)
+        {
+            // Create a new slate
+            SlateData sd = new SlateData(obj);
+            activeSlates.Add(sd);
+        }
+        // Add a slate to the log
+        public void AddSlate(SlateData sd)
+        {
+            // Create a new slate
+            activeSlates.Add(sd);
+        }
+
+
+
+        // Removes a slate from the log using the object
+        public void RemoveSlate(GameObject obj)
+        {
+            for (int i = 0; i < activeSlates.Count; i++)
+            {
+                if (activeSlates[i].obj.Equals(obj))
+                {
+                    activeSlates.RemoveAt(i);
+                    return;
+                }
+            }
+            Debug.LogError($"GameManager - RemoveSlate(obj) -> No object found matching {obj.name}");
+        }
+        // Removes a slate from the log using the Name
+        public void RemoveSlate(string name)
+        {
+            for (int i = 0; i < activeSlates.Count; i++)
+            {
+                if (activeSlates[i].name.ToLower().Equals(name.ToLower()))
+                {
+                    activeSlates.RemoveAt(i);
+                    return;
+                }
+            }
+            Debug.LogError($"GameManager - RemoveSlate(obj) -> No name found matching {name}");
+        }
+
+
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.magenta;
+            // Draw a circle around each slate, shows padding
+            foreach (SlateData slate in activeSlates)
+            {
+                Gizmos.DrawWireSphere(slate.GetSphereCenter(), slate.radius);
+            }
         }
     }
 }
