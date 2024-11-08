@@ -31,7 +31,9 @@ namespace PUL
 
         public int pacingCounter; // braindead dumb mechanism to throttle polling
 
-        private string userId;
+        private string userId; // auto-generated GUID
+
+        private string userName; // human-readable, can be artbitrarily changed
 
         public OxideData oxideData;
 
@@ -39,7 +41,8 @@ namespace PUL
         void Awake()
         {
             pacingCounter = 0;
-            userId = "default"; // TO DO: allow for multiple user IDs when we have multiple users!
+            userId = Guid.NewGuid().ToString("N");
+            userName = "default";
         }
 
         // Start is called before the first frame update
@@ -101,7 +104,7 @@ namespace PUL
         {
             Vector3 headpos = Camera.main.transform.position;
             // Vector3 headrot = Camera.main.transform.rotation.eulerAngles;
-            string response = await NexusSyncTask($"[\"session_update\", \"headpos\", \"{headpos.x}\", \"{headpos.y}\", \"{headpos.z}\"]");
+            string response = await NexusSyncTask($"[\"session_update\", \"object\", \"head\", \"{headpos.x}\", \"{headpos.y}\", \"{headpos.z}\"]");
         }
 
         // Create and async Task to call the Nexus API and return the response
