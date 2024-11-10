@@ -27,13 +27,7 @@ namespace PUL
 
         public List<string> ignoreCollection = new List<string>(); // List of collection names to ignore when booting. Debugging tool used to exempt big collections early in development
 
-
-
         public int pacingCounter; // braindead dumb mechanism to throttle polling
-
-        private string userId; // auto-generated GUID
-
-        private string userName; // human-readable, can be artbitrarily changed
 
         public OxideData oxideData;
 
@@ -41,8 +35,6 @@ namespace PUL
         void Awake()
         {
             pacingCounter = 0;
-            userId = Guid.NewGuid().ToString("N");
-            userName = "default";
         }
 
         // Start is called before the first frame update
@@ -117,7 +109,7 @@ namespace PUL
                 request.ContentType = "application/json";
                 request.Method = "POST";
                 StreamWriter writer = new StreamWriter(await request.GetRequestStreamAsync());
-                string jsonRequest = "{\"userId\":\"" + userId + "\", \"command\":" + command + "}";
+                string jsonRequest = "{\"userId\":\"" + gameManager.configManager.userId + "\", \"command\":" + command + "}";
                 writer.Write(jsonRequest);
                 writer.Close();
 

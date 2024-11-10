@@ -21,6 +21,8 @@ namespace PUL
 
         public TextManager textManager;
 
+        public ConfigManager configManager;
+
         // END: These values are wired up in the Unity Editor -> Game Manager object
         // ====================================
         
