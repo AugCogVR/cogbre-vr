@@ -105,7 +105,7 @@ namespace PUL
             try
             {
                 // TO DO: fix hardcoded IP address
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:5000/sync_portal");
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:5000/client_sync");
                 request.ContentType = "application/json";
                 request.Method = "POST";
                 StreamWriter writer = new StreamWriter(await request.GetRequestStreamAsync());
