@@ -59,8 +59,9 @@ namespace PUL
         public async void NexusSessionInit()
         {
             Debug.Log("Nexus Session Init is Running!");
-            string sessionInitResult = await NexusSyncTask("[\"session_init\"]");
-
+            string configJsonString = JsonConvert.SerializeObject(gameManager.configManager.settings);
+            string sessionInitResult = await NexusSyncTask($"[\"session_init\", {configJsonString}]");
+            
             // Retrieve collection info
             string collectionNames = await NexusSyncTask("[\"oxide_collection_names\"]");
             // Store found CIDS in a temporary list then parse into OxideCollection type
@@ -96,7 +97,25 @@ namespace PUL
         {
             Vector3 headpos = Camera.main.transform.position;
             // Vector3 headrot = Camera.main.transform.rotation.eulerAngles;
-            string response = await NexusSyncTask($"[\"session_update\", \"object\", \"head\", \"{headpos.x}\", \"{headpos.y}\", \"{headpos.z}\"]");
+            string responseJson = await NexusSyncTask($"[\"session_update\", \"object\", \"head\", \"{headpos.x}\", \"{headpos.y}\", \"{headpos.z}\"]");
+            JsonData responseJsonData = JsonMapper.ToObject(responseJson);
+            // Check if the session update returned an updated configuration
+            try
+            {
+                JsonData configJsonData = responseJsonData["config_update"];
+                // Copy the config values into the configManager
+                foreach (KeyValuePair<string, JsonData> item in configJsonData)
+                {
+                    gameManager.configManager.settings[item.Key] = (string)item.Value;
+                    Debug.Log("NEW CONFIG: set " + item.Key + " to " + (string)item.Value);
+                }
+            }
+            catch (Exception e)
+            {
+                // Fail silently; assume JSON with key "config_update" was not returned.
+                // Newer versions of LitJson include "ContainsKey()" so we could check for the key
+                // instead of try...catch but we have an old version that Viveport depends on.
+            }
         }
 
         // Create and async Task to call the Nexus API and return the response
@@ -110,6 +129,7 @@ namespace PUL
                 request.Method = "POST";
                 StreamWriter writer = new StreamWriter(await request.GetRequestStreamAsync());
                 string jsonRequest = "{\"userId\":\"" + gameManager.configManager.userId + "\", \"command\":" + command + "}";
+                // Debug.Log("JSON REQUEST: " + jsonRequest);
                 writer.Write(jsonRequest);
                 writer.Close();
 

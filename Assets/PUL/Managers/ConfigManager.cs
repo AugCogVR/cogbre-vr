@@ -24,12 +24,15 @@ namespace PUL
 
         public string userName; // human-readable, can be artbitrarily changed
 
+        public Dictionary<string, string> settings;
 
         // Awake is called during initialization and before Start 
         void Awake()
         {
             userId = Guid.NewGuid().ToString("N");
             userName = "default";
+            settings = new Dictionary<string, string>();
+            settings["mode"] = "default";
         }
 
         // Start is called after initialization but before the first frame update
