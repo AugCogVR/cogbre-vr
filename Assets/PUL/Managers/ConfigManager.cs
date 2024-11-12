@@ -20,7 +20,7 @@ namespace PUL
         // END: These values are wired up in the Unity Editor -> Menu Manager object
         // ====================================
 
-        public string userId; // auto-generated GUID
+        public string sessionId; // auto-generated GUID
 
         // public string userName; // human-readable, can be artbitrarily changed
 
@@ -29,8 +29,7 @@ namespace PUL
         // Awake is called during initialization and before Start 
         void Awake()
         {
-            userId = Guid.NewGuid().ToString("N");
-            // userName = "default";
+            sessionId = Guid.NewGuid().ToString("N");
             settings = new Dictionary<string, string>();
             settings["sessionName"] = "unset";
             settings["mode"] = "default";

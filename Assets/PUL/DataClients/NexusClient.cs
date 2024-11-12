@@ -128,7 +128,7 @@ namespace PUL
                 request.ContentType = "application/json";
                 request.Method = "POST";
                 StreamWriter writer = new StreamWriter(await request.GetRequestStreamAsync());
-                string jsonRequest = "{\"userId\":\"" + gameManager.configManager.userId + "\", \"command\":" + command + "}";
+                string jsonRequest = "{\"sessionId\":\"" + gameManager.configManager.sessionId + "\", \"command\":" + command + "}";
                 // Debug.Log("JSON REQUEST: " + jsonRequest);
                 writer.Write(jsonRequest);
                 writer.Close();
