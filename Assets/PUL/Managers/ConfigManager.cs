@@ -22,7 +22,7 @@ namespace PUL
 
         public string userId; // auto-generated GUID
 
-        public string userName; // human-readable, can be artbitrarily changed
+        // public string userName; // human-readable, can be artbitrarily changed
 
         public Dictionary<string, string> settings;
 
@@ -30,8 +30,9 @@ namespace PUL
         void Awake()
         {
             userId = Guid.NewGuid().ToString("N");
-            userName = "default";
+            // userName = "default";
             settings = new Dictionary<string, string>();
+            settings["sessionName"] = "unset";
             settings["mode"] = "default";
         }
 
