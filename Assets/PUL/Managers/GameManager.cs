@@ -58,6 +58,8 @@ namespace PUL
         [Header("Slate Logging")]
         public List<SlateData> activeSlates = new List<SlateData>(); // I later want this to be a list of a unique class structure, with gameobject as an element.
         public float slatePadding = 0.6f;
+        public float slateSpawnZone = 1; // Marks the region in which physic simulation is allowed for slates. 
+        public bool simulatingMovement = false;
 
         private void Awake()
         {
@@ -93,6 +95,9 @@ namespace PUL
             // Not the most elegant solution but it gets the job done... -L
             spawnPoint.transform.LookAt(Camera.main.transform.position);
             spawnPoint.transform.Rotate(Vector3.up * 180);
+
+            if(simulatingMovement)
+                SimulateSlateMovement();
         }
 
         // Return the position of the spawn point.
@@ -116,18 +121,61 @@ namespace PUL
             keyboard.transform.localScale = Vector3.one * keyboardScale;
         }
 
+
         // Add a default slate to the log
         public void AddSlate(GameObject obj)
         {
             // Create a new slate
             SlateData sd = new SlateData(obj);
-            activeSlates.Add(sd);
+            AddSlate(sd);
         }
         // Add a slate to the log
         public void AddSlate(SlateData sd)
         {
             // Create a new slate
             activeSlates.Add(sd);
+
+            // Flag slates that need to be moved for spawning
+            Vector3 center = sd.GetSphereCenter();
+            sd.simulateMovement = true;
+
+            foreach(SlateData slate in activeSlates)
+            {
+                // Check distance from center, if close enough flag for movement
+                if(Vector3.Distance(center, slate.GetSphereCenter()) < slateSpawnZone)
+                {
+                    slate.simulateMovement = true;
+                }
+            }
+
+            // Simulate movement
+            simulatingMovement = true;
+        }
+
+        private bool CheckSimulationState()
+        {
+            foreach (SlateData slate in activeSlates)
+            {
+                if (slate.simulateMovement)
+                    return true;
+            }
+            return false;
+        }
+        private void SimulateSlateMovement()
+        {
+            // Simulate movement
+
+            foreach (SlateData slate in activeSlates)
+            {
+                if(slate.simulateMovement)
+                    foreach (SlateData otherSlate in activeSlates)
+                    {
+                        slate.SimulateCollision(otherSlate);
+                    }
+            }
+
+            // Check if simulation is done
+            simulatingMovement = CheckSimulationState();
         }
 
 
