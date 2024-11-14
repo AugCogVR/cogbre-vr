@@ -2,6 +2,7 @@ using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Experimental.UI;
 using TMPro;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace PUL
 {
@@ -207,6 +208,12 @@ namespace PUL
             Debug.LogError($"GameManager - RemoveSlate(obj) -> No name found matching {name}");
         }
 
+        // Starts a coroutine on the gameManager
+        // - This ensures that any routine can't be cut off by objects being set to inactive.
+        public void StartPersistentCoroutine(IEnumerator routine)
+        {
+            StartCoroutine(routine);
+        }
 
 
         private void OnDrawGizmos()

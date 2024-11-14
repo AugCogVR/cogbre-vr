@@ -678,6 +678,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5261665329594824137, guid: f7848356a597b9147bb2a12c168d95fe, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5291722570907344726, guid: f7848356a597b9147bb2a12c168d95fe, type: 3}
       propertyPath: m_VerticalScrollbar
       value: 
@@ -749,6 +753,10 @@ PrefabInstance:
     - target: {fileID: 7238801519295131563, guid: f7848356a597b9147bb2a12c168d95fe, type: 3}
       propertyPath: m_Name
       value: Notepad Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 8187695943577709516, guid: f7848356a597b9147bb2a12c168d95fe, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8500370577710674441, guid: f7848356a597b9147bb2a12c168d95fe, type: 3}
       propertyPath: m_text
