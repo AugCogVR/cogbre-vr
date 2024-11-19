@@ -22,8 +22,6 @@ namespace PUL
 
         public string sessionId; // auto-generated GUID
 
-        // public string userName; // human-readable, can be artbitrarily changed
-
         public Dictionary<string, string> settings;
 
         // Awake is called during initialization and before Start 
@@ -33,6 +31,17 @@ namespace PUL
             settings = new Dictionary<string, string>();
             settings["sessionName"] = "unset";
             settings["mode"] = "default";
+
+            settings["call_graphs"] = "enabled"; // AFFORDANCE: Spatial semantics
+
+            settings["call_graph_select_buttons"] = "enabled"; // AFFORDANCE: Incremental formalism
+
+            settings["graphs_move"] = "enabled"; // AFFORDANCES: Persistence (spatial memory) and user organization
+            settings["slates_move"] = "enabled"; // AFFORDANCES: Persistence (spatial memory) and user organization
+
+            settings["notepad"] = "enabled"; // AFFORDANCE: Note taking
+
+            settings["graph_signals"] = "enabled"; // AFFORDANCE: Signalling
         }
 
         // Start is called after initialization but before the first frame update
