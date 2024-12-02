@@ -95,10 +95,10 @@ namespace PUL
         // Update this user's activity in the Nexus. Should be called periodically.
         private async void NexusSessionUpdate()
         {
-            Vector3 headpos = Camera.main.transform.position;
-            // Vector3 headrot = Camera.main.transform.rotation.eulerAngles;
-            string responseJson = await NexusSyncTask($"[\"session_update\", \"object\", \"head\", \"{headpos.x}\", \"{headpos.y}\", \"{headpos.z}\"]");
+            // Send telemetry to Nexus and await response
+            string responseJson = await NexusSyncTask(CreateTelemetryJson());
             JsonData responseJsonData = JsonMapper.ToObject(responseJson);
+
             // Check if the session update returned an updated configuration
             try
             {
@@ -112,10 +112,25 @@ namespace PUL
             }
             catch (Exception e)
             {
-                // Fail silently; assume JSON with key "config_update" was not returned.
-                // Newer versions of LitJson include "ContainsKey()" so we could check for the key
-                // instead of try...catch but we have an old version that Viveport depends on.
+                // Fail silently; assume JSON was missing key "config_update" and do nothing further.
+                // Newer versions of LitJson include "ContainsKey()" that we could use to check for 
+                // the key instead of doing this try...catch dance, but we have an old 
+                // version of LitJson that Viveport depends on.
             }
+        }
+
+        // Collect telemetry from environment objects into a Json string
+        private string CreateTelemetryJson()
+        {
+            string jsonString = "";
+
+            // Ref: https://learn.microsoft.com/en-us/windows/mixed-reality/mrtk-unity/mrtk2/features/input/input-state?view=mrtkunity-2022-05
+
+            Vector3 headpos = Camera.main.transform.position;
+            // Vector3 headrot = Camera.main.transform.rotation.eulerAngles;
+            jsonString += $"[\"session_update\", \"object\", \"head\", \"{headpos.x}\", \"{headpos.y}\", \"{headpos.z}\"]";
+
+            return jsonString;
         }
 
         // Create and async Task to call the Nexus API and return the response
