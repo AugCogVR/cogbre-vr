@@ -130,6 +130,10 @@ namespace PUL
             // Vector3 headrot = Camera.main.transform.rotation.eulerAngles;
             jsonString += $"[\"session_update\", \"object\", \"head\", \"{headpos.x}\", \"{headpos.y}\", \"{headpos.z}\"]";
 
+            // TO DO: Create method in ControllerManager to get the telemetry data we need.
+            // No need to put MRTK-controller-specific code in the NexusClient!
+            // IMixedRealityController controller = gameManager.controllerManager.GetController(2);
+
             return jsonString;
         }
 
