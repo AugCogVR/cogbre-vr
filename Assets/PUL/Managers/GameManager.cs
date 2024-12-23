@@ -1,5 +1,7 @@
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Experimental.UI;
+using Microsoft.MixedReality.Toolkit.Input;
+using Microsoft.MixedReality.Toolkit.Utilities;
 using TMPro;
 using System.Collections.Generic;
 using System.Collections;
@@ -226,6 +228,44 @@ namespace PUL
             {
                 Gizmos.DrawWireSphere(slate.GetSphereCenter(), slate.radius);
             }
+        }
+
+
+
+        private string getJSONFragmentForIdPosAndDir(string id, Vector3 pos, Vector3 dir)
+        {
+            string returnMe = "";
+            returnMe += $"\"objectTelemmetry\", \"{id}\",";
+            returnMe += $"\"{pos.x}\", \"{pos.y}\", \"{pos.z}\", ";
+            returnMe += $"\"{dir.x}\", \"{dir.y}\", \"{dir.z}\"";
+            return returnMe;
+        }
+
+        public string GetAllTelemetryJSON()
+        {
+            string returnMe = $"[\"session_update\", ";
+
+            // ref: https://learn.microsoft.com/en-us/windows/mixed-reality/mrtk-unity/mrtk2/features/input/input-state?view=mrtkunity-2022-05
+
+            UnityEngine.Ray headRay = InputRayUtils.GetHeadGazeRay();
+            returnMe += getJSONFragmentForIdPosAndDir("head", headRay.origin, headRay.direction);
+
+            // Get the right hand ray
+            if (InputRayUtils.TryGetHandRay(Handedness.Right, out UnityEngine.Ray rightHandRay))
+            {
+                returnMe += ", " + getJSONFragmentForIdPosAndDir("rhand", rightHandRay.origin, rightHandRay.direction);
+            }
+
+            // Get the left hand ray
+            if (InputRayUtils.TryGetHandRay(Handedness.Left, out UnityEngine.Ray leftHandRay))
+            {
+                returnMe += ", " + getJSONFragmentForIdPosAndDir("lhand", leftHandRay.origin, leftHandRay.direction);
+            }
+
+            returnMe += "]";
+            // Debug.Log("TELEMMETRY: " + returnMe);
+
+            return returnMe;
         }
     }
 }

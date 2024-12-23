@@ -96,7 +96,7 @@ namespace PUL
         private async void NexusSessionUpdate()
         {
             // Send telemetry to Nexus and await response
-            string responseJson = await NexusSyncTask(CreateTelemetryJson());
+            string responseJson = await NexusSyncTask(gameManager.GetAllTelemetryJSON());
             JsonData responseJsonData = JsonMapper.ToObject(responseJson);
 
             // Check if the session update returned an updated configuration
@@ -117,20 +117,6 @@ namespace PUL
                 // the key instead of doing this try...catch dance, but we have an old 
                 // version of LitJson that Viveport depends on.
             }
-        }
-
-        // Collect telemetry from environment objects into a Json string
-        private string CreateTelemetryJson()
-        {
-            string jsonString = "";
-
-            Vector3 headpos = Camera.main.transform.position;
-            // Vector3 headrot = Camera.main.transform.rotation.eulerAngles;
-            jsonString += $"[\"session_update\", \"object\", \"head\", \"{headpos.x}\", \"{headpos.y}\", \"{headpos.z}\"]";
-
-            string junk = gameManager.controllerManager.GetAllControllerTelemetryJSON();
-
-            return jsonString;
         }
 
         // Create and async Task to call the Nexus API and return the response
