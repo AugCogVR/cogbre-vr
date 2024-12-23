@@ -91,7 +91,8 @@ namespace PUL
             spawnPoint.transform.localPosition = new Vector3(0.9f, 0.25f, 0);
 
             // Start out looking at the menu -- very convenient for testing -- yell at me if it breaks things -- DGB
-            Camera.main.transform.position = new Vector3(-7f, 2f, -1.5f);
+            // Camera.main.transform.position = new Vector3(-7f, 2f, -1.5f);
+            Camera.main.transform.position = new Vector3(0f, 1.5f, 0f);
         }
 
         // Update is called once per frame
