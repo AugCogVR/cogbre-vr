@@ -139,7 +139,7 @@ public class ControllerManager : MonoBehaviour, IMixedRealitySourceStateHandler,
         // Only react to Controller input sources
         if (hand != null)
         {
-            Debug.Log("Source detected: " + hand.ControllerHandedness + $"  ({hand}) [{hand.InputSource.SourceName}] || ID: {eventData.InputSource.SourceId}");
+            // Debug.Log("Source detected: " + hand.ControllerHandedness + $"  ({hand}) [{hand.InputSource.SourceName}] || ID: {eventData.InputSource.SourceId}");
             connectedControllers.Add(eventData.InputSource.SourceId, hand);
         }
     }
@@ -150,7 +150,7 @@ public class ControllerManager : MonoBehaviour, IMixedRealitySourceStateHandler,
         // Only react to Controller input sources
         if (hand != null)
         {
-            Debug.Log("Source lost: " + hand.ControllerHandedness + $"  ({hand})");
+            // Debug.Log("Source lost: " + hand.ControllerHandedness + $"  ({hand})");
             connectedControllers.Remove(eventData.InputSource.SourceId);
         }
     }
@@ -160,7 +160,7 @@ public class ControllerManager : MonoBehaviour, IMixedRealitySourceStateHandler,
     // Controls inputs from binary sources, like buttons.
     public void OnInputUp(InputEventData eventData)
     {
-        Debug.Log($"Source Input (UP): " + eventData.MixedRealityInputAction.Description);
+        // Debug.Log($"Source Input (UP): " + eventData.MixedRealityInputAction.Description);
         
         // Bind delegates
         // --> Needs to be assigned in MRTK
@@ -171,7 +171,7 @@ public class ControllerManager : MonoBehaviour, IMixedRealitySourceStateHandler,
     }
     public void OnInputDown(InputEventData eventData)
     {
-        Debug.Log($"Source Input (DOWN): {eventData.MixedRealityInputAction.Description} || ID: {eventData.InputSource.SourceId}");
+        // Debug.Log($"Source Input (DOWN): {eventData.MixedRealityInputAction.Description} || ID: {eventData.InputSource.SourceId}");
 
         // Bind delegates
         // -> Trigger Pressed 
@@ -195,7 +195,7 @@ public class ControllerManager : MonoBehaviour, IMixedRealitySourceStateHandler,
     // -> Trigger
     public void OnInputChanged(InputEventData<float> eventData)
     {
-        Debug.Log("Source Input (CHANGED): " + eventData.MixedRealityInputAction.Description + $" ({eventData.InputData})");
+        // Debug.Log("Source Input (CHANGED): " + eventData.MixedRealityInputAction.Description + $" ({eventData.InputData})");
 
         // Bind delegates
         // -> Trigger Changed
@@ -209,7 +209,7 @@ public class ControllerManager : MonoBehaviour, IMixedRealitySourceStateHandler,
     // -> Touchpad
     public void OnInputChanged(InputEventData<Vector2> eventData)
     {
-        Debug.Log("Source Input (CHANGED): " + eventData.MixedRealityInputAction.Description + $" ({eventData.InputData})");
+        // Debug.Log("Source Input (CHANGED): " + eventData.MixedRealityInputAction.Description + $" ({eventData.InputData})");
 
         // Bind delegates
         // -> Touchpad Changed
