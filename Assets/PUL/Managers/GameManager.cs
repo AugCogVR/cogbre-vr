@@ -236,7 +236,7 @@ namespace PUL
         private string getJSONFragmentForIdPosAndDir(string id, Vector3 pos, Vector3 dir)
         {
             string returnMe = "";
-            returnMe += $"\"objectTelemmetry\", \"{id}\",";
+            returnMe += $"\"{id}\",";
             returnMe += $"\"{pos.x}\", \"{pos.y}\", \"{pos.z}\", ";
             returnMe += $"\"{dir.x}\", \"{dir.y}\", \"{dir.z}\"";
             return returnMe;
@@ -244,7 +244,7 @@ namespace PUL
 
         public string GetAllTelemetryJSON()
         {
-            string returnMe = $"[\"session_update\", ";
+            string returnMe = $"[\"session_update\", \"objectTelemmetry\", ";
 
             // ref: https://learn.microsoft.com/en-us/windows/mixed-reality/mrtk-unity/mrtk2/features/input/input-state?view=mrtkunity-2022-05
 
