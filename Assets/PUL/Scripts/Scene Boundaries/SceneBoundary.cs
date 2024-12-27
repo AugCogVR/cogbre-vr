@@ -14,7 +14,8 @@ public class SceneBoundary : MonoBehaviour
 
     public void Update()
     {
-        foreach (SlateData slate in GameManager.Instance.activeSlates)
+        // TODO: Move to SlateManager
+        foreach (SlateData slate in GameManager.Instance.slateManager.activeSlates)
         {
             CorrectSlate(slate);
         }
@@ -22,6 +23,7 @@ public class SceneBoundary : MonoBehaviour
 
 
     // Corrects slate positions
+    // TODO: Move to SlateManager
     private void CorrectSlate(SlateData slate)
     {
         if (InBounds(slate)) return;
@@ -31,6 +33,7 @@ public class SceneBoundary : MonoBehaviour
     }
     
     // Checks if the object is in any bound listed in scene bounds
+    // TODO: Move to SlateManager
     private bool InBounds(SlateData slate)
     {
         GameObject obj = slate.obj;

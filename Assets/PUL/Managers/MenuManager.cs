@@ -3,8 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
-using Microsoft.MixedReality.Toolkit.Utilities;
 using TMPro;
+using Microsoft.MixedReality.Toolkit.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
 using static Microsoft.MixedReality.Toolkit.Experimental.UI.KeyboardKeyFunc;
 
@@ -55,17 +55,11 @@ namespace PUL
 
         public GameObject ObjectButtonPrefab;
 
-        // The Slate prefeb we instantiate for function disassembly
-        public GameObject slatePrefab;
-
         // The Tooltip prefeb we instantiate for function disassembly
         public GameObject tooltipPrefab;
 
         // The UI panel
         public GameObject UIPanel;
-
-        //refers to the graph manager
-        // public SpatialGraphManager graphManager;
 
         // END: These values are wired up in the Unity Editor -> Menu Manager object
         // ====================================
@@ -126,41 +120,6 @@ namespace PUL
         {
             statusText.text = defaultStatusText;
             isBusy = false;
-        }
-
-        // Helper function to make a slate with common characteristics. 
-        private GameObject makeASlate(string title, string contents)
-        {
-            // Make a new slate
-            GameObject slate = Instantiate(slatePrefab, GameManager.getSpawnPosition(), GameManager.getSpawnRotation());
-            // slateList.Add(slate);
-            TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
-            titleBarTMP.text = title;
-
-            // Grab the content TMP
-            TextMeshProUGUI contentTMP = slate.GetComponentInChildren<TextMeshProUGUI>();
-            contentTMP.text = "";
-
-            // -> Pulls and Sets information regarding the input field
-            // Used for highlighting
-            TMP_InputField inField = contentTMP.GetComponent<TMP_InputField>();
-            inField.text = contentTMP.text;
-            int numLines = contents.Split('\n').Length - 1;
-            inField.text = contents;
-            contentTMP.rectTransform.sizeDelta = new Vector2(contentTMP.rectTransform.sizeDelta.x, numLines * (contentTMP.fontSize + 1.5f));
-
-            // Wire up copy button
-            DynamicScrollbarHandler dynamicScrollbarHandler = slate.GetComponentInChildren<DynamicScrollbarHandler>();
-            GameObject copyButton = slate.transform.Find("TitleBar/Buttons/CopyButton").gameObject;
-            PressableButtonHoloLens2 buttonFunction = copyButton.GetComponent<PressableButtonHoloLens2>();
-            buttonFunction.TouchBegin.AddListener(() => GameManager.textManager.TextCopyCallback(dynamicScrollbarHandler));
-            Interactable distanceInteract = copyButton.GetComponent<Interactable>();
-            distanceInteract.OnClick.AddListener(() => GameManager.textManager.TextCopyCallback(dynamicScrollbarHandler));
-
-            // Log slate to GameManager
-            GameManager.Instance.AddSlate(slate);
-
-            return slate;
         }
 
         private GameObject makeAToolTip(string title, string contents, GameObject parentSlate)
@@ -457,7 +416,7 @@ namespace PUL
             string contents = await GameManager.nexusClient.RetrieveTextForArbitraryModule("strings", selectedBinary.oid, "{}", true);
 
             // Make a new slate
-            GameObject slate = makeASlate($"Strings for {selectedBinary.name}", contents);
+            GameObject slate = GameManager.slateManager.MakeASlate($"Strings for {selectedBinary.name}", contents);
 
             unsetBusy();
         }
@@ -480,7 +439,7 @@ namespace PUL
             string contents = await GameManager.nexusClient.RetrieveTextForArbitraryModule("file_stats", selectedBinary.oid, "{}", true);
 
             // Make a new slate
-            GameObject slate = makeASlate($"File stats for {selectedBinary.name}", contents);
+            GameObject slate = GameManager.slateManager.MakeASlate($"File stats for {selectedBinary.name}", contents);
 
             unsetBusy();
         }
@@ -547,7 +506,7 @@ namespace PUL
         IEnumerator FunctionDisassemblyButtonCallbackCoroutine(OxideBinary binary, OxideFunction function)
         {
             // Make a new slate
-            GameObject slate = makeASlate($"{binary.name} / {function.name} Disassembly\n{function.signature}", "");
+            GameObject slate = GameManager.slateManager.MakeASlate($"{binary.name} / {function.name} Disassembly\n{function.signature}", "");
 
             // Grab the content TMP
             TextMeshProUGUI contentTMP = slate.GetComponentInChildren<TextMeshProUGUI>();
@@ -600,7 +559,7 @@ namespace PUL
                 contents += capaOut;
 
             // Make a new tooltip
-            GameObject Slate = makeASlate("Capa Results", contents);
+            GameObject Slate = GameManager.slateManager.MakeASlate("Capa Results", contents);
         }
 
         public async void FunctionDecompilationButtonCallback()
@@ -627,7 +586,7 @@ namespace PUL
         IEnumerator FunctionDecompilationButtonCallbackCoroutine(OxideBinary binary, OxideFunction function)
         {
             // Make a new slate
-            GameObject slate = makeASlate($"{binary.name} / {function.name} Decompilation", "");
+            GameObject slate = GameManager.slateManager.MakeASlate($"{binary.name} / {function.name} Decompilation", "");
 
             // Grab the content TMP
             TextMeshProUGUI contentTMP = slate.GetComponentInChildren<TextMeshProUGUI>();

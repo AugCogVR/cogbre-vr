@@ -45,6 +45,8 @@ namespace PUL
             GameObject graphHandlePrefab = Resources.Load("Prefabs/GraphHandle") as GameObject;
             GameObject graphHandle = Instantiate(graphHandlePrefab, gameManager.getSpawnPosition(), gameManager.getSpawnRotation());
 
+            Debug.Log($"Graph at {gameManager.getSpawnPosition()}");
+
             // Set the label
             TextMeshPro nodeTitleTMP = graphHandle.transform.Find("TextBar/TextTMP").gameObject.GetComponent<TextMeshPro>();
             nodeTitleTMP.text = labelText;

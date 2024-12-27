@@ -28,6 +28,8 @@ namespace PUL
 
         public ControllerManager controllerManager;
 
+        public SlateManager slateManager;
+
         // END: These values are wired up in the Unity Editor -> Game Manager object
         // ====================================
         
@@ -59,12 +61,6 @@ namespace PUL
         public float keyboardScale = 0.2f;
         public float keyboardVertOffset = -1;
         TMP_InputField kbInputField = null;
-
-        [Header("Slate Logging")]
-        public List<SlateData> activeSlates = new List<SlateData>(); // I later want this to be a list of a unique class structure, with gameobject as an element.
-        public float slatePadding = 0.6f;
-        public float slateSpawnZone = 1; // Marks the region in which physic simulation is allowed for slates. 
-        public bool simulatingMovement = false;
 
         private void Awake()
         {
@@ -101,9 +97,6 @@ namespace PUL
             // Not the most elegant solution but it gets the job done... -L
             spawnPoint.transform.LookAt(Camera.main.transform.position);
             spawnPoint.transform.Rotate(Vector3.up * 180);
-
-            if(simulatingMovement)
-                SimulateSlateMovement();
         }
 
         // Return the position of the spawn point.
@@ -128,109 +121,12 @@ namespace PUL
         }
 
 
-        // Add a default slate to the log
-        public void AddSlate(GameObject obj)
-        {
-            // Create a new slate
-            SlateData sd = new SlateData(obj);
-            AddSlate(sd);
-        }
-        // Add a slate to the log
-        public void AddSlate(SlateData sd)
-        {
-            // Create a new slate
-            activeSlates.Add(sd);
-
-            // Flag slates that need to be moved for spawning
-            Vector3 center = sd.GetSphereCenter();
-            sd.simulateMovement = true;
-
-            foreach(SlateData slate in activeSlates)
-            {
-                // Check distance from center, if close enough flag for movement
-                if(Vector3.Distance(center, slate.GetSphereCenter()) < slateSpawnZone)
-                {
-                    slate.simulateMovement = true;
-                }
-            }
-
-            // Simulate movement
-            simulatingMovement = true;
-        }
-
-        private bool CheckSimulationState()
-        {
-            foreach (SlateData slate in activeSlates)
-            {
-                if (slate.simulateMovement)
-                    return true;
-            }
-            return false;
-        }
-        private void SimulateSlateMovement()
-        {
-            // Simulate movement
-
-            foreach (SlateData slate in activeSlates)
-            {
-                if(slate.simulateMovement)
-                    foreach (SlateData otherSlate in activeSlates)
-                    {
-                        slate.SimulateCollision(otherSlate);
-                    }
-            }
-
-            // Check if simulation is done
-            simulatingMovement = CheckSimulationState();
-        }
-
-
-
-        // Removes a slate from the log using the object
-        public void RemoveSlate(GameObject obj)
-        {
-            for (int i = 0; i < activeSlates.Count; i++)
-            {
-                if (activeSlates[i].obj.Equals(obj))
-                {
-                    activeSlates.RemoveAt(i);
-                    return;
-                }
-            }
-            Debug.LogError($"GameManager - RemoveSlate(obj) -> No object found matching {obj.name}");
-        }
-        // Removes a slate from the log using the Name
-        public void RemoveSlate(string name)
-        {
-            for (int i = 0; i < activeSlates.Count; i++)
-            {
-                if (activeSlates[i].name.ToLower().Equals(name.ToLower()))
-                {
-                    activeSlates.RemoveAt(i);
-                    return;
-                }
-            }
-            Debug.LogError($"GameManager - RemoveSlate(obj) -> No name found matching {name}");
-        }
-
         // Starts a coroutine on the gameManager
         // - This ensures that any routine can't be cut off by objects being set to inactive.
         public void StartPersistentCoroutine(IEnumerator routine)
         {
             StartCoroutine(routine);
         }
-
-
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.magenta;
-            // Draw a circle around each slate, shows padding
-            foreach (SlateData slate in activeSlates)
-            {
-                Gizmos.DrawWireSphere(slate.GetSphereCenter(), slate.radius);
-            }
-        }
-
 
 
         private string getJSONFragmentForIdPosAndDir(string id, Vector3 pos, Vector3 dir)
@@ -242,7 +138,7 @@ namespace PUL
             return returnMe;
         }
 
-        public string GetAllTelemetryJSON()
+        public string GetUserTelemetryJSON()
         {
             string returnMe = $"[\"session_update\", \"objectTelemmetry\", ";
 

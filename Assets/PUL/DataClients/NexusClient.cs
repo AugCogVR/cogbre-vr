@@ -96,7 +96,7 @@ namespace PUL
         private async void NexusSessionUpdate()
         {
             // Send telemetry to Nexus and await response
-            string responseJson = await NexusSyncTask(gameManager.GetAllTelemetryJSON());
+            string responseJson = await NexusSyncTask(gameManager.GetUserTelemetryJSON());
             JsonData responseJsonData = JsonMapper.ToObject(responseJson);
 
             // Check if the session update returned an updated configuration
