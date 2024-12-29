@@ -351,5 +351,31 @@ namespace PUL
             for (int crap = 0; crap < 500; crap++) yield return new WaitForEndOfFrame();
             graph.StopGraph();
         }
+
+
+        public string GetGraphTelemetryJSON()
+        {
+            string returnMe = "";
+
+            if (graphList.Count > 0)
+            {
+                returnMe += $"[\"session_update\", \"objectTelemetry\"";
+
+                foreach (GameObject obj in graphList)
+                {
+                    TextMeshPro titleTMP = obj.transform.Find("TextBar/TextTMP").gameObject.GetComponent<TextMeshPro>();
+                    returnMe += $", \"graph-{titleTMP.text}\", ";
+                    Vector3 pos = obj.transform.position;
+                    returnMe += $"\"{pos.x}\", \"{pos.y}\", \"{pos.z}\", ";
+                    Vector3 ori = obj.transform.eulerAngles;
+                    returnMe += $"\"{ori.x}\", \"{ori.y}\", \"{ori.z}\"";
+                }
+
+                returnMe += "]";
+                // Debug.Log("GRAPH TELEMETRY: " + returnMe);
+            }
+
+            return returnMe;
+        }
     }
 }

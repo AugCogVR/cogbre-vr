@@ -186,7 +186,8 @@ namespace PUL
 
                 foreach (SlateData slate in activeSlates)
                 {
-                    returnMe += $", \"slate-{slate.name}\", ";
+                    TextMeshPro titleBarTMP = slate.obj.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
+                    returnMe += $", \"slate-{titleBarTMP.text}\", ";
                     Vector3 pos = slate.obj.transform.position;
                     returnMe += $"\"{pos.x}\", \"{pos.y}\", \"{pos.z}\", ";
                     Vector3 ori = slate.obj.transform.eulerAngles;

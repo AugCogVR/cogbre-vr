@@ -100,15 +100,8 @@ namespace PUL
             string slateTelemetryJSON = gameManager.slateManager.GetSlateTelemetryJSON();
             if (slateTelemetryJSON != "") NexusSessionUpdateHelper(slateTelemetryJSON);
 
-            // // Send user telemetry to Nexus, await response, and process the response
-            // string responseJson = await NexusSyncTask(gameManager.GetUserTelemetryJSON());
-            // JsonData responseJsonData = JsonMapper.ToObject(responseJson);
-            // HandleNexusSessionUpdateResponse(responseJsonData);
-
-            // // Send slate telemetry to Nexus, await response, and process the response
-            // responseJson = await NexusSyncTask(gameManager.slateManager.GetSlateTelemetryJSON());
-            // responseJsonData = JsonMapper.ToObject(responseJson);
-            // HandleNexusSessionUpdateResponse(responseJsonData);
+            string graphTelemetryJSON = gameManager.graphManager.GetGraphTelemetryJSON();
+            if (graphTelemetryJSON != "") NexusSessionUpdateHelper(graphTelemetryJSON);
         }
 
         // Handle an individual session update command and process its response 
