@@ -22,7 +22,9 @@ namespace PUL
 
         public List<string> ignoreCollection = new List<string>(); // List of collection names to ignore when booting. Debugging tool used to exempt big collections early in development
 
-        public int pacingCounter; // braindead dumb mechanism to throttle polling
+        public float userUpdatePeriod = 0.5f;
+
+        public float environmentUpdatePeriod = 1.0f;
 
         // END: These values are wired up in the Unity Editor -> Nexus Client object
         // ====================================
@@ -40,6 +42,8 @@ namespace PUL
 
         public OxideData oxideData;
 
+        private DateTime lastUserUpdateTime;
+        private DateTime lastEnvironmentUpdateTime;
 
         void Awake()
         {
@@ -56,7 +60,8 @@ namespace PUL
             }
             DontDestroyOnLoad(this);
 
-            pacingCounter = 0;
+            lastUserUpdateTime = DateTime.Now;
+            lastEnvironmentUpdateTime = DateTime.Now;
         }
 
         // Start is called before the first frame update
@@ -68,13 +73,22 @@ namespace PUL
         // Update is called once per frame
         void Update()
         {
-            // pacingCounter = braindead dumb mechanism to throttle polling
-            pacingCounter++;
-            int pacingCounterLimit = 100; // TODO: fix arbitrary hard-coded value
-            if (pacingCounter > pacingCounterLimit)
+            DateTime currTime = DateTime.Now;
+            TimeSpan elapsedUserUpdateTime = currTime - lastUserUpdateTime;
+            if (elapsedUserUpdateTime.TotalSeconds > userUpdatePeriod)
             {
-                pacingCounter = 0;
-                NexusSessionUpdate();
+                lastUserUpdateTime = currTime;
+                NexusSessionUpdate(GameManager.Instance.GetUserTelemetryJSON());
+            }
+
+            TimeSpan elapsedEnvironmentUpdateTime = currTime - lastEnvironmentUpdateTime;
+            if (elapsedEnvironmentUpdateTime.TotalSeconds > environmentUpdatePeriod)
+            {
+                string slateTelemetryJSON = SlateManager.Instance.GetSlateTelemetryJSON();
+                if (slateTelemetryJSON != "") NexusSessionUpdate(slateTelemetryJSON);
+
+                string graphTelemetryJSON = GraphManager.Instance.GetGraphTelemetryJSON();
+                if (graphTelemetryJSON != "") NexusSessionUpdate(graphTelemetryJSON);
             }
         }
 
@@ -114,20 +128,8 @@ namespace PUL
             MenuManager.Instance.MenuInit();
         }
 
-        // Update this user's activity in the Nexus. Should be called periodically.
-        private async void NexusSessionUpdate()
-        {
-            NexusSessionUpdateHelper(GameManager.Instance.GetUserTelemetryJSON());
-
-            string slateTelemetryJSON = SlateManager.Instance.GetSlateTelemetryJSON();
-            if (slateTelemetryJSON != "") NexusSessionUpdateHelper(slateTelemetryJSON);
-
-            string graphTelemetryJSON = GraphManager.Instance.GetGraphTelemetryJSON();
-            if (graphTelemetryJSON != "") NexusSessionUpdateHelper(graphTelemetryJSON);
-        }
-
-        // Handle an individual session update command and process its response 
-        private async void NexusSessionUpdateHelper(string command)
+        // Handle an individual session update command and process its response. 
+        private async void NexusSessionUpdate(string command)
         {
             // Send user telemetry to Nexus, await response, and process the response
             string responseJson = await NexusSyncTask(command);
