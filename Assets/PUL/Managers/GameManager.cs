@@ -128,7 +128,6 @@ namespace PUL
             StartCoroutine(routine);
         }
 
-
         private string getJSONFragmentForIdPosAndDir(string id, Vector3 pos, Vector3 dir)
         {
             string returnMe = "";
@@ -140,7 +139,7 @@ namespace PUL
 
         public string GetUserTelemetryJSON()
         {
-            string returnMe = $"[\"session_update\", \"objectTelemmetry\", ";
+            string returnMe = $"[\"session_update\", \"objectTelemetry\", ";
 
             // ref: https://learn.microsoft.com/en-us/windows/mixed-reality/mrtk-unity/mrtk2/features/input/input-state?view=mrtkunity-2022-05
 
@@ -160,7 +159,7 @@ namespace PUL
             }
 
             returnMe += "]";
-            // Debug.Log("TELEMMETRY: " + returnMe);
+            // Debug.Log("USER TELEMETRY: " + returnMe);
 
             return returnMe;
         }

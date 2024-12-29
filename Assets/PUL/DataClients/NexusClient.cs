@@ -95,11 +95,29 @@ namespace PUL
         // Update this user's activity in the Nexus. Should be called periodically.
         private async void NexusSessionUpdate()
         {
-            // Send telemetry to Nexus and await response
-            string responseJson = await NexusSyncTask(gameManager.GetUserTelemetryJSON());
+            NexusSessionUpdateHelper(gameManager.GetUserTelemetryJSON());
+
+            string slateTelemetryJSON = gameManager.slateManager.GetSlateTelemetryJSON();
+            if (slateTelemetryJSON != "") NexusSessionUpdateHelper(slateTelemetryJSON);
+
+            // // Send user telemetry to Nexus, await response, and process the response
+            // string responseJson = await NexusSyncTask(gameManager.GetUserTelemetryJSON());
+            // JsonData responseJsonData = JsonMapper.ToObject(responseJson);
+            // HandleNexusSessionUpdateResponse(responseJsonData);
+
+            // // Send slate telemetry to Nexus, await response, and process the response
+            // responseJson = await NexusSyncTask(gameManager.slateManager.GetSlateTelemetryJSON());
+            // responseJsonData = JsonMapper.ToObject(responseJson);
+            // HandleNexusSessionUpdateResponse(responseJsonData);
+        }
+
+        // Handle an individual session update command and process its response 
+        private async void NexusSessionUpdateHelper(string command)
+        {
+            // Send user telemetry to Nexus, await response, and process the response
+            string responseJson = await NexusSyncTask(command);
             JsonData responseJsonData = JsonMapper.ToObject(responseJson);
 
-            // Check if the session update returned an updated configuration
             try
             {
                 JsonData configJsonData = responseJsonData["config_update"];

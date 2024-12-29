@@ -175,6 +175,30 @@ namespace PUL
             }
             Debug.LogError($"SlateManager - RemoveSlate(obj) -> No name found matching {name}");
         }
+
+        public string GetSlateTelemetryJSON()
+        {
+            string returnMe = "";
+
+            if (activeSlates.Count > 0)
+            {
+                returnMe += $"[\"session_update\", \"objectTelemetry\"";
+
+                foreach (SlateData slate in activeSlates)
+                {
+                    returnMe += $", \"slate-{slate.name}\", ";
+                    Vector3 pos = slate.obj.transform.position;
+                    returnMe += $"\"{pos.x}\", \"{pos.y}\", \"{pos.z}\", ";
+                    Vector3 ori = slate.obj.transform.eulerAngles;
+                    returnMe += $"\"{ori.x}\", \"{ori.y}\", \"{ori.z}\"";
+                }
+
+                returnMe += "]";
+                // Debug.Log("SLATE TELEMETRY: " + returnMe);
+            }
+
+            return returnMe;
+        }
     }
 
 
