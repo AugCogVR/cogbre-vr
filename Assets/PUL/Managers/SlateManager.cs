@@ -13,13 +13,8 @@ namespace PUL
         // ====================================
         // NOTE: These values are wired up in the Unity Editor -> Graph Manager object
 
-        public GameManager GameManager;
-
         // The Slate prefeb we instantiate for function disassembly
         public GameObject slatePrefab;
-
-        // END: These values are wired up in the Unity Editor -> Menu Manager object
-        // ====================================
 
         [Header("Slate Logging")]
         public List<SlateData> activeSlates = new List<SlateData>(); // I later want this to be a list of a unique class structure, with gameobject as an element.
@@ -27,8 +22,35 @@ namespace PUL
         public float slateSpawnZone = 1; // Marks the region in which physic simulation is allowed for slates. 
         public bool simulatingMovement = false;
 
+        // END: These values are wired up in the Unity Editor -> Menu Manager object
+        // ====================================
+
+        // Instance holder
+        private static SlateManager _instance; // this manager is a singleton
+
+        public static SlateManager Instance
+        {
+            get
+            {
+                if (_instance == null) Debug.LogError("SlateManager is NULL");
+                return _instance;
+            }
+        }
+
         void Awake()
         {
+            // If another instance exists, destroy that game object. If no other game manager exists, 
+            // initialize the instance to itself. As this manager needs to exist throughout all scenes, 
+            // call the function DontDestroyOnLoad.
+            if (_instance)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                _instance = this;
+            }
+            DontDestroyOnLoad(this);
         }
 
         // Start is called before the first frame update
@@ -57,10 +79,10 @@ namespace PUL
         public GameObject MakeASlate(string title, string contents)
         {
             // Debug.Log($"Make a slate: title: {title} / contents: {contents}");
-            Debug.Log($"Slate at {GameManager.getSpawnPosition()}");
+            Debug.Log($"Slate at {GameManager.Instance.getSpawnPosition()}");
 
             // Make a new slate
-            GameObject slate = Instantiate(slatePrefab, GameManager.getSpawnPosition(), GameManager.getSpawnRotation());
+            GameObject slate = Instantiate(slatePrefab, GameManager.Instance.getSpawnPosition(), GameManager.Instance.getSpawnRotation());
             // slateList.Add(slate);
             TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
             titleBarTMP.text = title;
@@ -81,22 +103,22 @@ namespace PUL
             DynamicScrollbarHandler dynamicScrollbarHandler = slate.GetComponentInChildren<DynamicScrollbarHandler>();
             GameObject copyButton = slate.transform.Find("TitleBar/Buttons/CopyButton").gameObject;
             PressableButtonHoloLens2 buttonFunction = copyButton.GetComponent<PressableButtonHoloLens2>();
-            buttonFunction.TouchBegin.AddListener(() => GameManager.textManager.TextCopyCallback(dynamicScrollbarHandler));
+            buttonFunction.TouchBegin.AddListener(() => TextManager.Instance.TextCopyCallback(dynamicScrollbarHandler));
             Interactable distanceInteract = copyButton.GetComponent<Interactable>();
-            distanceInteract.OnClick.AddListener(() => GameManager.textManager.TextCopyCallback(dynamicScrollbarHandler));
+            distanceInteract.OnClick.AddListener(() => TextManager.Instance.TextCopyCallback(dynamicScrollbarHandler));
 
             // Log slate  
             // TODO: Streamline MakeASlate -- AddSlate -- how and where data is held about a slate -- etc.
-            AddSlate(slate, this);
+            AddSlate(slate);
 
             return slate;
         }
 
         // Add a default slate to the log
-        public void AddSlate(GameObject obj, SlateManager slateManager)
+        public void AddSlate(GameObject obj)
         {
             // Create a new slate
-            SlateData sd = new SlateData(obj, slateManager);
+            SlateData sd = new SlateData(obj);
             AddSlate(sd);
         }
 
@@ -214,18 +236,16 @@ namespace PUL
         int movementStallCheck = 0; // Checks how many frames the slate has been idle for
         int movementStallThreshold = 50; // Limit for the amount of frames the slate can stall before stopping movement simulation
 
-        public SlateData(GameObject obj, SlateManager slateManager)
+        public SlateData(GameObject obj)
         {
             name = obj.name;
             this.obj = obj;
-            this.slateManager = slateManager;
             SetSphereRadius();
         }
-        public SlateData(string name, GameObject obj, SlateManager slateManager)
+        public SlateData(string name, GameObject obj)
         {
             this.name = name;
             this.obj = obj;
-            this.slateManager = slateManager;
             SetSphereRadius();
         }
 
@@ -238,8 +258,7 @@ namespace PUL
         private void SetSphereRadius()
         {
             if(obj == null) return;
-            if(slateManager == null) return;
-            radius = slateManager.slatePadding * obj.transform.localScale.x;
+            radius = SlateManager.Instance.slatePadding * obj.transform.localScale.x;
         }
 
         public void SimulateCollision(SlateData other)

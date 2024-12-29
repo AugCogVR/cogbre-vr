@@ -11,13 +11,23 @@ namespace PUL
     public class GraphManager : MonoBehaviour
     {
         // ====================================
-        // NOTE: These values are wired up in the Unity Editor -> Graph Manager object
+        // NOTE: These values are wired up in the Unity Editor
 
-        public GameManager gameManager;
         public float graphHandleScale = 1f;
 
-        // END: These values are wired up in the Unity Editor -> Menu Manager object
+        // END: These values are wired up in the Unity Editor
         // ====================================
+
+        private static GraphManager _instance; // this manager is a singleton
+
+        public static GraphManager Instance
+        {
+            get
+            {
+                if (_instance == null) Debug.LogError("GraphManager is NULL");
+                return _instance;
+            }
+        }
 
         // Keep track of all the active graphs
         IList<GameObject> graphList;
@@ -25,12 +35,25 @@ namespace PUL
 
         void Awake()
         {
+            // If another instance exists, destroy that game object. If no other game manager exists, 
+            // initialize the instance to itself. As this manager needs to exist throughout all scenes, 
+            // call the function DontDestroyOnLoad.
+            if (_instance)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                _instance = this;
+            }
+            DontDestroyOnLoad(this);
+
+            graphList = new List<GameObject>();
         }
 
         // Start is called before the first frame update
         void Start()
         {
-            graphList = new List<GameObject>();
         }
 
         // Update is called once per frame
@@ -43,9 +66,9 @@ namespace PUL
         {
             // Create the graph handle object at the spawn position and rotation
             GameObject graphHandlePrefab = Resources.Load("Prefabs/GraphHandle") as GameObject;
-            GameObject graphHandle = Instantiate(graphHandlePrefab, gameManager.getSpawnPosition(), gameManager.getSpawnRotation());
+            GameObject graphHandle = Instantiate(graphHandlePrefab, GameManager.Instance.getSpawnPosition(), GameManager.Instance.getSpawnRotation());
 
-            Debug.Log($"Graph at {gameManager.getSpawnPosition()}");
+            Debug.Log($"Graph at {GameManager.Instance.getSpawnPosition()}");
 
             // Set the label
             TextMeshPro nodeTitleTMP = graphHandle.transform.Find("TextBar/TextTMP").gameObject.GetComponent<TextMeshPro>();
@@ -122,9 +145,9 @@ namespace PUL
                 // Wire up selection button
                 GameObject selectionButton = graphNode.transform.Find("FunctionSelectButton").gameObject;
                 PressableButtonHoloLens2 buttonFunction = selectionButton.GetComponent<PressableButtonHoloLens2>();
-                buttonFunction.TouchBegin.AddListener(() => gameManager.menuManager.FunctionButtonCallback(binary, function, null));
+                buttonFunction.TouchBegin.AddListener(() => MenuManager.Instance.FunctionButtonCallback(binary, function, null));
                 Interactable distanceInteract = selectionButton.GetComponent<Interactable>();
-                distanceInteract.OnClick.AddListener(() => gameManager.menuManager.FunctionButtonCallback(binary, function, null));
+                distanceInteract.OnClick.AddListener(() => MenuManager.Instance.FunctionButtonCallback(binary, function, null));
 
                 // TEST: This is not necessary but is a good test of attaching a behavior and 
                 // is kind of fun. Recommend to comment it out!
@@ -167,7 +190,7 @@ namespace PUL
 
             // Assume this action to build the graph originated from a menu call,
             // so signal its completion. 
-            gameManager.menuManager.unsetBusy();
+            MenuManager.Instance.unsetBusy();
         }
 
         public void BuildFunctionControlFlowGraph(OxideFunction function)
@@ -246,7 +269,7 @@ namespace PUL
 
             // Assume this action to build the graph originated from a menu call,
             // so signal its completion. 
-            gameManager.menuManager.unsetBusy();
+            MenuManager.Instance.unsetBusy();
         }
 
         // The "FDG" version of the Control Flow Graph works, but isn't very useful--
@@ -344,7 +367,7 @@ namespace PUL
 
             // Assume this action to build the graph originated from a menu call,
             // so signal its completion. 
-            gameManager.menuManager.unsetBusy();
+            MenuManager.Instance.unsetBusy();
 
             //graph.RunForIterations(1);
             // STUPID HACK BECAUSE "RunForIterations" ISN'T WORKING YET

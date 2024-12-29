@@ -13,12 +13,22 @@ namespace PUL
     public class ConfigManager : MonoBehaviour
     {
         // ====================================
-        // NOTE: These values are wired up in the Unity Editor -> Menu Manager object
+        // NOTE: These values are wired up in the Unity Editor 
 
-        public GameManager GameManager;
-
-        // END: These values are wired up in the Unity Editor -> Menu Manager object
+        // END: These values are wired up in the Unity Editor
         // ====================================
+
+        // Instance holder
+        private static ConfigManager _instance; // this manager is a singleton
+
+        public static ConfigManager Instance
+        {
+            get
+            {
+                if (_instance == null) Debug.LogError("ConfigManager is NULL");
+                return _instance;
+            }
+        }
 
         public string sessionId; // auto-generated GUID
 
@@ -27,6 +37,21 @@ namespace PUL
         // Awake is called during initialization and before Start 
         void Awake()
         {
+            // If another instance exists, destroy that game object. If no other game manager exists, 
+            // initialize the instance to itself. As this manager needs to exist throughout all scenes, 
+            // call the function DontDestroyOnLoad.
+            if (_instance)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                _instance = this;
+            }
+            DontDestroyOnLoad(this);
+
+            // Create and initialize the configuration options
+            // TODO: Make this not hard-coded, I guess
             sessionId = Guid.NewGuid().ToString("N");
             settings = new Dictionary<string, string>();
             settings["sessionName"] = "unset";

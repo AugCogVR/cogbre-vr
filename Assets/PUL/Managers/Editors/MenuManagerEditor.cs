@@ -38,23 +38,23 @@ public class MenuManagerEditor : Editor
 
 
         // Input field for CID to test
-        cidIndex = EditorGUILayout.IntSlider("CID", cidIndex, 0, GameManager.Instance.nexusClient.oxideData.collectionList.Count - 1);
+        cidIndex = EditorGUILayout.IntSlider("CID", cidIndex, 0, NexusClient.Instance.oxideData.collectionList.Count - 1);
         
         // Build a button to test OIDs of first cid
         if (GUILayout.Button($"Spawn CID[{cidIndex}] OID buttons"))
         {
             // -> Make sure that the CID list is more than 1
-            if (GameManager.Instance.nexusClient.oxideData.collectionList.Count < 0)
+            if (NexusClient.Instance.oxideData.collectionList.Count < 0)
             {
                 Debug.LogError("CID count is <= 0");
                 return;
             }
 
             // -> Build first button
-            mm.CollectionButtonCallback(GameManager.Instance.nexusClient.oxideData.collectionList[cidIndex], null/* DGB: FIX THIS LATER -- I AM SO SORRY */);
+            mm.CollectionButtonCallback(NexusClient.Instance.oxideData.collectionList[cidIndex], null/* DGB: FIX THIS LATER -- I AM SO SORRY */);
 
             // -> Set current OIDs
-            currentOIDs = new List<OxideBinary>(GameManager.Instance.nexusClient.oxideData.collectionList[cidIndex].binaryList);
+            currentOIDs = new List<OxideBinary>(NexusClient.Instance.oxideData.collectionList[cidIndex].binaryList);
         }
 
         // Build information based on OIDs

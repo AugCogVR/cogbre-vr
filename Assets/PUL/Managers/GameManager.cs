@@ -14,42 +14,7 @@ namespace PUL
     public class GameManager : MonoBehaviour
     {
         // ====================================
-        // NOTE: These values are wired up in the Unity Editor -> Game Manager object
-
-        public NexusClient nexusClient;
-
-        public MenuManager menuManager;
-
-        public GraphManager graphManager;
-
-        public TextManager textManager;
-
-        public ConfigManager configManager;
-
-        public ControllerManager controllerManager;
-
-        public SlateManager slateManager;
-
-        // END: These values are wired up in the Unity Editor -> Game Manager object
-        // ====================================
-        
-        // Spawn point for new slates, graphs, etc. 
-        private GameObject spawnPoint;
-
-        private static GameManager _instance; // GameManager is a singleton
-
-        public static GameManager Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    Debug.LogError("GameManager is NULL");
-                }
-
-                return _instance;
-            }
-        }
+        // NOTE: These values are wired up in the Unity Editor
 
         // Values used for quick flag checks
         [Header("Quick Flags")]
@@ -62,10 +27,27 @@ namespace PUL
         public float keyboardVertOffset = -1;
         TMP_InputField kbInputField = null;
 
+        // END: These values are wired up in the Unity Editor
+        // ====================================
+        
+        // Spawn point for new slates, graphs, etc. 
+        private GameObject spawnPoint;
+
+        private static GameManager _instance; // this manager is a singleton
+
+        public static GameManager Instance
+        {
+            get
+            {
+                if (_instance == null) Debug.LogError("GameManager is NULL");
+                return _instance;
+            }
+        }
+
         private void Awake()
         {
-            // If another game manager exists, destroy that game object. If no other game manager exists, 
-            // initialize the instance to itself. As a game manager needs to exist throughout all scenes, 
+            // If another instance exists, destroy that game object. If no other game manager exists, 
+            // initialize the instance to itself. As this manager needs to exist throughout all scenes, 
             // call the function DontDestroyOnLoad.
             if (_instance)
             {
@@ -83,7 +65,7 @@ namespace PUL
         {
             // Create a spawn point relative to the UI Panel where new objects will appear
             spawnPoint = new GameObject();
-            spawnPoint.transform.parent = menuManager.UIPanel.transform;
+            spawnPoint.transform.parent = MenuManager.Instance.UIPanel.transform;
             spawnPoint.transform.localPosition = new Vector3(0.9f, 0.25f, 0);
 
             // Start out looking at the menu -- very convenient for testing -- yell at me if it breaks things -- DGB

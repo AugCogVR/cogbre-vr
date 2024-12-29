@@ -15,7 +15,7 @@ public class SceneBoundary : MonoBehaviour
     public void Update()
     {
         // TODO: Move to SlateManager
-        foreach (SlateData slate in GameManager.Instance.slateManager.activeSlates)
+        foreach (SlateData slate in SlateManager.Instance.activeSlates)
         {
             CorrectSlate(slate);
         }

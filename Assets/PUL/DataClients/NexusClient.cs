@@ -20,20 +20,42 @@ namespace PUL
         // ====================================
         // NOTE: These values are wired up in the Unity Editor -> Nexus Client object
 
-        public GameManager gameManager;
+        public List<string> ignoreCollection = new List<string>(); // List of collection names to ignore when booting. Debugging tool used to exempt big collections early in development
+
+        public int pacingCounter; // braindead dumb mechanism to throttle polling
 
         // END: These values are wired up in the Unity Editor -> Nexus Client object
         // ====================================
 
-        public List<string> ignoreCollection = new List<string>(); // List of collection names to ignore when booting. Debugging tool used to exempt big collections early in development
+        private static NexusClient _instance; // this manager is a singleton
 
-        public int pacingCounter; // braindead dumb mechanism to throttle polling
+        public static NexusClient Instance
+        {
+            get
+            {
+                if (_instance == null) Debug.LogError("NexusClient is NULL");
+                return _instance;
+            }
+        }
 
         public OxideData oxideData;
 
 
         void Awake()
         {
+            // If another instance exists, destroy that game object. If no other game manager exists, 
+            // initialize the instance to itself. As this manager needs to exist throughout all scenes, 
+            // call the function DontDestroyOnLoad.
+            if (_instance)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                _instance = this;
+            }
+            DontDestroyOnLoad(this);
+
             pacingCounter = 0;
         }
 
@@ -48,7 +70,7 @@ namespace PUL
         {
             // pacingCounter = braindead dumb mechanism to throttle polling
             pacingCounter++;
-            int pacingCounterLimit = 100; // TO DO: fix arbitrary hard-coded value
+            int pacingCounterLimit = 100; // TODO: fix arbitrary hard-coded value
             if (pacingCounter > pacingCounterLimit)
             {
                 pacingCounter = 0;
@@ -59,7 +81,7 @@ namespace PUL
         public async void NexusSessionInit()
         {
             Debug.Log("Nexus Session Init is Running!");
-            string configJsonString = JsonConvert.SerializeObject(gameManager.configManager.settings);
+            string configJsonString = JsonConvert.SerializeObject(ConfigManager.Instance.settings);
             string sessionInitResult = await NexusSyncTask($"[\"session_init\", {configJsonString}]");
             
             // Retrieve collection info
@@ -85,22 +107,22 @@ namespace PUL
                 // if user ever selects this collection.
                 oxideData.collectionList.Add(new OxideCollection(collectionId, collectionName, null, null));
             }
-            gameManager.menuManager.oxideData = oxideData;
+            MenuManager.Instance.oxideData = oxideData;
             Debug.Log(oxideData);
 
             // Once all information is pulled initialize the menu
-            gameManager.menuManager.MenuInit();
+            MenuManager.Instance.MenuInit();
         }
 
         // Update this user's activity in the Nexus. Should be called periodically.
         private async void NexusSessionUpdate()
         {
-            NexusSessionUpdateHelper(gameManager.GetUserTelemetryJSON());
+            NexusSessionUpdateHelper(GameManager.Instance.GetUserTelemetryJSON());
 
-            string slateTelemetryJSON = gameManager.slateManager.GetSlateTelemetryJSON();
+            string slateTelemetryJSON = SlateManager.Instance.GetSlateTelemetryJSON();
             if (slateTelemetryJSON != "") NexusSessionUpdateHelper(slateTelemetryJSON);
 
-            string graphTelemetryJSON = gameManager.graphManager.GetGraphTelemetryJSON();
+            string graphTelemetryJSON = GraphManager.Instance.GetGraphTelemetryJSON();
             if (graphTelemetryJSON != "") NexusSessionUpdateHelper(graphTelemetryJSON);
         }
 
@@ -117,7 +139,7 @@ namespace PUL
                 // Copy the config values into the configManager
                 foreach (KeyValuePair<string, JsonData> item in configJsonData)
                 {
-                    gameManager.configManager.settings[item.Key] = (string)item.Value;
+                    ConfigManager.Instance.settings[item.Key] = (string)item.Value;
                     Debug.Log("NEW CONFIG: set " + item.Key + " to " + (string)item.Value);
                 }
             }
@@ -140,7 +162,7 @@ namespace PUL
                 request.ContentType = "application/json";
                 request.Method = "POST";
                 StreamWriter writer = new StreamWriter(await request.GetRequestStreamAsync());
-                string jsonRequest = "{\"sessionId\":\"" + gameManager.configManager.sessionId + "\", \"command\":" + command + "}";
+                string jsonRequest = "{\"sessionId\":\"" + ConfigManager.Instance.sessionId + "\", \"command\":" + command + "}";
                 // Debug.Log("JSON REQUEST: " + jsonRequest);
                 writer.Write(jsonRequest);
                 writer.Close();
