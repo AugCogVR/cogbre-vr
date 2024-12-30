@@ -40,10 +40,15 @@ namespace PUL
             }
         }
 
+        // All the Oxide data we pull from Nexus
         public OxideData oxideData;
 
+        // Track last time we updated user and environment telemetry
         private DateTime lastUserUpdateTime;
         private DateTime lastEnvironmentUpdateTime;
+
+        // Did we initialize the session in Nexus yet?
+        private bool sessionInitialized = false;
 
         void Awake()
         {
@@ -73,6 +78,9 @@ namespace PUL
         // Update is called once per frame
         void Update()
         {
+            // Skip the rest of this if Nexus session isn't initialized
+            if (!sessionInitialized) return;
+
             DateTime currTime = DateTime.Now;
             TimeSpan elapsedUserUpdateTime = currTime - lastUserUpdateTime;
             if (elapsedUserUpdateTime.TotalSeconds > userUpdatePeriod)
@@ -84,6 +92,8 @@ namespace PUL
             TimeSpan elapsedEnvironmentUpdateTime = currTime - lastEnvironmentUpdateTime;
             if (elapsedEnvironmentUpdateTime.TotalSeconds > environmentUpdatePeriod)
             {
+                lastEnvironmentUpdateTime = currTime;
+
                 string slateTelemetryJSON = SlateManager.Instance.GetSlateTelemetryJSON();
                 if (slateTelemetryJSON != "") NexusSessionUpdate(slateTelemetryJSON);
 
@@ -126,6 +136,8 @@ namespace PUL
 
             // Once all information is pulled initialize the menu
             MenuManager.Instance.MenuInit();
+
+            sessionInitialized = true;
         }
 
         // Handle an individual session update command and process its response. 

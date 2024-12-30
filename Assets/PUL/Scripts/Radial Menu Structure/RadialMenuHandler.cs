@@ -99,9 +99,14 @@ public class RadialMenuHandler : MonoBehaviour
 
     private void OnDisable()
     {
-        // Make sure to unbind all delegates
-        ControllerManager.Instance.onTouchpadChanged -= TouchpadEvent;
-        ControllerManager.Instance.onTouchpadPressed -= SelectEvent;
+        // Make sure to unbind all delegates if ControllerManager isn't null.
+        // When shutting down VR session, ControllerManager may already be null
+        // when this method is called. If so, just do nothing, since it doesn't matter at that point.
+        if (ControllerManager.Instance != null)
+        {
+            ControllerManager.Instance.onTouchpadChanged -= TouchpadEvent;
+            ControllerManager.Instance.onTouchpadPressed -= SelectEvent;
+        }
     }
 
     private void TouchpadEvent(uint sourceID, Vector2 value)

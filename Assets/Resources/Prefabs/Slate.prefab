@@ -3843,7 +3843,7 @@ GameObject:
   - component: {fileID: 1407761552374259660}
   - component: {fileID: 5540380774026908919}
   m_Layer: 0
-  m_Name: Pressable Button (2)
+  m_Name: CloseButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6696,7 +6696,7 @@ GameObject:
   - component: {fileID: 2212076832601426091}
   - component: {fileID: 57547298113675970}
   m_Layer: 0
-  m_Name: Pressable Button (1)
+  m_Name: FollowMeButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

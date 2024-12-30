@@ -17,13 +17,14 @@ namespace PUL
         public GameObject slatePrefab;
 
         [Header("Slate Logging")]
-        public List<SlateData> activeSlates = new List<SlateData>(); // I later want this to be a list of a unique class structure, with gameobject as an element.
         public float slatePadding = 0.6f;
         public float slateSpawnZone = 1; // Marks the region in which physic simulation is allowed for slates. 
         public bool simulatingMovement = false;
 
         // END: These values are wired up in the Unity Editor -> Menu Manager object
         // ====================================
+
+        public List<SlateData> activeSlates = new List<SlateData>(); // LW: I later want this to be a list of a unique class structure, with gameobject as an element.
 
         // Instance holder
         private static SlateManager _instance; // this manager is a singleton
@@ -107,30 +108,30 @@ namespace PUL
             Interactable distanceInteract = copyButton.GetComponent<Interactable>();
             distanceInteract.OnClick.AddListener(() => TextManager.Instance.TextCopyCallback(dynamicScrollbarHandler));
 
+            // Wire up close button
+            GameObject closeButton = slate.transform.Find("TitleBar/Buttons/CloseButton").gameObject;
+            PressableButtonHoloLens2 buttonFunction2 = closeButton.GetComponent<PressableButtonHoloLens2>();
+            buttonFunction2.TouchBegin.AddListener(() => CloseSlateCallback(slate));
+            Interactable distanceInteract2 = closeButton.GetComponent<Interactable>();
+            distanceInteract2.OnClick.AddListener(() => CloseSlateCallback(slate));
+
             // Log slate  
             // TODO: Streamline MakeASlate -- AddSlate -- how and where data is held about a slate -- etc.
-            AddSlate(slate);
+            SlateData slateData = new SlateData(slate);
+            AddSlate(slateData);
 
             return slate;
         }
 
-        // Add a default slate to the log
-        public void AddSlate(GameObject obj)
-        {
-            // Create a new slate
-            SlateData sd = new SlateData(obj);
-            AddSlate(sd);
-        }
-
         // Add a slate to the log
-        public void AddSlate(SlateData sd)
+        public void AddSlate(SlateData slateData)
         {
             // Create a new slate
-            activeSlates.Add(sd);
+            activeSlates.Add(slateData);
 
             // Flag slates that need to be moved for spawning
-            Vector3 center = sd.GetSphereCenter();
-            sd.simulateMovement = true;
+            Vector3 center = slateData.GetSphereCenter();
+            slateData.simulateMovement = true;
 
             foreach(SlateData slate in activeSlates)
             {
@@ -143,6 +144,52 @@ namespace PUL
 
             // Simulate movement
             simulatingMovement = true;
+        }
+
+        // Close (destroy) a slate 
+        public void CloseSlateCallback(GameObject obj)
+        {
+            string slateName = obj.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>().text;
+            Debug.Log($"Closing slate {slateName}");
+
+            bool found = false;
+            for (int i = 0; i < activeSlates.Count; i++)
+            {
+                if (activeSlates[i].obj.Equals(obj))
+                {
+                    activeSlates.RemoveAt(i);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) Debug.LogError($"SlateManager - RemoveSlate(obj) -> No object found matching {obj.name}");
+
+            Destroy(obj);
+        }
+
+        public string GetSlateTelemetryJSON()
+        {
+            string returnMe = "";
+
+            if (activeSlates.Count > 0)
+            {
+                returnMe += $"[\"session_update\", \"objectTelemetry\"";
+
+                foreach (SlateData slate in activeSlates)
+                {
+                    TextMeshPro titleBarTMP = slate.obj.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
+                    returnMe += $", \"slate-{titleBarTMP.text}\", ";
+                    Vector3 pos = slate.obj.transform.position;
+                    returnMe += $"\"{pos.x}\", \"{pos.y}\", \"{pos.z}\", ";
+                    Vector3 ori = slate.obj.transform.eulerAngles;
+                    returnMe += $"\"{ori.x}\", \"{ori.y}\", \"{ori.z}\"";
+                }
+
+                returnMe += "]";
+                // Debug.Log("SLATE TELEMETRY: " + returnMe);
+            }
+
+            return returnMe;
         }
 
         private bool CheckSimulationState()
@@ -170,58 +217,6 @@ namespace PUL
             // Check if simulation is done
             simulatingMovement = CheckSimulationState();
         }
-
-        // Removes a slate from the log using the object
-        public void RemoveSlate(GameObject obj)
-        {
-            for (int i = 0; i < activeSlates.Count; i++)
-            {
-                if (activeSlates[i].obj.Equals(obj))
-                {
-                    activeSlates.RemoveAt(i);
-                    return;
-                }
-            }
-            Debug.LogError($"SlateManager - RemoveSlate(obj) -> No object found matching {obj.name}");
-        }
-        // Removes a slate from the log using the Name
-        public void RemoveSlate(string name)
-        {
-            for (int i = 0; i < activeSlates.Count; i++)
-            {
-                if (activeSlates[i].name.ToLower().Equals(name.ToLower()))
-                {
-                    activeSlates.RemoveAt(i);
-                    return;
-                }
-            }
-            Debug.LogError($"SlateManager - RemoveSlate(obj) -> No name found matching {name}");
-        }
-
-        public string GetSlateTelemetryJSON()
-        {
-            string returnMe = "";
-
-            if (activeSlates.Count > 0)
-            {
-                returnMe += $"[\"session_update\", \"objectTelemetry\"";
-
-                foreach (SlateData slate in activeSlates)
-                {
-                    TextMeshPro titleBarTMP = slate.obj.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
-                    returnMe += $", \"slate-{titleBarTMP.text}\", ";
-                    Vector3 pos = slate.obj.transform.position;
-                    returnMe += $"\"{pos.x}\", \"{pos.y}\", \"{pos.z}\", ";
-                    Vector3 ori = slate.obj.transform.eulerAngles;
-                    returnMe += $"\"{ori.x}\", \"{ori.y}\", \"{ori.z}\"";
-                }
-
-                returnMe += "]";
-                // Debug.Log("SLATE TELEMETRY: " + returnMe);
-            }
-
-            return returnMe;
-        }
     }
 
 
@@ -230,7 +225,6 @@ namespace PUL
     {
         public string name;
         public GameObject obj = null;
-        public SlateManager slateManager = null;
         public float radius = 1.0f;
         public bool simulateMovement = false; // Used to position slates around the spawn area
         int movementStallCheck = 0; // Checks how many frames the slate has been idle for
@@ -291,7 +285,7 @@ namespace PUL
             float totalRadius = radius + other.radius;
             float distance = Vector3.Distance(GetSphereCenter(), other.GetSphereCenter());
 
-            Debug.Log("Checking Overlap: " + totalRadius + " | " + distance);
+            // Debug.Log("Checking Overlap: " + totalRadius + " | " + distance);
 
             return distance < totalRadius;
         }
