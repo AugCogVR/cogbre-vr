@@ -105,7 +105,7 @@ namespace PUL
         public async void NexusSessionInit()
         {
             Debug.Log("Nexus Session Init is Running!");
-            string configJsonString = JsonConvert.SerializeObject(ConfigManager.Instance.settings);
+            string configJsonString = JsonConvert.SerializeObject(ConfigManager.Instance.GetSettingsAsDict());
             string sessionInitResult = await NexusSyncTask($"[\"session_init\", {configJsonString}]");
             
             // Retrieve collection info
@@ -143,19 +143,15 @@ namespace PUL
         // Handle an individual session update command and process its response. 
         private async void NexusSessionUpdate(string command)
         {
-            // Send user telemetry to Nexus, await response, and process the response
+            // Send user telemetry to Nexus and await response
             string responseJson = await NexusSyncTask(command);
-            JsonData responseJsonData = JsonMapper.ToObject(responseJson);
 
+            // Process the response. 
+            JsonData responseJsonData = JsonMapper.ToObject(responseJson);
             try
             {
                 JsonData configJsonData = responseJsonData["config_update"];
-                // Copy the config values into the configManager
-                foreach (KeyValuePair<string, JsonData> item in configJsonData)
-                {
-                    ConfigManager.Instance.settings[item.Key] = (string)item.Value;
-                    Debug.Log("NEW CONFIG: set " + item.Key + " to " + (string)item.Value);
-                }
+                ConfigManager.Instance.SetConfigFromJSON(configJsonData);
             }
             catch (Exception e)
             {

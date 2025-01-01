@@ -7,15 +7,41 @@ using Microsoft.MixedReality.Toolkit.Utilities;
 using TMPro;
 using Microsoft.MixedReality.Toolkit.UI;
 using static Microsoft.MixedReality.Toolkit.Experimental.UI.KeyboardKeyFunc;
+using LitJson;
 
 namespace PUL
 {
     public class ConfigManager : MonoBehaviour
     {
         // ====================================
-        // NOTE: These values are wired up in the Unity Editor 
+        // NOTE: These values can be set in the Unity Editor 
 
-        // END: These values are wired up in the Unity Editor
+        // auto-generated GUID; needs to be public but shouldn't be set in editor
+        public string sessionId; 
+        
+        // optional session name
+        public string sessionName = "unset";
+
+        // a mode is (or will be) a specific collection of the settings below
+        public string mode = "default";
+
+        // AFFORDANCE: Spatial semantics
+        public bool callGraphsEnabled = true;
+
+        // AFFORDANCE: Incremental formalism
+        public bool callGraphSelectButtonsEnabled = true;
+
+        // AFFORDANCES: Persistence (spatial memory) and user organization
+        public bool graphsMoveable = true;
+        public bool slatesMoveable = true;
+
+        // AFFORDANCE: Note taking
+        public bool notepadEnabled = true;
+
+        // AFFORDANCE: Signalling
+        public bool graphSignalsEnabled = true;
+
+        // END: These values can be set in the Unity Editor
         // ====================================
 
         // Instance holder
@@ -30,9 +56,9 @@ namespace PUL
             }
         }
 
-        public string sessionId; // auto-generated GUID
+        // public string sessionId; // auto-generated GUID
 
-        public Dictionary<string, string> settings;
+        // public Dictionary<string, string> settings;
 
         // Awake is called during initialization and before Start 
         void Awake()
@@ -51,22 +77,8 @@ namespace PUL
             DontDestroyOnLoad(this);
 
             // Create and initialize the configuration options
-            // TODO: Make this not hard-coded, I guess
+            // TODO: Make this not hard-coded, I guess. Or more hard-coded. IDK.
             sessionId = Guid.NewGuid().ToString("N");
-            settings = new Dictionary<string, string>();
-            settings["sessionName"] = "unset";
-            settings["mode"] = "default";
-
-            settings["call_graphs"] = "enabled"; // AFFORDANCE: Spatial semantics
-
-            settings["call_graph_select_buttons"] = "enabled"; // AFFORDANCE: Incremental formalism
-
-            settings["graphs_move"] = "enabled"; // AFFORDANCES: Persistence (spatial memory) and user organization
-            settings["slates_move"] = "enabled"; // AFFORDANCES: Persistence (spatial memory) and user organization
-
-            settings["notepad"] = "enabled"; // AFFORDANCE: Note taking
-
-            settings["graph_signals"] = "enabled"; // AFFORDANCE: Signalling
         }
 
         // Start is called after initialization but before the first frame update
@@ -77,6 +89,41 @@ namespace PUL
         // Update is called once per frame
         void Update()
         {
+        }
+
+        public void SetConfigFromJSON(JsonData configJsonData)
+        {
+            foreach (KeyValuePair<string, JsonData> item in configJsonData)
+            {
+                switch (item.Key)
+                {
+                    case "sessionName": sessionName = (string)item.Value; break;
+                    case "mode": mode = (string)item.Value; break;
+                    case "call_graphs_enabled": callGraphsEnabled = bool.Parse((string)item.Value); break;
+                    case "call_graph_select_buttons_enabled": callGraphSelectButtonsEnabled = bool.Parse((string)item.Value); break;
+                    case "graphs_moveable": graphsMoveable = bool.Parse((string)item.Value); break;
+                    case "slates_moveable": slatesMoveable = bool.Parse((string)item.Value); break;
+                    case "notepad_enable": notepadEnabled = bool.Parse((string)item.Value); break;
+                    case "graph_signals_enabled": graphSignalsEnabled = bool.Parse((string)item.Value); break;
+                }
+                Debug.Log("NEW CONFIG: set " + item.Key + " to " + (string)item.Value);
+            }
+        }
+
+        public Dictionary<string, string> GetSettingsAsDict()
+        {
+            Dictionary<string, string> settings = new Dictionary<string, string>();
+
+            settings["sessionName"] = sessionName;
+            settings["mode"] = mode;
+            settings["call_graphs_enabled"] = callGraphsEnabled.ToString().ToLower(); 
+            settings["call_graph_select_buttons_enabled"] = callGraphSelectButtonsEnabled.ToString().ToLower();
+            settings["graphs_moveable"] = graphsMoveable.ToString().ToLower();
+            settings["slates_moveable"] = slatesMoveable.ToString().ToLower();
+            settings["notepad_enabled"] = notepadEnabled.ToString().ToLower();
+            settings["graph_signals_enabled"] = graphSignalsEnabled.ToString().ToLower();
+
+            return settings;
         }
 
     }
