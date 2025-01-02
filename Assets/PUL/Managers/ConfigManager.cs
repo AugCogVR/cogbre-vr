@@ -8,6 +8,9 @@ using TMPro;
 using Microsoft.MixedReality.Toolkit.UI;
 using static Microsoft.MixedReality.Toolkit.Experimental.UI.KeyboardKeyFunc;
 using LitJson;
+using IniParser;
+using IniParser.Model;
+using System.IO;
 
 namespace PUL
 {
@@ -16,33 +19,13 @@ namespace PUL
         // ====================================
         // NOTE: These values can be set in the Unity Editor 
 
-        // auto-generated GUID; needs to be public but shouldn't be set in editor
-        public string sessionId; 
-        
-        // optional session name
-        public string sessionName = "unset";
-
-        // a mode is (or will be) a specific collection of the settings below
-        public string mode = "default";
-
-        // AFFORDANCE: Spatial semantics
-        public bool callGraphsEnabled = true;
-
-        // AFFORDANCE: Incremental formalism
-        public bool callGraphSelectButtonsEnabled = true;
-
-        // AFFORDANCES: Persistence (spatial memory) and user organization
-        public bool graphsMoveable = true;
-        public bool slatesMoveable = true;
-
-        // AFFORDANCE: Note taking
-        public bool notepadEnabled = true;
-
-        // AFFORDANCE: Signalling
-        public bool graphSignalsEnabled = true;
-
         // END: These values can be set in the Unity Editor
         // ====================================
+
+        // auto-generated GUID; needs to be public but shouldn't be set in editor
+        public string sessionId; 
+
+        public IniData configData = null;
 
         // Instance holder
         private static ConfigManager _instance; // this manager is a singleton
@@ -55,10 +38,6 @@ namespace PUL
                 return _instance;
             }
         }
-
-        // public string sessionId; // auto-generated GUID
-
-        // public Dictionary<string, string> settings;
 
         // Awake is called during initialization and before Start 
         void Awake()
@@ -76,9 +55,12 @@ namespace PUL
             }
             DontDestroyOnLoad(this);
 
-            // Create and initialize the configuration options
-            // TODO: Make this not hard-coded, I guess. Or more hard-coded. IDK.
+            // Use a GUID for session ID
             sessionId = Guid.NewGuid().ToString("N");
+
+            // Initialize the configuration options file ini file
+            var configParser = new IniParser.IniDataParser();
+            configData = configParser.Parse(File.ReadAllText("config.ini"));
         }
 
         // Start is called after initialization but before the first frame update
@@ -95,18 +77,9 @@ namespace PUL
         {
             foreach (KeyValuePair<string, JsonData> item in configJsonData)
             {
-                switch (item.Key)
-                {
-                    case "sessionName": sessionName = (string)item.Value; break;
-                    case "mode": mode = (string)item.Value; break;
-                    case "call_graphs_enabled": callGraphsEnabled = bool.Parse((string)item.Value); break;
-                    case "call_graph_select_buttons_enabled": callGraphSelectButtonsEnabled = bool.Parse((string)item.Value); break;
-                    case "graphs_moveable": graphsMoveable = bool.Parse((string)item.Value); break;
-                    case "slates_moveable": slatesMoveable = bool.Parse((string)item.Value); break;
-                    case "notepad_enable": notepadEnabled = bool.Parse((string)item.Value); break;
-                    case "graph_signals_enabled": graphSignalsEnabled = bool.Parse((string)item.Value); break;
-                }
-                Debug.Log("NEW CONFIG: set " + item.Key + " to " + (string)item.Value);
+                string[] parts = item.Key.Split('|');
+                configData[parts[0]][parts[1]] = (string)item.Value;
+                Debug.Log($"NEW CONFIG: set [{parts[0]}][{parts[1]}] to {(string)item.Value}");
             }
         }
 
@@ -114,18 +87,17 @@ namespace PUL
         {
             Dictionary<string, string> settings = new Dictionary<string, string>();
 
-            settings["sessionName"] = sessionName;
-            settings["mode"] = mode;
-            settings["call_graphs_enabled"] = callGraphsEnabled.ToString().ToLower(); 
-            settings["call_graph_select_buttons_enabled"] = callGraphSelectButtonsEnabled.ToString().ToLower();
-            settings["graphs_moveable"] = graphsMoveable.ToString().ToLower();
-            settings["slates_moveable"] = slatesMoveable.ToString().ToLower();
-            settings["notepad_enabled"] = notepadEnabled.ToString().ToLower();
-            settings["graph_signals_enabled"] = graphSignalsEnabled.ToString().ToLower();
+            foreach (Section section in configData.Sections)
+            {
+                Debug.Log("[" + section.Name + "]");
+                foreach(Property property in section.Properties)
+                {
+                    settings[section.Name + "|" + property.Key] = property.Value;
+                }
+            }
 
             return settings;
         }
-
     }
 }
 
