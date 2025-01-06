@@ -386,8 +386,10 @@ namespace PUL
 
                 foreach (GameObject obj in graphList)
                 {
-                    TextMeshPro titleTMP = obj.transform.Find("TextBar/TextTMP").gameObject.GetComponent<TextMeshPro>();
-                    returnMe += $", \"graph-{titleTMP.text}\", ";
+                    string graphName = "graph:";
+                    graphName += obj.transform.Find("TextBar/TextTMP").gameObject.GetComponent<TextMeshPro>().text;
+                    graphName = graphName.Replace('\n', ':');
+                    returnMe += $", \"{graphName}\", ";
                     Vector3 pos = obj.transform.position;
                     returnMe += $"\"{pos.x}\", \"{pos.y}\", \"{pos.z}\", ";
                     Vector3 ori = obj.transform.eulerAngles;
