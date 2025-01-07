@@ -22,9 +22,9 @@ namespace PUL
 
         public List<string> ignoreCollection = new List<string>(); // List of collection names to ignore when booting. Debugging tool used to exempt big collections early in development
 
-        public float userUpdatePeriod = 0.5f;
+        public float secondsBetweenUserTelemetryUpdates = 0.5f;
 
-        public float environmentUpdatePeriod = 1.0f;
+        public float secondsBetweenEnvironmentTelemetryUpdates = 1.0f;
 
         // END: These values are wired up in the Unity Editor -> Nexus Client object
         // ====================================
@@ -73,6 +73,13 @@ namespace PUL
         void Start()
         {
             NexusSessionInit();
+
+            // Read values fron config data
+            string value = ConfigManager.Instance.GetSectionProperty("general", "seconds_between_user_telemetry_updates");
+            if (value != null) secondsBetweenUserTelemetryUpdates = float.Parse(value);
+            value = ConfigManager.Instance.GetSectionProperty("general", "seconds_between_environment_telemetry_updates");
+            if (value != null) secondsBetweenEnvironmentTelemetryUpdates = float.Parse(value);
+            // Debug.Log($"user updates: {secondsBetweenUserTelemetryUpdates} -- environment updates: {secondsBetweenEnvironmentTelemetryUpdates}");
         }
 
         // Update is called once per frame
@@ -83,14 +90,14 @@ namespace PUL
 
             DateTime currTime = DateTime.Now;
             TimeSpan elapsedUserUpdateTime = currTime - lastUserUpdateTime;
-            if (elapsedUserUpdateTime.TotalSeconds > userUpdatePeriod)
+            if (elapsedUserUpdateTime.TotalSeconds > secondsBetweenUserTelemetryUpdates)
             {
                 lastUserUpdateTime = currTime;
                 NexusSessionUpdate(GameManager.Instance.GetUserTelemetryJSON());
             }
 
             TimeSpan elapsedEnvironmentUpdateTime = currTime - lastEnvironmentUpdateTime;
-            if (elapsedEnvironmentUpdateTime.TotalSeconds > environmentUpdatePeriod)
+            if (elapsedEnvironmentUpdateTime.TotalSeconds > secondsBetweenEnvironmentTelemetryUpdates)
             {
                 lastEnvironmentUpdateTime = currTime;
 

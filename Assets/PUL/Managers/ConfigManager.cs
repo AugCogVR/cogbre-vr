@@ -73,6 +73,21 @@ namespace PUL
         {
         }
 
+        // Get the value specified by the section and property. 
+        // Return null if section or property doesn't exist.
+        public string GetSectionProperty(string section, string property)
+        {
+            string result = null;
+            if (configData.Sections.Contains(section))
+            {
+                if (configData.Sections.FindByName(section).Properties.Contains(property))
+                {
+                    result = configData[section][property];
+                }
+            }
+            return result;
+        }
+
         public void SetConfigFromJSON(JsonData configJsonData)
         {
             foreach (KeyValuePair<string, JsonData> item in configJsonData)
