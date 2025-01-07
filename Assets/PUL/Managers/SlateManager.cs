@@ -17,6 +17,7 @@ namespace PUL
         public GameObject slatePrefab;
 
         [Header("Slate Logging")]
+        public bool enableSlateDeconfliction = true; // automatic physical separation of overlapping slates
         public float slatePadding = 0.6f;
         public float slateSpawnZone = 1; // Marks the region in which physic simulation is allowed for slates. 
         public bool simulatingMovement = false;
@@ -57,12 +58,15 @@ namespace PUL
         // Start is called before the first frame update
         void Start()
         {
+            // Read values fron config data
+            string value = ConfigManager.Instance.GetSectionProperty("general", "enable_slate_deconfliction");
+            if (value != null) enableSlateDeconfliction = bool.Parse(value);
         }
 
         // Update is called once per frame
         void Update()
         {
-            if (simulatingMovement)
+            if (enableSlateDeconfliction && simulatingMovement)
                 SimulateSlateMovement();
         }
 
@@ -129,21 +133,24 @@ namespace PUL
             // Create a new slate
             activeSlates.Add(slateData);
 
-            // Flag slates that need to be moved for spawning
-            Vector3 center = slateData.GetSphereCenter();
-            slateData.simulateMovement = true;
-
-            foreach(SlateData slate in activeSlates)
+            if (enableSlateDeconfliction)
             {
-                // Check distance from center, if close enough flag for movement
-                if(Vector3.Distance(center, slate.GetSphereCenter()) < slateSpawnZone)
-                {
-                    slate.simulateMovement = true;
-                }
-            }
+                // Flag slates that need to be moved for spawning
+                Vector3 center = slateData.GetSphereCenter();
+                slateData.simulateMovement = true;
 
-            // Simulate movement
-            simulatingMovement = true;
+                foreach(SlateData slate in activeSlates)
+                {
+                    // Check distance from center, if close enough flag for movement
+                    if(Vector3.Distance(center, slate.GetSphereCenter()) < slateSpawnZone)
+                    {
+                        slate.simulateMovement = true;
+                    }
+                }
+
+                // Simulate movement
+                simulatingMovement = true;
+            }
         }
 
         // Close (destroy) a slate 
