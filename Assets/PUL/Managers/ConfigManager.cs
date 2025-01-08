@@ -88,6 +88,28 @@ namespace PUL
             return result;
         }
 
+        // Get the value specified by the property within the "general" section.
+        // Return null if section or property doesn't exist.
+        public string GetGeneralProperty(string property)
+        {
+            string result = null;
+            if (configData.Sections.Contains("general"))
+            {
+                if (configData.Sections.FindByName("general").Properties.Contains(property))
+                {
+                    result = configData["general"][property];
+                }
+            }
+            return result;
+        }
+
+        // Get the value specified by the property within the section for the active affordance mode.
+        // Return null if section or property doesn't exist.
+        public string GetAffordanceModeProperty(string property)
+        {
+            return GetSectionProperty(GetGeneralProperty("affordance_mode"), property);
+        }
+
         public void SetConfigFromJSON(JsonData configJsonData)
         {
             foreach (KeyValuePair<string, JsonData> item in configJsonData)

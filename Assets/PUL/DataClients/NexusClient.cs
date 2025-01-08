@@ -75,9 +75,9 @@ namespace PUL
             NexusSessionInit();
 
             // Read values fron config data
-            string value = ConfigManager.Instance.GetSectionProperty("general", "seconds_between_user_telemetry_updates");
+            string value = ConfigManager.Instance.GetGeneralProperty("seconds_between_user_telemetry_updates");
             if (value != null) secondsBetweenUserTelemetryUpdates = float.Parse(value);
-            value = ConfigManager.Instance.GetSectionProperty("general", "seconds_between_environment_telemetry_updates");
+            value = ConfigManager.Instance.GetGeneralProperty("seconds_between_environment_telemetry_updates");
             if (value != null) secondsBetweenEnvironmentTelemetryUpdates = float.Parse(value);
             // Debug.Log($"user updates: {secondsBetweenUserTelemetryUpdates} -- environment updates: {secondsBetweenEnvironmentTelemetryUpdates}");
         }
