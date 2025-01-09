@@ -220,17 +220,17 @@ namespace PUL
             Interactable bfdistanceInteract = binaryFileStatsButton.GetComponent<Interactable>();
             bfdistanceInteract.OnClick.AddListener(() => BinaryFileStatsButtonCallback());
             
-            // Wire up call graph button, unless it's disabled by the config file (blank out the label in that case)
+            // Wire up call graph button, unless it's disabled by the config file (then deactivate it)
             bool callGraphsEnabled = true;
             string value = ConfigManager.Instance.GetAffordanceModeProperty("call_graphs_enabled");
             if (value != null) callGraphsEnabled = bool.Parse(value);
-            PressableButtonHoloLens2 bcbuttonFunction = binaryCallGraphButton.GetComponent<PressableButtonHoloLens2>();
             if (!callGraphsEnabled)
             {
-                bcbuttonFunction.transform.Find("IconAndText/TextMeshPro").gameObject.GetComponent<TextMeshPro>().text = "";
+                binaryCallGraphButton.SetActive(false);
             }
             else
             {
+                PressableButtonHoloLens2 bcbuttonFunction = binaryCallGraphButton.GetComponent<PressableButtonHoloLens2>();
                 bcbuttonFunction.TouchBegin.AddListener(() => BinaryCallGraphButtonCallback());
                 Interactable bcdistanceInteract = binaryCallGraphButton.GetComponent<Interactable>();
                 bcdistanceInteract.OnClick.AddListener(() => BinaryCallGraphButtonCallback());
@@ -246,17 +246,17 @@ namespace PUL
             Interactable fd2distanceInteract = functionDecompilationButton.GetComponent<Interactable>();
             fd2distanceInteract.OnClick.AddListener(() => FunctionDecompilationButtonCallback());
 
-            // Wire up control flow graph button, unless it's disabled by the config file (blank out the label in that case)
+            // Wire up control flow graph button, unless it's disabled by the config file (then deactivate it)
             bool controlFlowGraphsEnabled = true;
             string value2 = ConfigManager.Instance.GetAffordanceModeProperty("control_flow_graphs_enabled");
             if (value2 != null) controlFlowGraphsEnabled = bool.Parse(value2);
-            PressableButtonHoloLens2 fcbuttonFunction = functionControlFlowGraphButton.GetComponent<PressableButtonHoloLens2>(); 
             if (!controlFlowGraphsEnabled)
             {
-                fcbuttonFunction.transform.Find("IconAndText/TextMeshPro").gameObject.GetComponent<TextMeshPro>().text = "";
+                functionControlFlowGraphButton.SetActive(false);
             }
             else
             {
+                PressableButtonHoloLens2 fcbuttonFunction = functionControlFlowGraphButton.GetComponent<PressableButtonHoloLens2>(); 
                 fcbuttonFunction.TouchBegin.AddListener(() => FunctionControlFlowGraphButtonCallback());
                 Interactable fcdistanceInteract = functionControlFlowGraphButton.GetComponent<Interactable>();
                 fcdistanceInteract.OnClick.AddListener(() => FunctionControlFlowGraphButtonCallback());
