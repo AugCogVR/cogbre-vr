@@ -142,12 +142,22 @@ namespace PUL
                     Debug.Log($"BuildBinaryCallGraphCoroutine: capaList null!");
                 }
                 
-                // Wire up selection button
+                // Wire up selection button, unless it's disabled by the config file (then deactivate it)
+                bool selectionButtonsEnabled = true;
+                string value = ConfigManager.Instance.GetAffordanceModeProperty("call_graph_select_buttons_enabled");
+                if (value != null) selectionButtonsEnabled = bool.Parse(value);
                 GameObject selectionButton = graphNode.transform.Find("FunctionSelectButton").gameObject;
-                PressableButtonHoloLens2 buttonFunction = selectionButton.GetComponent<PressableButtonHoloLens2>();
-                buttonFunction.TouchBegin.AddListener(() => MenuManager.Instance.FunctionButtonCallback(binary, function, null));
-                Interactable distanceInteract = selectionButton.GetComponent<Interactable>();
-                distanceInteract.OnClick.AddListener(() => MenuManager.Instance.FunctionButtonCallback(binary, function, null));
+                if (!selectionButtonsEnabled)
+                {
+                    selectionButton.SetActive(false);
+                }
+                else
+                {
+                    PressableButtonHoloLens2 buttonFunction = selectionButton.GetComponent<PressableButtonHoloLens2>();
+                    buttonFunction.TouchBegin.AddListener(() => MenuManager.Instance.FunctionButtonCallback(binary, function, null));
+                    Interactable distanceInteract = selectionButton.GetComponent<Interactable>();
+                    distanceInteract.OnClick.AddListener(() => MenuManager.Instance.FunctionButtonCallback(binary, function, null));
+                }
 
                 // TEST: This is not necessary but is a good test of attaching a behavior and 
                 // is kind of fun. Recommend to comment it out!
