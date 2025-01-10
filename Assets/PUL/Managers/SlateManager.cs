@@ -17,7 +17,7 @@ namespace PUL
         public GameObject slatePrefab;
 
         [Header("Slate Logging")]
-        public bool enableSlateDeconfliction = true; // automatic physical separation of overlapping slates
+        public bool slateDeconflictionEnabled = true; // automatic physical separation of overlapping slates
         public float slatePadding = 0.6f;
         public float slateSpawnZone = 1; // Marks the region in which physic simulation is allowed for slates. 
         public bool simulatingMovement = false;
@@ -59,14 +59,14 @@ namespace PUL
         void Start()
         {
             // Read values fron config data
-            string value = ConfigManager.Instance.GetFeatureSetProperty("enable_slate_deconfliction");
-            if (value != null) enableSlateDeconfliction = bool.Parse(value);
+            string value = ConfigManager.Instance.GetFeatureSetProperty("slate_deconfliction_enabled");
+            if (value != null) slateDeconflictionEnabled = bool.Parse(value);
         }
 
         // Update is called once per frame
         void Update()
         {
-            if (enableSlateDeconfliction && simulatingMovement)
+            if (slateDeconflictionEnabled && simulatingMovement)
                 SimulateSlateMovement();
         }
 
@@ -133,7 +133,7 @@ namespace PUL
             // Create a new slate
             activeSlates.Add(slateData);
 
-            if (enableSlateDeconfliction)
+            if (slateDeconflictionEnabled)
             {
                 // Flag slates that need to be moved for spawning
                 Vector3 center = slateData.GetSphereCenter();
