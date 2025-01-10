@@ -59,7 +59,7 @@ namespace PUL
         void Start()
         {
             // Read values fron config data
-            string value = ConfigManager.Instance.GetGeneralProperty("enable_slate_deconfliction");
+            string value = ConfigManager.Instance.GetFeatureSetProperty("enable_slate_deconfliction");
             if (value != null) enableSlateDeconfliction = bool.Parse(value);
         }
 
