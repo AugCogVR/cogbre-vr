@@ -103,11 +103,11 @@ namespace PUL
             return result;
         }
 
-        // Get the value specified by the property within the section for the active affordance mode.
+        // Get the value specified by the property within the section for the active feature set.
         // Return null if section or property doesn't exist.
-        public string GetAffordanceModeProperty(string property)
+        public string GetFeatureSetProperty(string property)
         {
-            return GetSectionProperty(GetGeneralProperty("affordance_mode"), property);
+            return GetSectionProperty(GetGeneralProperty("feature_set"), property);
         }
 
         public void SetConfigFromJSON(JsonData configJsonData)

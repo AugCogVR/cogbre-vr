@@ -222,7 +222,7 @@ namespace PUL
             
             // Wire up call graph button, unless it's disabled by the config file (then deactivate it)
             bool callGraphsEnabled = true;
-            string value = ConfigManager.Instance.GetAffordanceModeProperty("call_graphs_enabled");
+            string value = ConfigManager.Instance.GetFeatureSetProperty("call_graphs_enabled");
             if (value != null) callGraphsEnabled = bool.Parse(value);
             if (!callGraphsEnabled)
             {
@@ -248,7 +248,7 @@ namespace PUL
 
             // Wire up control flow graph button, unless it's disabled by the config file (then deactivate it)
             bool controlFlowGraphsEnabled = true;
-            string value2 = ConfigManager.Instance.GetAffordanceModeProperty("control_flow_graphs_enabled");
+            string value2 = ConfigManager.Instance.GetFeatureSetProperty("control_flow_graphs_enabled");
             if (value2 != null) controlFlowGraphsEnabled = bool.Parse(value2);
             if (!controlFlowGraphsEnabled)
             {

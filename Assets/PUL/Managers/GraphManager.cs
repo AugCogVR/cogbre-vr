@@ -144,7 +144,7 @@ namespace PUL
                 
                 // Wire up selection button, unless it's disabled by the config file (then deactivate it)
                 bool selectionButtonsEnabled = true;
-                string value = ConfigManager.Instance.GetAffordanceModeProperty("call_graph_select_buttons_enabled");
+                string value = ConfigManager.Instance.GetFeatureSetProperty("call_graph_select_buttons_enabled");
                 if (value != null) selectionButtonsEnabled = bool.Parse(value);
                 GameObject selectionButton = graphNode.transform.Find("FunctionSelectButton").gameObject;
                 if (!selectionButtonsEnabled)
