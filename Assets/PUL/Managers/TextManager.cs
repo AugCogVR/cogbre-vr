@@ -16,7 +16,7 @@ namespace PUL
         // ====================================
         // NOTE: These values are wired up in the Unity Editor 
 
-        public Notepad notepad;
+        public GameObject Notepad;
 
         // END: These values are wired up in the Unity Editor 
         // ====================================
@@ -52,6 +52,11 @@ namespace PUL
         // Start is called before the first frame update
         void Start()
         {
+            // Notepad enable/disable at startup based on config
+            bool notepadEnabledOnStartup = true;
+            string value2 = ConfigManager.Instance.GetFeatureSetProperty("notepad_enabled_on_startup");
+            if (value2 != null) notepadEnabledOnStartup = bool.Parse(value2);
+            Notepad.SetActive(notepadEnabledOnStartup);
         }
 
         // Update is called once per frame
@@ -65,7 +70,9 @@ namespace PUL
             if (selectedText.Length > 0)
             {
                 Debug.Log($"TO NOTEPAD: {selectedText}");
-                notepad.notepadInputField.text += selectedText + "\n";
+
+                Notepad.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>().text += selectedText + "\n";
+                // notepad.notepadInputField.text += selectedText + "\n";
             }
         }   
     }

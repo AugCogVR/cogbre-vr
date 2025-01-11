@@ -119,6 +119,11 @@ namespace PUL
         // Start is called before the first frame update
         void Start()
         {
+            // Main menu enable/disable at startup based on config
+            bool mainMenuEnabledOnStartup = true;
+            string value = ConfigManager.Instance.GetFeatureSetProperty("main_menu_enabled_on_startup");
+            if (value != null) mainMenuEnabledOnStartup = bool.Parse(value);
+            UIPanel.SetActive(mainMenuEnabledOnStartup);
         }
 
         // Update is called once per frame

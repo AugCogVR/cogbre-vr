@@ -11,6 +11,17 @@ namespace PUL
     public class ControllerManager : MonoBehaviour, IMixedRealitySourceStateHandler, IMixedRealityInputHandler, IMixedRealityInputHandler<float>, IMixedRealityInputHandler<Vector2>
     {
         // ----- Variables ------
+
+        // ====================================
+        // NOTE: These values are wired up in the Unity Editor
+
+        public GameObject RadialMenu = null;
+
+        public GameObject MagnifyingGlass = null;
+
+        // END: These values are wired up in the Unity Editor
+        // ====================================
+        
         // Instance holder
         private static ControllerManager _instance; // this manager is a singleton
 
@@ -57,6 +68,17 @@ namespace PUL
         // Start is called before the first frame update
         void Start()
         {
+            // Radial Menu enable/disable on startup
+            bool radialMenuEnabledOnStartup = true;
+            string value = ConfigManager.Instance.GetFeatureSetProperty("radial_menu_enabled_on_startup");
+            if (value != null) radialMenuEnabledOnStartup = bool.Parse(value);
+            RadialMenu.SetActive(radialMenuEnabledOnStartup);
+
+            // Magnifying glass enable/disable on startup
+            bool magnifyingGlassEnabledOnStartup = true;
+            string value2 = ConfigManager.Instance.GetFeatureSetProperty("magnifying_glass_enabled_on_startup");
+            if (value2 != null) magnifyingGlassEnabledOnStartup = bool.Parse(value2);
+            MagnifyingGlass.SetActive(magnifyingGlassEnabledOnStartup);
         }
 
         // Update is called once per frame
