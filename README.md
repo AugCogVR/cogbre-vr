@@ -103,5 +103,38 @@ The NexusClient periodically polls the server for updates using a separate threa
 
 The various components, behaviors, etc. that can/will be used to create the visualization are in Assets/PUL/VizComponents. Right now, it's a set of very basic components to display code excerpts, call graphs, and control flow graphs. 
 
+## Recent Changes to CogBRE Dec 2024-Jan 2025
+
+This subsection provides delta documentation for recent changes to the codebase for developer awareness. 
+
+### Approach
+
+Overall, I did rearrange some items in the main Unity scene and within the various scripts. If you can't find something, please ask. Also, if I disabled or removed anything someone else built, please understand it's in response to evolving requirements and no judgment on you or your contributions. 
+
+My intent is that we still maintain a single codebase even as we support multiple aims (user study, refining our UI, adding new capabilities). In the code, those efforts can largely be managed and deconflicted via config.ini (see below). I anticipate that I will create a standalone build configured for the user study before those sessions begin, just in case. 
+
+### Environment 
+
+I added a simple "forest clearing" environment since the house/office environment was not practical for large graphs (for example). My intent with the new environment is to be open, but still some feeling of being enclosed and with environmental reference points (tree clump, rock clump, etc.). I'm still working on it. The office is still there and the environments can be easily enabled and disabled in the Unity editor.
+
+## config.ini
+
+I moved session configuration to a "config.ini" file and brought in an open source library to process the options. I added a "Config Manager" to process the file and handle requests. My intention is that config options will be treated in one of two ways: options under the "general" section apply without restriction. Other options are available under "feature set" sections. One of the general options specified the feature set in use. There is a "default" feature set that makes the VR act as you remember it. I added a "minimal feature set" that simplifies the environment for the user study, for example, it disables the radial menu entirely. See config.ini comments for detailed information. 
+
+### Notepad / Keyboard
+
+I "permanently" attached the keyboard to the notepad. The keyboard always appears under the notepad and can't be closed. Keystrokes on the keyboard, caret control, etc., work directly in the notepad TMP (I did this by setting the keyboard's text input field directly to the notepad text input field, bypassing the small white one on the keyboard). When copying text from a slate, it goes to the current caret position. Generally the notepad now works like a naive user would expect it to work, IMHO. I inactivated the dictation icon as well, but didn't change anything else related to dictation. This work resulted in significant changes to the current keyboard instance, so if you want to use a keyboard for something else, I recommend you just add a new NonNativeKeyboard instance and go from there.
+
+### Telemetry and changes to slate handling
+
+User, slate, and graph position and orientation are reported to Nexus per a configurable interval (see config.ini). While implementing this capability for slates, I refactored the slate code, making a "Slate Manager" and moving in the code that I believe Luke wrote to deconflict the slates (with animation), etc. All of that still works as far as I can tell, but I did make it something that can be enabled and disabled in config.ini.
+
+### Code refactoring
+
+In addition to the slate refactoring, I moved properties and functions between managers based on what made most sense to me, e.g., moving some things from GameManager to ControllerManager or TextManager (some of which were subsequently removed due to redundancy). If you can't find something, please just ask. 
+
+
+
+
 
 
