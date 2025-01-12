@@ -1,4 +1,4 @@
-#define WRITE_CONSOLE
+// #define WRITE_CONSOLE
 
 using Microsoft.MixedReality.Toolkit.Utilities;
 using System.Collections;

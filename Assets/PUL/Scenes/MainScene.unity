@@ -9514,6 +9514,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 942111865}
     m_Modifications:
+    - target: {fileID: 134784, guid: c4e389e44d96da64ea974ab237ce1a9a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 145472, guid: c4e389e44d96da64ea974ab237ce1a9a, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -9534,6 +9538,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11401954, guid: c4e389e44d96da64ea974ab237ce1a9a, type: 3}
+      propertyPath: InputField
+      value: 
+      objectReference: {fileID: 1040504342}
     - target: {fileID: 11401954, guid: c4e389e44d96da64ea974ab237ce1a9a, type: 3}
       propertyPath: CloseOnInactivity
       value: 0
@@ -9694,6 +9702,14 @@ PrefabInstance:
       propertyPath: m_HorizontalAlignment
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 275186248912405585, guid: c4e389e44d96da64ea974ab237ce1a9a, type: 3}
+      propertyPath: m_Name
+      value: KeyboardInputField (TMP)
+      objectReference: {fileID: 0}
+    - target: {fileID: 275186248912405585, guid: c4e389e44d96da64ea974ab237ce1a9a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 481503532201424789, guid: c4e389e44d96da64ea974ab237ce1a9a, type: 3}
       propertyPath: m_textAlignment
       value: 65535
@@ -9765,6 +9781,10 @@ PrefabInstance:
     - target: {fileID: 1982161777517840801, guid: c4e389e44d96da64ea974ab237ce1a9a, type: 3}
       propertyPath: m_HorizontalAlignment
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2097082730694957451, guid: c4e389e44d96da64ea974ab237ce1a9a, type: 3}
+      propertyPath: m_Text
+      value: NOT IN USE
       objectReference: {fileID: 0}
     - target: {fileID: 2110119107305546731, guid: c4e389e44d96da64ea974ab237ce1a9a, type: 3}
       propertyPath: m_textAlignment
@@ -16697,6 +16717,17 @@ MonoBehaviour:
   clipBox: {fileID: 282262818}
   disableClippedGameObjects: 1
   disableClippedRenderers: 0
+--- !u!114 &1040504342 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7446882911997610413, guid: c580c3bd5148ba34e87d86f1a74760b1, type: 3}
+  m_PrefabInstance: {fileID: 4962140108774780826}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2da0c512f12947e489f739169773d7ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1054661022
 GameObject:
   m_ObjectHideFlags: 0
@@ -34451,6 +34482,10 @@ PrefabInstance:
     - target: {fileID: 8407928089408394676, guid: c580c3bd5148ba34e87d86f1a74760b1, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8629257437823065895, guid: c580c3bd5148ba34e87d86f1a74760b1, type: 3}
+      propertyPath: m_Name
+      value: NotepadContentTMP_UGUI
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c580c3bd5148ba34e87d86f1a74760b1, type: 3}

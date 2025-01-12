@@ -12,18 +12,8 @@ public class Notepad : MonoBehaviour
 
     // Values for handling the keyboard
     [Header("Keyboard")]
-    public GameObject openKeyboardButton = null;
     public NonNativeKeyboard keyboard = null;
-
-    // Code in OpenKeyboard that uses the following values is currently disabled
-    // public float keyboardDist = 1;
-    // public float keyboardScale = 0.2f;
-    // public float keyboardVertOffset = -1;
-    // TMP_InputField kbInputField = null;
-
-    [Header("Content")]
-    public string containedText = ""; // This text gets updated everytime enter is pressed. Gets loaded into keyboard when opened.
-    public string workingText = ""; // This text gets updated every key press, cleared when enter is pressed
+    public GameObject openKeyboardButton = null;
 
     [Header("Dictation")]
     bool isRecording = false;
@@ -34,6 +24,7 @@ public class Notepad : MonoBehaviour
     public TextMeshPro dictationHypothesisTMP = null;
     public TextMeshPro dictationResultTMP = null;
     public TextMeshPro dictationCompleteTMP = null;
+
     public void Start()
     {
         // Go ahead and call OpenKeyboard since it's always supposed to be visible with the Notepad.
@@ -51,54 +42,9 @@ public class Notepad : MonoBehaviour
         // Make keyboard visible
         keyboard.PresentKeyboard();
 
-        // Position keyboard (temporarily disabled)
-        // keyboard.RepositionKeyboard(Camera.main.transform.position + (Camera.main.transform.forward * keyboardDist) + (Vector3.down * keyboardVertOffset));
-        // keyboard.transform.localScale = Vector3.one * keyboardScale;
-
         // Prevent keybaord from closing when pressing Enter
         keyboard.SubmitOnEnter = false;
-
-        // -> Bind additional callback functions to keyboard
-        // Still updates on close, need to figure out a method to keep text
-        keyboard.OnTextUpdated += _ => {
-            // Band aid solution. doesn't allow for the addition of text
-            // -> Make string that contains the working text and the total text, whenever the keyboard is closed, update the total text with current working text
-            // --> Biggest problem here will be going back and editing the total text. Working on a solution...
-            if (keyboard.InputField.text != "")
-                // notepadInputField.text = workingText + keyboard.InputField.text;
-                notepadInputField.text = keyboard.InputField.text;
-        };
-
-        // // Loads contained text into keyboard
-        // keyboard.OnPlacement += PlaceText;
-        // // Handles event when text is submitted
-        // keyboard.OnTextSubmitted += SubmitText;
-        // // Handles event when text is canceled
-        // keyboard.OnClosed += CloseText;
     }
-
-    // private void PlaceText(object sender, System.EventArgs e)
-    // {
-    //     #if(WRITE_CONSOLE)
-    //         Debug.Log($"Placing Text: From type {sender.GetType()} with arguments {e}");
-    //     #endif
-    //     keyboard.InputField.text = containedText;
-    //     keyboard.InputField.MoveTextEnd(false);
-    // }
-    // private void SubmitText(object sender, System.EventArgs e)
-    // {
-    //     #if (WRITE_CONSOLE)
-    //         Debug.Log($"Submitting Text: From type {sender.GetType()} with arguments {e}");
-    //     #endif
-    //     containedText = workingText;
-    // }
-    // private void CloseText(object sender, System.EventArgs e)
-    // {
-    //     #if (WRITE_CONSOLE)
-    //         Debug.Log($"Submitting Text: From type {sender.GetType()} with arguments {e}");
-    //     #endif
-    //     notepadInputField.text = containedText;
-    // }
 
     // Toggles dictation on and off
     public void toggleDictation()

@@ -53,7 +53,7 @@ namespace PUL
         // Start is called before the first frame update
         void Start()
         {
-            // Notepad enable/disable at startup based on config
+            // Notepad (and attached keyboard) enable/disable at startup based on config
             bool notepadEnabledOnStartup = true;
             string value2 = ConfigManager.Instance.GetFeatureSetProperty("notepad_enabled_on_startup");
             if (value2 != null) notepadEnabledOnStartup = bool.Parse(value2);
@@ -65,13 +65,19 @@ namespace PUL
         {
         }
 
+        // Callback used by any slate generated in the system to indicate the user wants 
+        // to copy text selected in that slate to the notepad.
         public void TextCopyCallback(DynamicScrollbarHandler dynamicScrollbarHandler)
         {
             string selectedText = dynamicScrollbarHandler.selectedInfo;
             if (selectedText.Length > 0)
             {
                 // Debug.Log($"TO NOTEPAD: {selectedText}");
-                NotepadGameObject.GetComponent<Notepad>().keyboard.InputField.text += "\n" + selectedText + "\n";
+                TMP_InputField npInputField = NotepadGameObject.GetComponent<Notepad>().keyboard.InputField;
+                int caretPosition = npInputField.caretPosition;
+                npInputField.text = npInputField.text.Insert(caretPosition, selectedText);
+                caretPosition += selectedText.Length;
+                npInputField.caretPosition = caretPosition;
             }
         }   
     }
