@@ -17,7 +17,7 @@ namespace PUL
         // ====================================
         // NOTE: These values are wired up in the Unity Editor 
 
-        public GameObject Notepad;
+        public GameObject NotepadGameObject;
 
         // END: These values are wired up in the Unity Editor 
         // ====================================
@@ -57,7 +57,7 @@ namespace PUL
             bool notepadEnabledOnStartup = true;
             string value2 = ConfigManager.Instance.GetFeatureSetProperty("notepad_enabled_on_startup");
             if (value2 != null) notepadEnabledOnStartup = bool.Parse(value2);
-            Notepad.SetActive(notepadEnabledOnStartup);
+            NotepadGameObject.SetActive(notepadEnabledOnStartup);
         }
 
         // Update is called once per frame
@@ -70,9 +70,8 @@ namespace PUL
             string selectedText = dynamicScrollbarHandler.selectedInfo;
             if (selectedText.Length > 0)
             {
-                Debug.Log($"TO NOTEPAD: {selectedText}");
-
-                Notepad.transform.Find("NotepadContentTMP").gameObject.GetComponent<TextMeshPro>().text += selectedText + "\n";
+                // Debug.Log($"TO NOTEPAD: {selectedText}");
+                NotepadGameObject.GetComponent<Notepad>().keyboard.InputField.text += "\n" + selectedText + "\n";
             }
         }   
     }
