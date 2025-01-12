@@ -1,5 +1,6 @@
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit;
+using Microsoft.MixedReality.Toolkit.Experimental.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -71,8 +72,7 @@ namespace PUL
             {
                 Debug.Log($"TO NOTEPAD: {selectedText}");
 
-                Notepad.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>().text += selectedText + "\n";
-                // notepad.notepadInputField.text += selectedText + "\n";
+                Notepad.transform.Find("NotepadContentTMP").gameObject.GetComponent<TextMeshPro>().text += selectedText + "\n";
             }
         }   
     }

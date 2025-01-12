@@ -10,9 +10,16 @@ public class Notepad : MonoBehaviour
     public TextMeshProUGUI notepadText = null;
     public TMP_InputField notepadInputField = null;
 
+    // Values for handling the keyboard
     [Header("Keyboard")]
     public GameObject openKeyboardButton = null;
     public NonNativeKeyboard keyboard = null;
+
+    // Code in OpenKeyboard that uses the following values is currently disabled
+    // public float keyboardDist = 1;
+    // public float keyboardScale = 0.2f;
+    // public float keyboardVertOffset = -1;
+    // TMP_InputField kbInputField = null;
 
     [Header("Content")]
     public string containedText = ""; // This text gets updated everytime enter is pressed. Gets loaded into keyboard when opened.
@@ -29,6 +36,9 @@ public class Notepad : MonoBehaviour
     public TextMeshPro dictationCompleteTMP = null;
     public void Start()
     {
+        // Go ahead and call OpenKeyboard since it's always supposed to be visible with the Notepad.
+        OpenKeyboard();
+
         // Pulls dictation handler if none is found
         if (dh == null)
             dh = gameObject.GetComponent<DictationHandler>();
@@ -36,13 +46,13 @@ public class Notepad : MonoBehaviour
 
     public void OpenKeyboard()
     {
-        Debug.Log("OPENING KEYBOARD");
-        GameManager.Instance.ShowKeyboard();
+        // Debug.Log("OPENING KEYBOARD");
+        keyboard.PresentKeyboard();
 
-        // Check (and fix) if the keyboard instance is null
-        if (keyboard == null)
-            keyboard = NonNativeKeyboard.Instance;
-        
+        // Temporarily disable keyboard placement code 
+        // keyboard.RepositionKeyboard(Camera.main.transform.position + (Camera.main.transform.forward * keyboardDist) + (Vector3.down * keyboardVertOffset));
+        // keyboard.transform.localScale = Vector3.one * keyboardScale;
+
         // -> Bind functions
         if (notepadInputField != null)
         {

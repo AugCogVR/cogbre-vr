@@ -19,6 +19,11 @@ namespace PUL
 
         public GameObject MagnifyingGlass = null;
 
+        // Values used for quick flag checks
+        [Header("Quick Flags")]
+        public bool runningSimulated = false;
+
+
         // END: These values are wired up in the Unity Editor
         // ====================================
         

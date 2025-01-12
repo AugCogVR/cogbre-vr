@@ -1,5 +1,4 @@
 using UnityEngine;
-using Microsoft.MixedReality.Toolkit.Experimental.UI;
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using TMPro;
@@ -15,17 +14,6 @@ namespace PUL
     {
         // ====================================
         // NOTE: These values are wired up in the Unity Editor
-
-        // Values used for quick flag checks
-        [Header("Quick Flags")]
-        public bool runningSimulated = false;
-
-        // Values for handling the keyboard
-        [Header("Keyboard")]
-        public float keyboardDist = 1;
-        public float keyboardScale = 0.2f;
-        public float keyboardVertOffset = -1;
-        TMP_InputField kbInputField = null;
 
         // END: These values are wired up in the Unity Editor
         // ====================================
@@ -92,16 +80,6 @@ namespace PUL
         {
             return spawnPoint.transform.rotation;
         }
-
-        // Opens up keyboard in view
-        public void ShowKeyboard()
-        {
-            NonNativeKeyboard keyboard = NonNativeKeyboard.Instance;
-            keyboard.PresentKeyboard();
-            keyboard.RepositionKeyboard(Camera.main.transform.position + (Camera.main.transform.forward * keyboardDist) + (Vector3.down * keyboardVertOffset));
-            keyboard.transform.localScale = Vector3.one * keyboardScale;
-        }
-
 
         // Starts a coroutine on the gameManager
         // - This ensures that any routine can't be cut off by objects being set to inactive.

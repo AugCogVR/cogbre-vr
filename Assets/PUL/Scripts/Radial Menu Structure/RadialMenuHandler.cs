@@ -216,7 +216,7 @@ public class RadialMenuHandler : MonoBehaviour
         VR_TimeoutMenu();
 
         // Check if the game is running in simulation
-        allowDebugInputs = GameManager.Instance.runningSimulated;
+        allowDebugInputs = ControllerManager.Instance.runningSimulated;
     }
 
     // Checks for the currently selected menu option
