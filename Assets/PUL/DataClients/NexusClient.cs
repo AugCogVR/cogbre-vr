@@ -47,6 +47,12 @@ namespace PUL
         private DateTime lastUserUpdateTime;
         private DateTime lastEnvironmentUpdateTime;
 
+        // List of collections to include in the session and exclude all others. Set in config file. Overrides "ignoreCollection."
+        public List<string> includeOnlyTheseCollections = null;
+        // List of binaries to include in the session and exclude all others. Set in config file. 
+        public List<string> includeOnlyTheseBinaries = null; 
+
+
         // Did we initialize the session in Nexus yet?
         private bool sessionInitialized = false;
 
@@ -80,6 +86,16 @@ namespace PUL
             value = ConfigManager.Instance.GetGeneralProperty("seconds_between_environment_telemetry_updates");
             if (value != null) secondsBetweenEnvironmentTelemetryUpdates = float.Parse(value);
             // Debug.Log($"user updates: {secondsBetweenUserTelemetryUpdates} -- environment updates: {secondsBetweenEnvironmentTelemetryUpdates}");
+            value = ConfigManager.Instance.GetFeatureSetProperty("include_only_these_collections");
+            if (value != null) 
+            {
+                includeOnlyTheseCollections = new List<string>(value.Split(','));
+            }
+            value = ConfigManager.Instance.GetFeatureSetProperty("include_only_these_binaries");
+            if (value != null) 
+            {
+                includeOnlyTheseBinaries = new List<string>(value.Split(','));
+            }
         }
 
         // Update is called once per frame
@@ -124,10 +140,18 @@ namespace PUL
             oxideData = new OxideData();
             foreach (string collectionName in collectionNameList)
             {
-                // Ignore function. Debug
+                // If we have an include list, ensure this collection is in that list.
+                if ((includeOnlyTheseCollections != null) && 
+                    !(includeOnlyTheseCollections.Contains(collectionName)))
+                {
+                    Debug.Log($"NexusClient -> Skipping collection not in include list: {collectionName}");
+                    continue;
+                }
+
+                // Ignore collection for debug purposes.
                 if (ignoreCollection.Contains(collectionName))
                 {
-                    Debug.LogWarning($"NexusClient -> Ignoring collection {collectionName}");
+                    Debug.Log($"NexusClient -> Ignoring collection {collectionName}");
                     continue;
                 }
 
@@ -234,6 +258,14 @@ namespace PUL
                         string binaryName = "Nameless Binary";
                         if (binaryNameList.Count > 0) binaryName = binaryNameList[0];
                         //Debug.Log($"BINARY NAME: {binaryName}");
+
+                        // If we have an include list, ensure this binary is in that list.
+                        if ((includeOnlyTheseBinaries != null) && 
+                            !(includeOnlyTheseBinaries.Contains(binaryName)))
+                        {
+                            Debug.Log($"NexusClient -> Skipping binary not in include list: {binaryName}");
+                            continue;
+                        }
 
                         // -> Grab binary size
                         string size = await NexusSyncTask($"[\"oxide_get_oid_file_size\", \"{oid}\"]");
