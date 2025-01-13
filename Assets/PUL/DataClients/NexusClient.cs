@@ -88,14 +88,14 @@ namespace PUL
             // Debug.Log($"user updates: {secondsBetweenUserTelemetryUpdates} -- environment updates: {secondsBetweenEnvironmentTelemetryUpdates}");
             value = ConfigManager.Instance.GetFeatureSetProperty("include_only_these_collections");
             if (value != null) 
-            {
                 includeOnlyTheseCollections = new List<string>(value.Split(','));
-            }
+            else
+                includeOnlyTheseCollections = null;
             value = ConfigManager.Instance.GetFeatureSetProperty("include_only_these_binaries");
             if (value != null) 
-            {
                 includeOnlyTheseBinaries = new List<string>(value.Split(','));
-            }
+            else
+                includeOnlyTheseBinaries = null;
         }
 
         // Update is called once per frame

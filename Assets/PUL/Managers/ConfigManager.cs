@@ -126,7 +126,7 @@ namespace PUL
 
             foreach (Section section in configData.Sections)
             {
-                Debug.Log("[" + section.Name + "]");
+                // Debug.Log("[" + section.Name + "]");
                 foreach(Property property in section.Properties)
                 {
                     settings[section.Name + "|" + property.Key] = property.Value;
