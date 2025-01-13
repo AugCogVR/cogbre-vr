@@ -38,6 +38,8 @@ public class RadialMenuHandler : MonoBehaviour
     float cursorRotation = 0f;
     // Flags if the cursor is in the dead zone
     bool cursorDead = false;
+    // Checks if the player opens the radial menu
+    bool menuOpened = false;
 
     // Holds information about the input source
     private uint controllerSourceId = 0;
@@ -125,6 +127,13 @@ public class RadialMenuHandler : MonoBehaviour
     }
     private void SelectEvent(uint sourceID)
     {
+        // Check if the menu should be opened
+        if (!menuOpened)
+        {
+            menuOpened = true;
+            return;
+        }
+
         // If a source id is set then only allow inputs from said source
         if (CheckInputSource(sourceID))
             return;
@@ -287,7 +296,7 @@ public class RadialMenuHandler : MonoBehaviour
     }
 
     // Handles the active state of the radial menu model
-    Vector2 vrTimeout = Vector2.one * 0.1f;
+    Vector2 vrTimeout = Vector2.one * 0.35f;
     void VR_TimeoutMenu()
     {
         // Check if we are in debug mode
@@ -297,6 +306,11 @@ public class RadialMenuHandler : MonoBehaviour
         // Check if the trackpad is being touched
         if (inputPosition != Vector2.zero)
         {
+            // Wait for player input to open the menu
+            if (!menuOpened)
+                return;
+
+            // Open the menu
             VR_PositionMenu(true);
             radialMenuModelParent.SetActive(true);
             vrTimeout.x = vrTimeout.y;
@@ -305,6 +319,7 @@ public class RadialMenuHandler : MonoBehaviour
         // Check if the menu has timed out
         if(vrTimeout.x < 0)
         {
+            menuOpened = false;
             radialMenuModelParent.SetActive(false);
             vrTimeout.x = 0;
             controllerSourceId = 0;
