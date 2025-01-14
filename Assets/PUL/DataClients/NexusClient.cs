@@ -342,8 +342,15 @@ namespace PUL
                             foreach (JsonData addr in item.Value["members"])
                             {
                                 int instructionOffset = Int32.Parse($"{addr}");
-                                OxideInstruction instruction = binary.instructionDict[instructionOffset];
-                                basicBlock.instructionDict[instructionOffset] = instruction;
+                                if (binary.instructionDict.ContainsKey(instructionOffset))
+                                {
+                                    OxideInstruction instruction = binary.instructionDict[instructionOffset];
+                                    basicBlock.instructionDict[instructionOffset] = instruction;
+                                }
+                                else
+                                {
+                                    Debug.Log($"For binary {binary.name}: instruction offset {instructionOffset} not in instructionDict");
+                                }
                             }
                             basicBlock.destinationAddressList = new List<string>();
                             foreach (JsonData addr in item.Value["dests"])
