@@ -34493,6 +34493,34 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7446882911997610413, guid: c580c3bd5148ba34e87d86f1a74760b1, type: 3}
+      propertyPath: m_CaretWidth
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7446882911997610413, guid: c580c3bd5148ba34e87d86f1a74760b1, type: 3}
+      propertyPath: m_CaretColor.b
+      value: 0.10585666
+      objectReference: {fileID: 0}
+    - target: {fileID: 7446882911997610413, guid: c580c3bd5148ba34e87d86f1a74760b1, type: 3}
+      propertyPath: m_CaretColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7446882911997610413, guid: c580c3bd5148ba34e87d86f1a74760b1, type: 3}
+      propertyPath: m_CaretColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7446882911997610413, guid: c580c3bd5148ba34e87d86f1a74760b1, type: 3}
+      propertyPath: m_GlobalPointSize
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 7446882911997610413, guid: c580c3bd5148ba34e87d86f1a74760b1, type: 3}
+      propertyPath: m_HideMobileInput
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7446882911997610413, guid: c580c3bd5148ba34e87d86f1a74760b1, type: 3}
+      propertyPath: m_CustomCaretColor
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8174152733387461321, guid: c580c3bd5148ba34e87d86f1a74760b1, type: 3}
       propertyPath: m_fontSize
       value: 20
