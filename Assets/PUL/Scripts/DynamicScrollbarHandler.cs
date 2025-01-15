@@ -1,8 +1,9 @@
-// #define WRITE_CONSOLE
+#define WRITE_CONSOLE
 
 using Microsoft.MixedReality.Toolkit.Utilities;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,9 +22,12 @@ namespace PUL
         private RectTransform sbTransform = null; // Refrence to the scrollbar's rect transform [REQUIRED FOR CHECK LINK]
         private bool textOverflowing = false; // Flag that checks if the text is overflowing
 
+        private Image barBGImage = null; // Holds refrence to image stored on same component as scrollbar
+
         private void Awake()
         {
             scrollbar = GetComponent<Scrollbar>();
+            barBGImage = GetComponent<Image>();
             sbTransform = scrollbar.GetComponent<RectTransform>();
             ltTransform = linkedText.GetComponent<RectTransform>();
             if (scrollbar == null || sbTransform == null)
@@ -31,6 +35,16 @@ namespace PUL
             linkedText.onValueChanged.AddListener((string value) => CheckLink(value));
             linkedText.onSelect.AddListener((string value) => SelectionListener(value));
             linkedText.onDeselect.AddListener((string value) => DeselectionListener(value));
+
+            // Set caret to always visible
+            // -> Code snippet pulled from https://discussions.unity.com/t/howto-inputfield-always-show-caret/635634
+            linkedText.GetType().GetField("m_AllowInput", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(linkedText, true);
+            linkedText.GetType().InvokeMember("SetCaretVisible", BindingFlags.NonPublic | BindingFlags.InvokeMethod | BindingFlags.Instance, null, linkedText, null);
+        }
+
+        private void OnEnable()
+        {
+            UpdateLineLimit();
         }
 
         // Checks if the linked text should be bound to the scrollbar
@@ -40,16 +54,30 @@ namespace PUL
             #if (WRITE_CONSOLE)
             Debug.Log("Checking linked text");
             #endif
+            // Check if the scrollbar should be shown
+            if (scrollbar.size == 1)
+            {
+                scrollbar.image.enabled = false;
+                barBGImage.enabled = false;
+            }
+            else
+            {
+                scrollbar.image.enabled = true;
+                barBGImage.enabled = true;
+            }
+
+
             // -> Check to see if the value has gone out of bounds
             int lineCount = linkedText.textComponent.textInfo.lineCount + 2; // Added 2 to create a slight buffer
+                #if (WRITE_CONSOLE)
+                Debug.Log($"Dynamic Scrollbar Handler -> Text with {lineCount - 2} lines modified.");
+                #endif
             int height = lineCount * Mathf.CeilToInt(linkedText.textComponent.fontSize);
             // Sets the scrollbar if the text is overflowing
             if (height > sbTransform.sizeDelta.y)
             {
                 textOverflowing = true;
                 BindScrollbar();
-                // Updates the selection area
-                UpdateInteractableArea(height);
             }
             else
                 UnbindScrollbar();
@@ -90,15 +118,24 @@ namespace PUL
             else
                 selectedInfo = linkedText.textComponent.GetParsedText().Substring(end, start - end);
         }
-        // Updates the selectable region of the linked text
-        void UpdateInteractableArea(int height)
+        
+        // Updates the line limit for the contained notepad
+        void UpdateLineLimit()
         {
-            // Check case for method
-            if (!updateHeight)
-                return;
+            // Grab the height of the allocated space
+            float storedHeight = ltTransform.sizeDelta.y;
 
-            // -> Uses height to change the linked text interactable area
-            ltTransform.sizeDelta = new Vector2(ltTransform.sizeDelta.x, height);
+            // Divide height by the font size
+            int totalLines = Mathf.FloorToInt(storedHeight / linkedText.textComponent.fontSize);
+            linkedText.lineLimit = totalLines;
+        }
+
+        // Clears the notepad
+        public void ClearNotepad()
+        {
+            // Clear the linked text, update the scrollbar
+            linkedText.text = "";
+            CheckLink("");
         }
     }
 }
