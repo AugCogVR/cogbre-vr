@@ -125,6 +125,13 @@ namespace PUL
             string value = ConfigManager.Instance.GetFeatureSetProperty("main_menu_enabled_on_startup");
             if (value != null) mainMenuEnabledOnStartup = bool.Parse(value);
             UIPanel.SetActive(mainMenuEnabledOnStartup);
+
+            // Main menu movement enable/disable at startup based on config
+            bool mainMenuMoveable = true;
+            string value2 = ConfigManager.Instance.GetFeatureSetProperty("main_menu_moveable");
+            if (value2 != null) mainMenuMoveable = bool.Parse(value2);
+            ObjectManipulator titleBarOM = UIPanel.transform.Find("TitleBar").gameObject.GetComponent<ObjectManipulator>();
+            titleBarOM.enabled = mainMenuMoveable;
         }
 
         // Update is called once per frame
