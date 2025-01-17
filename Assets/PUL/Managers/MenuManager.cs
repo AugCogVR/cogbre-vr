@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Text;
 using UnityEngine;
 using TMPro;
 using Microsoft.MixedReality.Toolkit.Utilities;
@@ -560,36 +561,35 @@ namespace PUL
 
         IEnumerator FunctionDisassemblyButtonCallbackCoroutine(OxideBinary binary, OxideFunction function)
         {
-            // Make a new slate
-            GameObject slate = SlateManager.Instance.MakeASlate($"{binary.name} / {function.name} Disassembly\n{function.signature}", "");
+            // Use StringBuilders to build up slate contents
+            StringBuilder sbMarkup = new StringBuilder();
+            StringBuilder sbPlainText = new StringBuilder();
 
-            // Grab the content TMP
-            TextMeshProUGUI contentTMP = slate.GetComponentInChildren<TextMeshProUGUI>();
-
-            // -> Pulls and Sets information regarding the input field
-            // Used for highlighting
-            TMP_InputField inField = contentTMP.GetComponent<TMP_InputField>();
-            inField.text = contentTMP.text;
-
-            // -> Keeps track of the total number of lines, used for sizing text field for scroll rect.
-            float contentSize = 0;
-            float fontBuffer = 1.5f;
+            int numLines = 0;
             
             // Walk through each basic block for this function and add instructions to text display
             foreach (OxideBasicBlock basicBlock in function.basicBlockDict.Values)
             {
                 foreach (OxideInstruction instruction in basicBlock.instructionDict.Values)
                 {
-                    inField.text += $"<color=#777777>{instruction.offset} <color=#99FF99>{instruction.mnemonic} <color=#FFFFFF>{instruction.op_str}\n";
-                    contentSize += contentTMP.fontSize + fontBuffer; 
+                    sbMarkup.Append($"<color=#777777>{instruction.offset} <color=#99FF99>{instruction.mnemonic} <color=#FFFFFF>{instruction.op_str}\n");
+                    sbPlainText.Append($"{instruction.offset} {instruction.mnemonic} {instruction.op_str}\n");
+                    numLines++;
                 }
-                inField.text += $"<color=#000000>------------------------------------\n"; // separate blocks
-                contentSize += contentTMP.fontSize + fontBuffer;
+                sbMarkup.Append($"<color=#000000>------------------------------------\n");
+                numLines++;
 
                 yield return new WaitForEndOfFrame(); // yield after each block instead of each instruction
             }
 
+            // Make a new slate
+            GameObject slate = SlateManager.Instance.MakeASlate($"{binary.name} / {function.name} Disassembly\n{function.signature}", sbMarkup.ToString());
+
+            // Grab the content TMP
+            TextMeshProUGUI contentTMP = slate.GetComponentInChildren<TextMeshProUGUI>();
+
             // Adjust TMP transform to match content height
+            float contentSize = numLines * (contentTMP.fontSize + 1.5f); // 1.5 = "font buffer"
             contentTMP.rectTransform.sizeDelta = new Vector2(contentTMP.rectTransform.sizeDelta.x, contentSize);
 
             // Write to capa output
@@ -640,21 +640,11 @@ namespace PUL
 
         IEnumerator FunctionDecompilationButtonCallbackCoroutine(OxideBinary binary, OxideFunction function)
         {
-            // Make a new slate
-            GameObject slate = SlateManager.Instance.MakeASlate($"{binary.name} / {function.name} Decompilation", "");
+            // Use StringBuilders to build up slate contents
+            StringBuilder sbMarkup = new StringBuilder();
+            StringBuilder sbPlainText = new StringBuilder();
 
-            // Grab the content TMP
-            TextMeshProUGUI contentTMP = slate.GetComponentInChildren<TextMeshProUGUI>();
-            contentTMP.text = "";
-
-            // -> Pulls and Sets information regarding the input field
-            // Used for highlighting
-            TMP_InputField inField = contentTMP.GetComponent<TMP_InputField>();
-            inField.text = contentTMP.text;
-
-            // -> Keeps track of the total number of lines, used for sizing text field for scroll rect.
-            float contentSize = 0;
-            float fontBuffer = 1.5f;
+            int numLines = 0;
 
             // Walk through decompilation and create text display
             int indentLevel = 0;
@@ -662,21 +652,34 @@ namespace PUL
             {
                 string code = item.Value.code;
                 if (code.Contains('}')) indentLevel--; // Q&D indenting
-                inField.text += $"<color=#777777>{item.Key}: ";
-                for (int i = 0; i < indentLevel; i++) inField.text += "    ";  // Q&D indenting
-                inField.text += $"<color=#FFFFFF>{code}";
+                sbMarkup.Append($"<color=#777777>{item.Key}: ");
+                for (int i = 0; i < indentLevel; i++) 
+                {
+                    sbMarkup.Append("    "); // Q&D indenting
+                    sbPlainText.Append("    "); // Q&D indenting
+                }
+                sbMarkup.Append($"<color=#FFFFFF>{code}");
+                sbPlainText.Append($"{code}");
                 foreach (int offset in item.Value.associatedInstructionDict.Keys)
                 {
-                    inField.text += $"<color=#AAAA00> |{offset}|";        
+                    sbMarkup.Append($"<color=#AAAA00> |{offset}|");
                 }
-                inField.text += "\n";
-                contentSize += contentTMP.fontSize + fontBuffer;
+                sbMarkup.Append("\n");
+                sbPlainText.Append("\n");
+                numLines++;
                 if (code.Contains('{')) indentLevel++; // Q&D indenting
 
                 yield return new WaitForEndOfFrame(); 
             }
 
+            // Make a new slate
+            GameObject slate = SlateManager.Instance.MakeASlate($"{binary.name} / {function.name} Decompilation", sbMarkup.ToString());
+
+            // Grab the content TMP
+            TextMeshProUGUI contentTMP = slate.GetComponentInChildren<TextMeshProUGUI>();
+
             // Adjust TMP transform to match content height
+            float contentSize = numLines * (contentTMP.fontSize + 1.5f); // 1.5 = "font buffer"
             contentTMP.rectTransform.sizeDelta = new Vector2(contentTMP.rectTransform.sizeDelta.x, contentSize);
 
             unsetBusy();

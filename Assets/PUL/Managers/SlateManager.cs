@@ -83,7 +83,7 @@ namespace PUL
         // Make a slate with common characteristics. 
         public GameObject MakeASlate(string title, string contents)
         {
-            // Debug.Log($"Make a slate: title: {title} / contents: {contents}");
+            Debug.Log($"Make a slate: title:\n{title}\ncontents:\n{contents}");
             Debug.Log($"Slate at {GameManager.Instance.getSpawnPosition()}");
 
             // Make a new slate
