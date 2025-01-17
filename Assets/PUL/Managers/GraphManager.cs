@@ -13,6 +13,14 @@ namespace PUL
         // ====================================
         // NOTE: These values are wired up in the Unity Editor
 
+        public GameObject GraphHandlePrefab = null;
+
+        public GameObject FunctionNodePrefab = null;
+
+        public GameObject BasicBlockNodePrefab = null;
+
+        public GameObject GraphEdgePrefab = null;
+
         public float graphHandleScale = 1f;
 
         // END: These values are wired up in the Unity Editor
@@ -65,8 +73,7 @@ namespace PUL
         GameObject buildGraphHandle(string labelText)
         {
             // Create the graph handle object at the spawn position and rotation
-            GameObject graphHandlePrefab = Resources.Load("Prefabs/GraphHandle") as GameObject;
-            GameObject graphHandle = Instantiate(graphHandlePrefab, GameManager.Instance.getSpawnPosition(), GameManager.Instance.getSpawnRotation());
+            GameObject graphHandle = Instantiate(GraphHandlePrefab, GameManager.Instance.getSpawnPosition(), GameManager.Instance.getSpawnRotation());
 
             Debug.Log($"Graph at {GameManager.Instance.getSpawnPosition()}");
 
@@ -124,8 +131,7 @@ namespace PUL
                 if ((function.sourceFunctionDict.Count == 0) && (function.targetFunctionDict.Count == 0)) continue;
 
                 // Create graph node 
-                GameObject graphNodePrefab = Resources.Load("Prefabs/FunctionNode") as GameObject;
-                GameObject graphNode = Instantiate(graphNodePrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
+                GameObject graphNode = Instantiate(FunctionNodePrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
                 TextMeshPro nodeTitleTMP = graphNode.transform.Find("TextBar/TextTMP").gameObject.GetComponent<TextMeshPro>();
                 nodeTitleTMP.text = function.name;
                 graphNode.GetComponent<CapaFlags>().flags = function.capaList;
@@ -233,8 +239,7 @@ namespace PUL
                 // Skip disconnected blocks for now
                 if ((basicBlock.sourceBasicBlockDict.Count == 0) && (basicBlock.targetBasicBlockDict.Count == 0)) continue;
 
-                GameObject graphNodePrefab = Resources.Load("Prefabs/BasicBlockNode") as GameObject;
-                GameObject graphNode = Instantiate(graphNodePrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
+                GameObject graphNode = Instantiate(BasicBlockNodePrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
                 TextMeshPro nodeTitleTMP = graphNode.transform.Find("TitleBar/TitleTMP").gameObject.GetComponent<TextMeshPro>();
                 nodeTitleTMP.text = basicBlock.offset;
                 TextMeshPro nodeContentTMP = graphNode.transform.Find("ContentTMP").gameObject.GetComponent<TextMeshPro>();
@@ -324,9 +329,8 @@ namespace PUL
                 (OxideBasicBlock sourceBasicBlock, int level) = basicBlocksToProcess.Dequeue();
 
                 // Create the GameObject that visually represents this node
-                GameObject graphNodePrefab = Resources.Load("Prefabs/BasicBlockNode") as GameObject;
                 Vector3 position = new Vector3(Random.Range(-1.0f, 1.0f), 10.0f - (1.0f * level), Random.Range(-1.0f, 1.0f));
-                GameObject gameObject = Instantiate(graphNodePrefab, position, Quaternion.identity);
+                GameObject gameObject = Instantiate(BasicBlockNodePrefab, position, Quaternion.identity);
                 TextMeshPro nodeTitleTMP = gameObject.transform.Find("TitleBar/TitleTMP").gameObject.GetComponent<TextMeshPro>();
                 nodeTitleTMP.text = sourceBasicBlock.offset;
                 // -> World Space Text Mesh Pro

@@ -19,6 +19,10 @@ namespace PUL
 
         public GameObject MagnifyingGlass = null;
 
+        public GameObject RadialNeedlePrefab = null;
+
+        public GameObject RadialInfographicPrefab = null;
+
         // Values used for quick flag checks
         [Header("Quick Flags")]
         public bool runningSimulated = false;

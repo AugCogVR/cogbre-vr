@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RadialMenuSubMenu : RadialMenuOption
+namespace PUL
 {
+    public class RadialMenuSubMenu : RadialMenuOption
+    {
 
+    }
 }

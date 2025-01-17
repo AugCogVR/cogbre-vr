@@ -40,7 +40,7 @@ namespace PUL
         public virtual EdgeInfo AddEdgeToGraph(NodeInfo sourceNodeInfo, NodeInfo targetNodeInfo)
         {
             // Create gameObject
-            GameObject graphEdgePrefab = Resources.Load("Prefabs/GraphArrow") as GameObject;
+            GameObject graphEdgePrefab = GraphManager.Instance.GraphEdgePrefab;
             GameObject graphEdge = Instantiate(graphEdgePrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
 
             // Connect the gameObject to this graph
