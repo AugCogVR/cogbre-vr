@@ -699,11 +699,16 @@ namespace PUL
             // Tell the user we're doing something that won't happen instantaneously
             statusText.text = $"Building control flow graph for {selectedBinary.name} / {selectedFunction.name}";
 
-            GraphManager.Instance.BuildFunctionControlFlowGraph(selectedFunction);
-
-            // Uncomment this line to test the Force-Directed Graph. 
-            // TODO: Make this a config option, maybe
-            // GraphManager.Instance.BuildFunctionControlFlowGraphFDG(selectedFunction);
+            string graph_type = ConfigManager.Instance.GetGeneralProperty("cfg_graph_type");
+            if ((graph_type != null) && (graph_type == "sugiyama"))
+                GraphManager.Instance.BuildFunctionControlFlowGraph(selectedFunction); // Sugiyamai is default
+            else if ((graph_type != null) && (graph_type == "FDG"))
+                GraphManager.Instance.BuildFunctionControlFlowGraphFDG(selectedFunction);
+            else 
+            {
+                Debug.Log("No graph type specified; using default");
+                GraphManager.Instance.BuildFunctionControlFlowGraph(selectedFunction);                
+            }
         }
     }
 }
