@@ -1,6 +1,7 @@
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.Experimental.UI;
+using Microsoft.MixedReality.Toolkit.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -55,9 +56,18 @@ namespace PUL
         {
             // Notepad (and attached keyboard) enable/disable at startup based on config
             bool notepadEnabledOnStartup = true;
-            string value2 = ConfigManager.Instance.GetFeatureSetProperty("notepad_enabled_on_startup");
-            if (value2 != null) notepadEnabledOnStartup = bool.Parse(value2);
+            string value = ConfigManager.Instance.GetFeatureSetProperty("notepad_enabled_on_startup");
+            if (value != null) notepadEnabledOnStartup = bool.Parse(value);
             NotepadGameObject.SetActive(notepadEnabledOnStartup);
+
+            // Notepad (and attached keyboard) enable/disable movement at startup based on config
+            bool notepadMoveable = true;
+            string value2 = ConfigManager.Instance.GetFeatureSetProperty("notepad_moveable");
+            if (value2 != null) notepadMoveable = bool.Parse(value2);
+            ObjectManipulator notepadOM = NotepadGameObject.GetComponent<ObjectManipulator>();
+            notepadOM.enabled = notepadMoveable;
+            ObjectManipulator titleBarOM = NotepadGameObject.transform.Find("TitleBar").gameObject.GetComponent<ObjectManipulator>();
+            titleBarOM.enabled = notepadMoveable;
         }
 
         // Update is called once per frame
