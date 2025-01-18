@@ -119,6 +119,15 @@ namespace PUL
             Interactable distanceInteract2 = closeButton.GetComponent<Interactable>();
             distanceInteract2.OnClick.AddListener(() => CloseSlateCallback(slate));
 
+            // Slate enable/disable movement at startup based on config
+            bool slatesMoveable = true;
+            string value = ConfigManager.Instance.GetFeatureSetProperty("slates_moveable");
+            if (value != null) slatesMoveable = bool.Parse(value);
+            ObjectManipulator slateOM = slate.GetComponent<ObjectManipulator>();
+            slateOM.enabled = slatesMoveable;
+            ObjectManipulator titleBarOM = slate.transform.Find("TitleBar").gameObject.GetComponent<ObjectManipulator>();
+            titleBarOM.enabled = slatesMoveable;
+
             // Log slate  
             // TODO: Streamline MakeASlate -- AddSlate -- how and where data is held about a slate -- etc.
             SlateData slateData = new SlateData(slate);
