@@ -60,7 +60,7 @@ namespace PUL
             if (value != null) notepadEnabledOnStartup = bool.Parse(value);
             NotepadGameObject.SetActive(notepadEnabledOnStartup);
 
-            // Notepad (and attached keyboard) enable/disable movement at startup based on config
+            // Notepad (and attached keyboard) enable/disable movement based on config
             bool notepadMoveable = true;
             string value2 = ConfigManager.Instance.GetFeatureSetProperty("notepad_moveable");
             if (value2 != null) notepadMoveable = bool.Parse(value2);
