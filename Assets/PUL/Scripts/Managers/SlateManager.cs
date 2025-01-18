@@ -3,6 +3,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using TMPro;
 using Microsoft.MixedReality.Toolkit.UI;
+using Microsoft.MixedReality.Toolkit.Input;
 using System.Collections.Generic;
 
 namespace PUL
@@ -16,7 +17,10 @@ namespace PUL
         // The Slate prefeb we instantiate for function disassembly
         public GameObject slatePrefab;
 
-        [Header("Slate Logging")]
+        [Header("Slates in Fixed Position")]
+        public bool slatesMoveable = true; // can users move slates?
+
+        [Header("Slate Automatic Deconfliction")]
         public bool slateDeconflictionEnabled = true; // automatic physical separation of overlapping slates
         public float slatePadding = 0.6f;
         public float slateSpawnZone = 1; // Marks the region in which physic simulation is allowed for slates. 
@@ -61,6 +65,8 @@ namespace PUL
             // Read values fron config data
             string value = ConfigManager.Instance.GetFeatureSetProperty("slate_deconfliction_enabled");
             if (value != null) slateDeconflictionEnabled = bool.Parse(value);
+            string value2 = ConfigManager.Instance.GetFeatureSetProperty("slates_moveable");
+            if (value2 != null) slatesMoveable = bool.Parse(value2);
         }
 
         // Update is called once per frame
@@ -119,46 +125,95 @@ namespace PUL
             Interactable distanceInteract2 = closeButton.GetComponent<Interactable>();
             distanceInteract2.OnClick.AddListener(() => CloseSlateCallback(slate));
 
-            // Slate enable/disable movement at startup based on config
-            bool slatesMoveable = true;
-            string value = ConfigManager.Instance.GetFeatureSetProperty("slates_moveable");
-            if (value != null) slatesMoveable = bool.Parse(value);
+            // Slate enable/disable movement based on config
             ObjectManipulator slateOM = slate.GetComponent<ObjectManipulator>();
             slateOM.enabled = slatesMoveable;
             ObjectManipulator titleBarOM = slate.transform.Find("TitleBar").gameObject.GetComponent<ObjectManipulator>();
             titleBarOM.enabled = slatesMoveable;
 
-            // Log slate  
-            // TODO: Streamline MakeASlate -- AddSlate -- how and where data is held about a slate -- etc.
+            // Track slate in ActiveSlates
             SlateData slateData = new SlateData(slate);
-            AddSlate(slateData);
-
-            return slate;
-        }
-
-        // Add a slate to the log
-        public void AddSlate(SlateData slateData)
-        {
-            // Create a new slate
             activeSlates.Add(slateData);
 
+            // If slates are not moveable, lay them out in a fixed pattern.
+            if (!slatesMoveable)
+            {
+                positionUnmoveableSlates();
+            }
+
+            // Set up slate for automatic deconfliction-upon-spawn if enabled.
+            // Recommend that this mode is disabled when slates are not moveable. 
             if (slateDeconflictionEnabled)
             {
                 // Flag slates that need to be moved for spawning
                 Vector3 center = slateData.GetSphereCenter();
                 slateData.simulateMovement = true;
 
-                foreach(SlateData slate in activeSlates)
+                foreach(SlateData otherSlate in activeSlates)
                 {
                     // Check distance from center, if close enough flag for movement
-                    if(Vector3.Distance(center, slate.GetSphereCenter()) < slateSpawnZone)
+                    if ((otherSlate.obj != slate) && 
+                        (Vector3.Distance(center, otherSlate.GetSphereCenter()) < slateSpawnZone))
                     {
-                        slate.simulateMovement = true;
+                        otherSlate.simulateMovement = true;
                     }
                 }
 
                 // Simulate movement
                 simulatingMovement = true;
+            }
+
+            return slate;
+        }
+
+        // If slates are not moveable, lay them out in a fixed pattern.
+        private void positionUnmoveableSlates()
+        {
+            // Position the slates in a circle around the user starting at the 
+            // spawn point probided by GameManager (usually next to the main menu).
+
+            // Do all of our calculations in 2D using x and z axes. Slates' y position
+            // will remain unchanged. 
+
+            // Find starting spawn position in 3D and 2D.
+            Vector3 startingSpawnPosition = GameManager.Instance.getSpawnPosition();
+            Vector2 start2D = new Vector2(startingSpawnPosition.x, startingSpawnPosition.z);
+            float slateY = startingSpawnPosition.y;
+            // Debug.Log($"SPAWN: {startingSpawnPosition} 2D {start2D}");
+
+            // Find user position (center of circle) in 3D and 2D.
+            Vector3 userPosition = InputRayUtils.GetHeadGazeRay().origin;
+            Vector2 center = new Vector2(userPosition.x, userPosition.z);
+            // Debug.Log($"USER: Head {userPosition} Cam {Camera.main.transform.position} 2D {center}");
+
+            // Find radius of circle.
+            Vector2 menu2D = new Vector2(MenuManager.Instance.UIPanel.transform.position.x, MenuManager.Instance.UIPanel.transform.position.z);
+            float radius = Vector2.Distance(center, menu2D);
+            if (radius < 1.6f) radius = 1.6f;
+            // Debug.Log($"Radius: {radius}");
+
+            // Find angle to the spawn point (where the first slate will be placed).
+            float startingAngle = Mathf.Atan2(start2D.y - center.y, start2D.x - center.x);
+            // Debug.Log($"Starting angle: {startingAngle * Mathf.Rad2Deg}");
+
+            // Find the angle between slates based on width of the slate and circle radius.
+            float slateLayoutAngle = 15.0f * Mathf.Deg2Rad; // default 15 degrees between slates
+            if (activeSlates.Count > 0) // get the width of the first slate 
+            {
+                slateLayoutAngle = activeSlates[0].obj.transform.localScale.x / radius;
+                slateLayoutAngle *= 0.85f; // fudge factor
+            }
+            // Debug.Log($"Layout angle {slateLayoutAngle * Mathf.Rad2Deg}");
+
+            // Walk through slate list, positioning each one progressively in a circular pattern.
+            for (int i = 0; i < activeSlates.Count; i++)
+            {
+                float angleInRadians = startingAngle + (i * -slateLayoutAngle);
+                float newX = center.x + Mathf.Cos(angleInRadians) * radius;
+                float newZ = center.y + Mathf.Sin(angleInRadians) * radius;
+                activeSlates[i].obj.transform.position = new Vector3(newX, slateY, newZ);
+                activeSlates[i].obj.transform.rotation = Quaternion.LookRotation(activeSlates[i].obj.transform.position - Camera.main.transform.position);
+                // Debug.Log($"Slate {activeSlates[i].name} placed at {activeSlates[i].obj.transform.position} {angleInRadians * Mathf.Rad2Deg}");
             }
         }
 
@@ -168,6 +223,7 @@ namespace PUL
             string slateName = obj.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>().text;
             Debug.Log($"Closing slate {slateName}");
 
+            // Remove slate data from list of active slates.
             bool found = false;
             for (int i = 0; i < activeSlates.Count; i++)
             {
@@ -181,8 +237,12 @@ namespace PUL
             if (!found) Debug.LogError($"SlateManager - RemoveSlate(obj) -> No object found matching {obj.name}");
 
             Destroy(obj);
+
+            // If slates are not moveable, reposition the remaining slates.
+            if (!slatesMoveable) positionUnmoveableSlates();
         }
 
+        // Return the position and orientation of every active slate as a JSON string.
         public string GetSlateTelemetryJSON()
         {
             string returnMe = "";
@@ -210,6 +270,7 @@ namespace PUL
             return returnMe;
         }
 
+        // Return true if any of the slates are currently being automatically deconflicted.
         private bool CheckSimulationState()
         {
             foreach (SlateData slate in activeSlates)
@@ -220,6 +281,8 @@ namespace PUL
             return false;
         }
 
+        // Check each slate against every other slate during automatic deconfliction.
+        // Called from Update
         public void SimulateSlateMovement()
         {
             // Simulate movement
@@ -238,6 +301,8 @@ namespace PUL
     }
 
 
+    // This class holds data for a slate, such as the name and GameObject reference, but is
+    // mainly used to track and update the slate during automatic deconfliction.
     [System.Serializable]
     public class SlateData
     {
@@ -254,6 +319,7 @@ namespace PUL
             this.obj = obj;
             SetSphereRadius();
         }
+
         public SlateData(string name, GameObject obj)
         {
             this.name = name;

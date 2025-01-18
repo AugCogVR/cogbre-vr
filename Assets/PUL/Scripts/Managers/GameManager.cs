@@ -54,7 +54,7 @@ namespace PUL
             // Create a spawn point relative to the UI Panel where new objects will appear
             spawnPoint = new GameObject();
             spawnPoint.transform.parent = MenuManager.Instance.UIPanel.transform;
-            spawnPoint.transform.localPosition = new Vector3(0.9f, 0.25f, 0);
+            spawnPoint.transform.localPosition = new Vector3(1.0f, 0.25f, 0);
 
             // Start out looking at the menu -- very convenient for testing -- yell at me if it breaks things -- DGB
             // Camera.main.transform.position = new Vector3(-7f, 2f, -1.5f);
