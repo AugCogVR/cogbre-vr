@@ -89,6 +89,13 @@ namespace PUL
             Interactable distanceInteract = closeButton.GetComponent<Interactable>();
             distanceInteract.OnClick.AddListener(() => CloseGraphCallback(graphHandle));
 
+            // Graph enable/disable movement at startup based on config
+            bool graphsMoveable = true;
+            string value = ConfigManager.Instance.GetFeatureSetProperty("graphs_moveable");
+            if (value != null) graphsMoveable = bool.Parse(value);
+            ObjectManipulator graphOM = graphHandle.GetComponent<ObjectManipulator>();
+            graphOM.enabled = graphsMoveable;
+
             return graphHandle;
         }
 
