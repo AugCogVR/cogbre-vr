@@ -139,6 +139,11 @@ namespace PUL
                 collider.center = new Vector3(minX + (newSizeX / 2f), minY + (newSizeY / 2f), collider.center.z);
                 Debug.Log($"NEW GRAPH COLLIDER CENTER {collider.center}");
                 Debug.Log($"NEW GRAPH COLLIDER SIZE {collider.size}");
+
+                // Update visual bounding box 
+                GameObject boundingBox = graphHandle.transform.Find("BoundingBox").gameObject;
+                boundingBox.transform.localPosition = collider.center;
+                boundingBox.transform.localScale = collider.size;
             }
         }
 
