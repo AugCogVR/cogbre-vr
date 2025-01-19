@@ -278,6 +278,8 @@ namespace PUL
                         // -> Log binary
                         collection.binaryList.Add(binary);
                     }
+
+                    collection.binaryList.Sort((x, y) => x.name.CompareTo(y.name));
                 }
                 Debug.Log($"=== For collection {collection.name}: {collection.binaryList.Count} binaries.");
                 return collection;

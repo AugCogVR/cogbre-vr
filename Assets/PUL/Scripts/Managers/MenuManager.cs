@@ -340,8 +340,8 @@ namespace PUL
         }
 
         // Function that creates the objects that are associated with given collection
-        IEnumerator CollectionButtonCallbackCoroutine(IList<OxideBinary> binaryList)
-        {   
+        IEnumerator CollectionButtonCallbackCoroutine(List<OxideBinary> binaryList)
+        {
             // Create a button for each binary
             foreach (OxideBinary binary in binaryList)
             {

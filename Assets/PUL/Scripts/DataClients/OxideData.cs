@@ -14,7 +14,7 @@ namespace PUL
     [System.Serializable]
     public class OxideData
     {
-        public IList<OxideCollection> collectionList { get; set; }
+        public List<OxideCollection> collectionList { get; set; }
 
         public OxideData()
         {
@@ -42,9 +42,9 @@ namespace PUL
         public string collectionId { get; set; }
         public string name { get; set; }
         public string notes { get; set; }
-        public IList<OxideBinary> binaryList { get; set; }
+        public List<OxideBinary> binaryList { get; set; }
 
-        public OxideCollection(string collectionId, string name, string notes, IList<OxideBinary> binaryList) 
+        public OxideCollection(string collectionId, string name, string notes, List<OxideBinary> binaryList) 
         { 
             this.collectionId = collectionId;
             this.name = name;
@@ -122,7 +122,7 @@ namespace PUL
         // Basic blocks associated with this function, indexed by offset
         public SortedDictionary<int, OxideBasicBlock> basicBlockDict { get; set; }
 
-        public IList<string> paramsList { get; set; } 
+        public List<string> paramsList { get; set; } 
 
         public string retType { get; set; }   
 
@@ -142,7 +142,7 @@ namespace PUL
         public SortedDictionary<int, OxideDecompLine> decompDict { get; set; }
 
         // List of capabilities identified in this function
-        public IList<string> capaList { get; set; } 
+        public List<string> capaList { get; set; } 
 
         public OxideFunction(string name, string offset, string signature)
         {
@@ -176,7 +176,7 @@ namespace PUL
         public SortedDictionary<int, OxideBasicBlock> targetBasicBlockDict { get; set; }
 
         // Keep destinations as strings because not all of them are offsets
-        public IList<string> destinationAddressList { get; set; }
+        public List<string> destinationAddressList { get; set; }
 
         public OxideFunction parentFunction { get; set; } 
 
