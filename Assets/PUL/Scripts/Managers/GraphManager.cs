@@ -74,13 +74,14 @@ namespace PUL
         {
             // Create the graph handle object at the spawn position and rotation
             GameObject graphHandle = Instantiate(GraphHandlePrefab, GameManager.Instance.getSpawnPosition(), GameManager.Instance.getSpawnRotation());
+            graphHandle.transform.rotation = Quaternion.LookRotation(graphHandle.transform.position - Camera.main.transform.position);
 
             Debug.Log($"Graph at {GameManager.Instance.getSpawnPosition()}");
 
             // Set the label
             TextMeshPro nodeTitleTMP = graphHandle.transform.Find("TextBar/TextTMP").gameObject.GetComponent<TextMeshPro>();
             nodeTitleTMP.text = labelText;
-            graphHandle.transform.SetParent(this.gameObject.transform, false);
+            // graphHandle.transform.SetParent(this.gameObject.transform, false);
 
             // Wire up graph close button
             GameObject closeButton = graphHandle.transform.Find("CloseGraphButton").gameObject;

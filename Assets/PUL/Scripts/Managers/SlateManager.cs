@@ -99,7 +99,8 @@ namespace PUL
 
             // Make a new slate
             GameObject slate = Instantiate(slatePrefab, GameManager.Instance.getSpawnPosition(), GameManager.Instance.getSpawnRotation());
-            // slateList.Add(slate);
+            slate.transform.rotation = Quaternion.LookRotation(slate.transform.position - Camera.main.transform.position);
+
             TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
             titleBarTMP.text = title;
 
