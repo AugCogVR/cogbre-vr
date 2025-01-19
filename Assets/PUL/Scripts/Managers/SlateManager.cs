@@ -189,7 +189,7 @@ namespace PUL
             // Find radius of circle.
             Vector2 menu2D = new Vector2(MenuManager.Instance.UIPanel.transform.position.x, MenuManager.Instance.UIPanel.transform.position.z);
             float radius = Vector2.Distance(center, menu2D);
-            if (radius < 1.6f) radius = 1.6f;
+            if (radius < 2.0f) radius = 2.0f;
             // Debug.Log($"Radius: {radius}");
 
             // Find angle to the spawn point (where the first slate will be placed).
