@@ -22,8 +22,8 @@ namespace PUL
         public float layoutCircleCenterX = 0.0f;
         public float layoutCircleCenterZ = -1.0f;
         public float layoutCircleRadius = 2.0f;
-        public float layoutYOffset = -0.5f;
-        public float slateLayoutAngleScale = 0.85f;
+        public float layoutYOffset = 0.0f;
+        public float slateLayoutAngleScale = 1.0f;
 
         [Header("Slate Automatic Deconfliction")]
         public bool slateDeconflictionEnabled = true; // automatic physical separation of overlapping slates
