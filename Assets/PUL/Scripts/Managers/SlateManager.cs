@@ -176,30 +176,20 @@ namespace PUL
         {
             // Position the slates in a circle around the user starting at the 
             // spawn point probided by GameManager (usually next to the main menu).
-
             // Do all of our calculations in 2D using x and z axes. Slates' y position
             // will remain unchanged. 
 
             // Find starting spawn position in 3D and 2D.
             Vector3 startingSpawnPosition = GameManager.Instance.getSpawnPosition();
-            Vector2 start2D = new Vector2(startingSpawnPosition.x, startingSpawnPosition.z);
             float slateY = startingSpawnPosition.y + layoutYOffset;
-            // Debug.Log($"SPAWN: {startingSpawnPosition} 2D {start2D}");
+            // Debug.Log($"SPAWN: {startingSpawnPosition}");
 
             // Find user position (center of circle) in 3D and 2D.
-            // Vector3 userPosition = InputRayUtils.GetHeadGazeRay().origin;
-            // Vector2 center = new Vector2(userPosition.x, userPosition.z);
-            Vector2 center = new Vector2(layoutCircleCenterX, layoutCircleCenterZ);
+            Vector3 center = new Vector3(layoutCircleCenterX, slateY, layoutCircleCenterZ);
             // Debug.Log($"USER: Head {userPosition} Cam {Camera.main.transform.position} 2D {center}");
 
-            // Find radius of circle.
-            // Vector2 menu2D = new Vector2(MenuManager.Instance.UIPanel.transform.position.x, MenuManager.Instance.UIPanel.transform.position.z);
-            // float radius = Vector2.Distance(center, menu2D);
-            // if (radius < 2.0f) radius = 2.0f;
-            // Debug.Log($"Radius: {radius}");
-
             // Find angle to the spawn point (where the first slate will be placed).
-            float startingAngle = Mathf.Atan2(start2D.y - center.y, start2D.x - center.x);
+            float startingAngle = Mathf.Atan2(startingSpawnPosition.z - center.z, startingSpawnPosition.x - center.x);
             // Debug.Log($"Starting angle: {startingAngle * Mathf.Rad2Deg}");
 
             // Find the angle between slates based on width of the slate and circle radius.
@@ -216,9 +206,9 @@ namespace PUL
             {
                 float angleInRadians = startingAngle + (i * -slateLayoutAngle);
                 float newX = center.x + Mathf.Cos(angleInRadians) * layoutCircleRadius;
-                float newZ = center.y + Mathf.Sin(angleInRadians) * layoutCircleRadius;
+                float newZ = center.z + Mathf.Sin(angleInRadians) * layoutCircleRadius;
                 activeSlates[i].obj.transform.position = new Vector3(newX, slateY, newZ);
-                activeSlates[i].obj.transform.rotation = Quaternion.LookRotation(activeSlates[i].obj.transform.position - Camera.main.transform.position);
+                activeSlates[i].obj.transform.rotation = Quaternion.LookRotation(activeSlates[i].obj.transform.position - center);
                 // Debug.Log($"Slate {activeSlates[i].name} placed at {activeSlates[i].obj.transform.position} {angleInRadians * Mathf.Rad2Deg}");
             }
         }
