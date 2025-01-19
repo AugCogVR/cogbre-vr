@@ -422,7 +422,7 @@ namespace PUL
                             string signature = (string)(item.Value["signature"]);
                             OxideFunction function = new OxideFunction(name, $"{offsetInt}", signature);
                             binary.functionDict[offsetInt] = function;
-
+                            
                             // Set additional values
                             function.vaddr = (string)(item.Value["vaddr"]);
                             function.retType = (string)(item.Value["retType"]);

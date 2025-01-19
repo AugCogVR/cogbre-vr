@@ -286,7 +286,6 @@ namespace PUL
 
         public async void CollectionButtonCallback(OxideCollection collection, GameObject collectionButton)
         {
-
             if (!setBusy()) return;
 
             // Set the selected collection, binary, function
@@ -336,7 +335,6 @@ namespace PUL
 
             // Build buttons without blocking the UI
             StartCoroutine(CollectionButtonCallbackCoroutine(collection.binaryList));
-            
         }
 
         // Function that creates the objects that are associated with given collection
@@ -427,8 +425,12 @@ namespace PUL
         {
             int count = 0;
 
+            // Create list of functions sorted by namne
+            List<OxideFunction> sortedFunctionList = new List<OxideFunction>(binary.functionDict.Values);
+            sortedFunctionList.Sort((x, y) => x.name.CompareTo(y.name));
+
             // Create a button for each function
-            foreach (OxideFunction function in binary.functionDict.Values)
+            foreach (OxideFunction function in sortedFunctionList)
             {
                 // Instantiate the button prefab.
                 GameObject newButton = Instantiate(ObjectButtonPrefab);
@@ -451,7 +453,7 @@ namespace PUL
 
                 yield return new WaitForEndOfFrame();
 
-                if (++count > 10) break; // low limit for testing
+                // if (++count > 10) break; // low limit for testing
             }
 
             // Update grid objects and scrolling region

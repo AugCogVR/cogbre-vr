@@ -131,8 +131,12 @@ namespace PUL
 
         IEnumerator BuildBinaryCallGraphCoroutine(OxideBinary binary, BasicGraph graph, Dictionary<OxideFunction, NodeInfo> functionNodeInfoDict, GameObject graphHandle)
         {
+            // Create list of functions sorted by namne
+            List<OxideFunction> sortedFunctionList = new List<OxideFunction>(binary.functionDict.Values);
+            sortedFunctionList.Sort((x, y) => x.name.CompareTo(y.name));
+
             // Create and add all the nodes to the graph
-            foreach (OxideFunction function in binary.functionDict.Values)
+            foreach (OxideFunction function in sortedFunctionList)
             {
                 // Skip disconnected functions for now
                 if ((function.sourceFunctionDict.Count == 0) && (function.targetFunctionDict.Count == 0)) continue;
