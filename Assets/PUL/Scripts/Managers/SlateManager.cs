@@ -19,6 +19,11 @@ namespace PUL
 
         [Header("Slates in Fixed Position")]
         public bool slatesMoveable = true; // can users move slates?
+        public float layoutCircleCenterX = 0.0f;
+        public float layoutCircleCenterZ = -1.0f;
+        public float layoutCircleRadius = 2.0f;
+        public float layoutYOffset = -0.5f;
+        public float slateLayoutAngleScale = 0.85f;
 
         [Header("Slate Automatic Deconfliction")]
         public bool slateDeconflictionEnabled = true; // automatic physical separation of overlapping slates
@@ -178,18 +183,19 @@ namespace PUL
             // Find starting spawn position in 3D and 2D.
             Vector3 startingSpawnPosition = GameManager.Instance.getSpawnPosition();
             Vector2 start2D = new Vector2(startingSpawnPosition.x, startingSpawnPosition.z);
-            float slateY = startingSpawnPosition.y;
+            float slateY = startingSpawnPosition.y + layoutYOffset;
             // Debug.Log($"SPAWN: {startingSpawnPosition} 2D {start2D}");
 
             // Find user position (center of circle) in 3D and 2D.
-            Vector3 userPosition = InputRayUtils.GetHeadGazeRay().origin;
-            Vector2 center = new Vector2(userPosition.x, userPosition.z);
+            // Vector3 userPosition = InputRayUtils.GetHeadGazeRay().origin;
+            // Vector2 center = new Vector2(userPosition.x, userPosition.z);
+            Vector2 center = new Vector2(layoutCircleCenterX, layoutCircleCenterZ);
             // Debug.Log($"USER: Head {userPosition} Cam {Camera.main.transform.position} 2D {center}");
 
             // Find radius of circle.
-            Vector2 menu2D = new Vector2(MenuManager.Instance.UIPanel.transform.position.x, MenuManager.Instance.UIPanel.transform.position.z);
-            float radius = Vector2.Distance(center, menu2D);
-            if (radius < 2.0f) radius = 2.0f;
+            // Vector2 menu2D = new Vector2(MenuManager.Instance.UIPanel.transform.position.x, MenuManager.Instance.UIPanel.transform.position.z);
+            // float radius = Vector2.Distance(center, menu2D);
+            // if (radius < 2.0f) radius = 2.0f;
             // Debug.Log($"Radius: {radius}");
 
             // Find angle to the spawn point (where the first slate will be placed).
@@ -200,8 +206,8 @@ namespace PUL
             float slateLayoutAngle = 15.0f * Mathf.Deg2Rad; // default 15 degrees between slates
             if (activeSlates.Count > 0) // get the width of the first slate 
             {
-                slateLayoutAngle = activeSlates[0].obj.transform.localScale.x / radius;
-                slateLayoutAngle *= 0.85f; // fudge factor
+                slateLayoutAngle = activeSlates[0].obj.transform.localScale.x / layoutCircleRadius;
+                slateLayoutAngle *= slateLayoutAngleScale;
             }
             // Debug.Log($"Layout angle {slateLayoutAngle * Mathf.Rad2Deg}");
 
@@ -209,8 +215,8 @@ namespace PUL
             for (int i = 0; i < activeSlates.Count; i++)
             {
                 float angleInRadians = startingAngle + (i * -slateLayoutAngle);
-                float newX = center.x + Mathf.Cos(angleInRadians) * radius;
-                float newZ = center.y + Mathf.Sin(angleInRadians) * radius;
+                float newX = center.x + Mathf.Cos(angleInRadians) * layoutCircleRadius;
+                float newZ = center.y + Mathf.Sin(angleInRadians) * layoutCircleRadius;
                 activeSlates[i].obj.transform.position = new Vector3(newX, slateY, newZ);
                 activeSlates[i].obj.transform.rotation = Quaternion.LookRotation(activeSlates[i].obj.transform.position - Camera.main.transform.position);
                 // Debug.Log($"Slate {activeSlates[i].name} placed at {activeSlates[i].obj.transform.position} {angleInRadians * Mathf.Rad2Deg}");
