@@ -15,6 +15,14 @@ namespace PUL
         // ====================================
         // NOTE: These values are wired up in the Unity Editor
 
+        public GameObject GenericSpawnPoint;
+
+        public GameObject CameraStartPoint;
+
+        public GameObject FixedSlateStartPoint;
+
+        public GameObject FixedGraphStartPoint;
+
         // END: These values are wired up in the Unity Editor
         // ====================================
         
@@ -51,34 +59,32 @@ namespace PUL
         // Start is called before the first frame update
         void Start()
         {
-            // Create a spawn point relative to the UI Panel where new objects will appear
-            spawnPoint = new GameObject();
-            spawnPoint.transform.parent = MenuManager.Instance.UIPanel.transform;
-            spawnPoint.transform.localPosition = new Vector3(1.0f, 0.25f, 0);
+            // // Create a spawn point relative to the UI Panel where new objects will appear
+            // spawnPoint = new GameObject();
+            // spawnPoint.transform.parent = MenuManager.Instance.UIPanel.transform;
+            // spawnPoint.transform.localPosition = new Vector3(1.0f, 0.25f, 0);
 
-            // Start out looking at the menu -- very convenient for testing -- yell at me if it breaks things -- DGB
-            // Camera.main.transform.position = new Vector3(-7f, 2f, -1.5f);
-            Camera.main.transform.position = new Vector3(0f, 1.5f, 0f);
+            Camera.main.transform.position = CameraStartPoint.transform.position;
         }
 
         // Update is called once per frame
         void Update()
         {
-            // Not the most elegant solution but it gets the job done... -L
-            spawnPoint.transform.LookAt(Camera.main.transform.position);
-            spawnPoint.transform.Rotate(Vector3.up * 180);
+            // // Not the most elegant solution but it gets the job done... -L
+            // GenericSpawnPoint.transform.LookAt(Camera.main.transform.position);
+            // GenericSpawnPoint.transform.Rotate(Vector3.up * 180);
         }
 
         // Return the position of the spawn point.
         public Vector3 getSpawnPosition()
         {
-            return spawnPoint.transform.position;
+            return GenericSpawnPoint.transform.position;
         }
 
         // Return the rotation of the spawn point.
         public Quaternion getSpawnRotation()
         {
-            return spawnPoint.transform.rotation;
+            return GenericSpawnPoint.transform.rotation;
         }
 
         // Starts a coroutine on the gameManager

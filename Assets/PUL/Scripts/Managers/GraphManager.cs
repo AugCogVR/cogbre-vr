@@ -23,6 +23,14 @@ namespace PUL
 
         public float graphHandleScale = 1f;
 
+        [Header("Graphs in Fixed Position")]
+        public bool graphsMoveable = true; // can users move graphs?
+        public float layoutCircleCenterX = 0.0f;
+        public float layoutCircleCenterZ = -1.0f;
+        public float layoutCircleRadius = 2.0f;
+        public float layoutYOffset = 0.0f;
+        public float graphLayoutAngleScale = 0.5f;
+
         // END: These values are wired up in the Unity Editor
         // ====================================
 
@@ -38,7 +46,7 @@ namespace PUL
         }
 
         // Keep track of all the active graphs
-        IList<GameObject> graphList;
+        List<GameObject> graphList;
 
 
         void Awake()
@@ -62,6 +70,8 @@ namespace PUL
         // Start is called before the first frame update
         void Start()
         {
+            string value = ConfigManager.Instance.GetFeatureSetProperty("graphs_moveable");
+            if (value != null) graphsMoveable = bool.Parse(value);
         }
 
         // Update is called once per frame
@@ -81,7 +91,6 @@ namespace PUL
             // Set the label
             TextMeshPro nodeTitleTMP = graphHandle.transform.Find("TextBar/TextTMP").gameObject.GetComponent<TextMeshPro>();
             nodeTitleTMP.text = labelText;
-            // graphHandle.transform.SetParent(this.gameObject.transform, false);
 
             // Wire up graph close button
             GameObject closeButton = graphHandle.transform.Find("CloseGraphButton").gameObject;
@@ -91,13 +100,48 @@ namespace PUL
             distanceInteract.OnClick.AddListener(() => CloseGraphCallback(graphHandle));
 
             // Graph enable/disable movement at startup based on config
-            bool graphsMoveable = true;
-            string value = ConfigManager.Instance.GetFeatureSetProperty("graphs_moveable");
-            if (value != null) graphsMoveable = bool.Parse(value);
             ObjectManipulator graphOM = graphHandle.GetComponent<ObjectManipulator>();
             graphOM.enabled = graphsMoveable;
 
             return graphHandle;
+        }
+
+        // If graphs are not moveable, lay them out in a fixed pattern.
+        private void positionUnmoveableGraphs()
+        {
+            // Refer to SlateManager.positionUnMoveableSlates(). 
+            // This code is similar, but starts to the left of where Notepad usually sits
+            // and goes counter clockwise around the circle. 
+
+            if (graphList.Count == 0) return;
+
+            // Find starting spawn position.
+            Vector3 startingSpawnPosition = GameManager.Instance.FixedGraphStartPoint.transform.position;
+            float slateY = startingSpawnPosition.y + layoutYOffset;
+
+            // Find center of circle.
+            Vector3 center = new Vector3(layoutCircleCenterX, slateY, layoutCircleCenterZ);
+
+            // Find angle to the spawn point (where the first slate will be placed).
+            float currAngle = Mathf.Atan2(startingSpawnPosition.z - center.z, startingSpawnPosition.x - center.x);
+
+            // Walk through graph list, positioning each one progressively in a circular pattern.
+            for (int i = 0; i < graphList.Count; i++)
+            {
+                // Find the angle of the circle large to contain this graph
+                // based on width of the graph and the circle radius.
+                GameObject boundingBox = graphList[i].transform.Find("BoundingBox").gameObject;
+                float graphLayoutAngle = boundingBox.transform.localScale.x / layoutCircleRadius;
+                currAngle += (graphLayoutAngle * graphLayoutAngleScale);
+                // Debug.Log($"Graph is {boundingBox.transform.localScale.x} wide; angle {graphLayoutAngle * Mathf.Rad2Deg} adj {graphLayoutAngle * graphLayoutAngleScale * Mathf.Rad2Deg} fac {graphLayoutAngleScale}");
+
+                // Find and set position and orientation for this graph.
+                float newX = center.x + Mathf.Cos(currAngle) * layoutCircleRadius;
+                float newZ = center.z + Mathf.Sin(currAngle) * layoutCircleRadius;
+                graphList[i].transform.position = new Vector3(newX, slateY, newZ);
+                graphList[i].transform.rotation = Quaternion.LookRotation(graphList[i].transform.position - center);
+                // Debug.Log($"Graph {i} placed at {graphList[i].transform.position} {currAngle * Mathf.Rad2Deg}");
+            }
         }
 
         // Close (destroy) a graph attached to the provided graphHandle
@@ -105,6 +149,9 @@ namespace PUL
         {
             graphList.Remove(graphHandle);
             Destroy(graphHandle);
+
+            // If graphs are not moveable, reposition the remaining graphs.
+            if (!graphsMoveable) positionUnmoveableGraphs();
         }
 
         public void BuildBinaryCallGraph(OxideBinary binary)
@@ -216,6 +263,12 @@ namespace PUL
             // Scale the graph
             graphHandle.transform.localScale = Vector3.one * graphHandleScale;
 
+            // If graphs are not moveable, lay them out in a fixed pattern.
+            if (!graphsMoveable)
+            {
+                positionUnmoveableGraphs();
+            }
+
             // Assume this action to build the graph originated from a menu call,
             // so signal its completion. 
             MenuManager.Instance.unsetBusy();
@@ -293,6 +346,12 @@ namespace PUL
 
             // Scale the graph
             graphHandle.transform.localScale = Vector3.one * graphHandleScale;
+
+            // If graphs are not moveable, lay them out in a fixed pattern.
+            if (!graphsMoveable)
+            {
+                positionUnmoveableGraphs();
+            }
 
             // Assume this action to build the graph originated from a menu call,
             // so signal its completion. 

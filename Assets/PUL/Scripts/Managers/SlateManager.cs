@@ -175,34 +175,31 @@ namespace PUL
         // If slates are not moveable, lay them out in a fixed pattern.
         private void positionUnmoveableSlates()
         {
-            // Position the slates in a circle around the user starting at the 
+            // Position the slates in a circle around a point in front of the main menu
+            // (roughly, the position where most users will start) starting at the 
             // spawn point probided by GameManager (usually next to the main menu).
-            // Do all of our calculations in 2D using x and z axes. Slates' y position
-            // will remain unchanged. 
 
-            // Find starting spawn position in 3D and 2D.
-            Vector3 startingSpawnPosition = GameManager.Instance.getSpawnPosition();
+            if (activeSlates.Count == 0) return;
+
+            // Find starting spawn position.
+            Vector3 startingSpawnPosition = GameManager.Instance.FixedSlateStartPoint.transform.position;
             float slateY = startingSpawnPosition.y + layoutYOffset;
             // Debug.Log($"SPAWN: {startingSpawnPosition}");
 
-            // Find user position (center of circle) in 3D and 2D.
+            // Find center of circle.
             Vector3 center = new Vector3(layoutCircleCenterX, slateY, layoutCircleCenterZ);
-            // Debug.Log($"USER: Head {userPosition} Cam {Camera.main.transform.position} 2D {center}");
 
             // Find angle to the spawn point (where the first slate will be placed).
             float startingAngle = Mathf.Atan2(startingSpawnPosition.z - center.z, startingSpawnPosition.x - center.x);
             // Debug.Log($"Starting angle: {startingAngle * Mathf.Rad2Deg}");
 
-            // Find the angle between slates based on width of the slate and circle radius.
-            float slateLayoutAngle = 15.0f * Mathf.Deg2Rad; // default 15 degrees between slates
-            if (activeSlates.Count > 0) // get the width of the first slate 
-            {
-                slateLayoutAngle = activeSlates[0].obj.transform.localScale.x / layoutCircleRadius;
-                slateLayoutAngle *= slateLayoutAngleScale;
-            }
+            // Find the angle between slates based on width of the first slate and circle radius.
+            float slateLayoutAngle = activeSlates[0].obj.transform.localScale.x / layoutCircleRadius;
+            slateLayoutAngle *= slateLayoutAngleScale;
             // Debug.Log($"Layout angle {slateLayoutAngle * Mathf.Rad2Deg}");
 
             // Walk through slate list, positioning each one progressively in a circular pattern.
+            // Assume all slates are the same size.
             for (int i = 0; i < activeSlates.Count; i++)
             {
                 float angleInRadians = startingAngle + (i * -slateLayoutAngle);
