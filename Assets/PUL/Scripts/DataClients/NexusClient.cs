@@ -122,6 +122,9 @@ namespace PUL
 
                 string graphTelemetryJSON = GraphManager.Instance.GetGraphTelemetryJSON();
                 if (graphTelemetryJSON != "") NexusSessionUpdate(graphTelemetryJSON);
+
+                string notepadTelemetryJSON = TextManager.Instance.GetNotepadTelemetryJSON();
+                if (notepadTelemetryJSON != "") NexusSessionUpdate(notepadTelemetryJSON);
             }
         }
 

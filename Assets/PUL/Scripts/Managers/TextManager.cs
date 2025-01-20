@@ -90,5 +90,24 @@ namespace PUL
                 npInputField.caretPosition = caretPosition;
             }
         }   
+
+        public string GetNotepadTelemetryJSON()
+        {
+            string returnMe = "";
+
+            if (NotepadGameObject.activeSelf)
+            {
+                returnMe += $"[\"session_update\", \"objectTelemetry\"";
+                returnMe += $", \"notepad\", ";
+                Vector3 pos = NotepadGameObject.transform.position;
+                returnMe += $"\"{pos.x}\", \"{pos.y}\", \"{pos.z}\", ";
+                Vector3 ori = NotepadGameObject.transform.eulerAngles;
+                returnMe += $"\"{ori.x}\", \"{ori.y}\", \"{ori.z}\"";
+                returnMe += "]";
+                // Debug.Log("NOTEPAD TELEMETRY: " + returnMe);
+            }
+
+            return returnMe;
+        }
     }
 }
