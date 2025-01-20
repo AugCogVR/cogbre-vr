@@ -23,6 +23,8 @@ namespace PUL
 
         public GameObject FixedGraphStartPoint;
 
+        public GameObject FixedLayoutCircleCenter;
+
         // END: These values are wired up in the Unity Editor
         // ====================================
         

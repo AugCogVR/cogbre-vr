@@ -19,10 +19,6 @@ namespace PUL
 
         [Header("Slates in Fixed Position")]
         public bool slatesMoveable = true; // can users move slates?
-        public float layoutCircleCenterX = 0.0f;
-        public float layoutCircleCenterZ = -1.0f;
-        public float layoutCircleRadius = 2.0f;
-        public float layoutYOffset = 0.0f;
         public float slateLayoutAngleScale = 1.0f;
 
         [Header("Slate Automatic Deconfliction")]
@@ -183,18 +179,19 @@ namespace PUL
 
             // Find starting spawn position.
             Vector3 startingSpawnPosition = GameManager.Instance.FixedSlateStartPoint.transform.position;
-            float slateY = startingSpawnPosition.y + layoutYOffset;
+            float slateY = startingSpawnPosition.y;
             // Debug.Log($"SPAWN: {startingSpawnPosition}");
 
-            // Find center of circle.
-            Vector3 center = new Vector3(layoutCircleCenterX, slateY, layoutCircleCenterZ);
+            // Find center of circle and radius.
+            Vector3 center = GameManager.Instance.FixedLayoutCircleCenter.transform.position;
+            float radius = Vector3.Distance(center, startingSpawnPosition);
 
             // Find angle to the spawn point (where the first slate will be placed).
             float startingAngle = Mathf.Atan2(startingSpawnPosition.z - center.z, startingSpawnPosition.x - center.x);
             // Debug.Log($"Starting angle: {startingAngle * Mathf.Rad2Deg}");
 
             // Find the angle between slates based on width of the first slate and circle radius.
-            float slateLayoutAngle = activeSlates[0].obj.transform.localScale.x / layoutCircleRadius;
+            float slateLayoutAngle = activeSlates[0].obj.transform.localScale.x / radius;
             slateLayoutAngle *= slateLayoutAngleScale;
             // Debug.Log($"Layout angle {slateLayoutAngle * Mathf.Rad2Deg}");
 
@@ -203,8 +200,8 @@ namespace PUL
             for (int i = 0; i < activeSlates.Count; i++)
             {
                 float angleInRadians = startingAngle + (i * -slateLayoutAngle);
-                float newX = center.x + Mathf.Cos(angleInRadians) * layoutCircleRadius;
-                float newZ = center.z + Mathf.Sin(angleInRadians) * layoutCircleRadius;
+                float newX = center.x + Mathf.Cos(angleInRadians) * radius;
+                float newZ = center.z + Mathf.Sin(angleInRadians) * radius;
                 activeSlates[i].obj.transform.position = new Vector3(newX, slateY, newZ);
                 activeSlates[i].obj.transform.rotation = Quaternion.LookRotation(activeSlates[i].obj.transform.position - center);
                 // Debug.Log($"Slate {activeSlates[i].name} placed at {activeSlates[i].obj.transform.position} {angleInRadians * Mathf.Rad2Deg}");

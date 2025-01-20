@@ -25,11 +25,7 @@ namespace PUL
 
         [Header("Graphs in Fixed Position")]
         public bool graphsMoveable = true; // can users move graphs?
-        public float layoutCircleCenterX = 0.0f;
-        public float layoutCircleCenterZ = -1.0f;
-        public float layoutCircleRadius = 2.0f;
-        public float layoutYOffset = 0.0f;
-        public float graphLayoutAngleScale = 0.5f;
+        public float graphLayoutAngleScale = 1f;
 
         // END: These values are wired up in the Unity Editor
         // ====================================
@@ -117,10 +113,11 @@ namespace PUL
 
             // Find starting spawn position.
             Vector3 startingSpawnPosition = GameManager.Instance.FixedGraphStartPoint.transform.position;
-            float slateY = startingSpawnPosition.y + layoutYOffset;
+            float slateY = startingSpawnPosition.y;
 
-            // Find center of circle.
-            Vector3 center = new Vector3(layoutCircleCenterX, slateY, layoutCircleCenterZ);
+            // Find center of circle and radius.
+            Vector3 center = GameManager.Instance.FixedLayoutCircleCenter.transform.position;
+            float radius = Vector3.Distance(center, startingSpawnPosition);
 
             // Find angle to the spawn point (where the first slate will be placed).
             float currAngle = Mathf.Atan2(startingSpawnPosition.z - center.z, startingSpawnPosition.x - center.x);
@@ -131,16 +128,16 @@ namespace PUL
                 // Find the angle of the circle large to contain this graph
                 // based on width of the graph and the circle radius.
                 GameObject boundingBox = graphList[i].transform.Find("BoundingBox").gameObject;
-                float graphLayoutAngle = boundingBox.transform.localScale.x / layoutCircleRadius;
+                float graphLayoutAngle = boundingBox.transform.localScale.x / radius;
                 currAngle += (graphLayoutAngle * graphLayoutAngleScale);
-                // Debug.Log($"Graph is {boundingBox.transform.localScale.x} wide; angle {graphLayoutAngle * Mathf.Rad2Deg} adj {graphLayoutAngle * graphLayoutAngleScale * Mathf.Rad2Deg} fac {graphLayoutAngleScale}");
+                Debug.Log($"Graph is {boundingBox.transform.localScale.x} wide; angle {graphLayoutAngle * Mathf.Rad2Deg} adj {graphLayoutAngle * graphLayoutAngleScale * Mathf.Rad2Deg} fac {graphLayoutAngleScale}");
 
                 // Find and set position and orientation for this graph.
-                float newX = center.x + Mathf.Cos(currAngle) * layoutCircleRadius;
-                float newZ = center.z + Mathf.Sin(currAngle) * layoutCircleRadius;
+                float newX = center.x + Mathf.Cos(currAngle) * radius;
+                float newZ = center.z + Mathf.Sin(currAngle) * radius;
                 graphList[i].transform.position = new Vector3(newX, slateY, newZ);
                 graphList[i].transform.rotation = Quaternion.LookRotation(graphList[i].transform.position - center);
-                // Debug.Log($"Graph {i} placed at {graphList[i].transform.position} {currAngle * Mathf.Rad2Deg}");
+                Debug.Log($"Graph {i} placed at {graphList[i].transform.position} {currAngle * Mathf.Rad2Deg}");
             }
         }
 
