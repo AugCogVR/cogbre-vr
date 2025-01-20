@@ -128,10 +128,15 @@ namespace PUL
             distanceInteract2.OnClick.AddListener(() => CloseSlateCallback(slate));
 
             // Slate enable/disable movement based on config
+            // Overall slate object manipulator
             ObjectManipulator slateOM = slate.GetComponent<ObjectManipulator>();
             slateOM.enabled = slatesMoveable;
+            // Title bar object manipulator
             ObjectManipulator titleBarOM = slate.transform.Find("TitleBar").gameObject.GetComponent<ObjectManipulator>();
             titleBarOM.enabled = slatesMoveable;
+            // FollowMe Button
+            GameObject followMeButton = slate.transform.Find("TitleBar/Buttons/FollowMeButton").gameObject;
+            followMeButton.SetActive(slatesMoveable);
 
             // Track slate in ActiveSlates
             SlateData slateData = new SlateData(slate);
