@@ -7759,6 +7759,7 @@ GameObject:
   - component: {fileID: 7779349957995459816}
   - component: {fileID: 1613029244444232782}
   - component: {fileID: 3857009793080612847}
+  - component: {fileID: 934391468395408453}
   m_Layer: 0
   m_Name: TitleBar
   m_TagString: Untagged
@@ -8025,6 +8026,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   autoConstraintSelection: 1
   selectedConstraints: []
+--- !u!114 &934391468395408453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8997217411677726705}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea5f249786382754b8635a1375f7b76c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handType: 3
+  proximityType: 3
+  executionOrder: 0
+  faceAway: 1
 --- !u!1 &8999177157266579926
 GameObject:
   m_ObjectHideFlags: 0
