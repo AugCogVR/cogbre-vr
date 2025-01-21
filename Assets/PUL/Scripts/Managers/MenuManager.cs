@@ -423,11 +423,16 @@ namespace PUL
         // Function that creates the objects that are associated with given binary
         IEnumerator BinaryButtonCallbackCoroutine(OxideBinary binary)
         {
-            int count = 0;
-
-            // Create list of functions sorted by namne
+            // Create list of functions sorted by name, but put those that start with _ at the end.
             List<OxideFunction> sortedFunctionList = new List<OxideFunction>(binary.functionDict.Values);
-            sortedFunctionList.Sort((x, y) => x.name.CompareTo(y.name));
+            sortedFunctionList.Sort((x, y) => 
+            {
+                // x.name.CompareTo(y.name);
+                if (x.name.StartsWith("_") && !y.name.StartsWith("_")) return 1;  
+                else if (!x.name.StartsWith("_") && y.name.StartsWith("_")) return -1; 
+                else return x.name.CompareTo(y.name);
+                // return string.Compare(x.Name, y.Name, StringComparison.Ordinal);            
+            });
 
             // Create a button for each function
             foreach (OxideFunction function in sortedFunctionList)
@@ -452,8 +457,6 @@ namespace PUL
                 distanceInteract.OnClick.AddListener(() => FunctionButtonCallback(binary, function, newButton));
 
                 yield return new WaitForEndOfFrame();
-
-                // if (++count > 10) break; // low limit for testing
             }
 
             // Update grid objects and scrolling region
