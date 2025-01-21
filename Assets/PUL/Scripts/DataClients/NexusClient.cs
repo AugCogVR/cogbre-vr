@@ -165,10 +165,13 @@ namespace PUL
                 // if user ever selects this collection.
                 oxideData.collectionList.Add(new OxideCollection(collectionId, collectionName, null, null));
             }
+
+            // Sort collection list by name
+            oxideData.collectionList.Sort((x, y) => x.name.CompareTo(y.name));
+
+            // Provide oxide data to menu manager and initiatize it
             MenuManager.Instance.oxideData = oxideData;
             Debug.Log(oxideData);
-
-            // Once all information is pulled initialize the menu
             MenuManager.Instance.MenuInit();
 
             sessionInitialized = true;
@@ -282,6 +285,7 @@ namespace PUL
                         collection.binaryList.Add(binary);
                     }
 
+                    // Sort binary list by name
                     collection.binaryList.Sort((x, y) => x.name.CompareTo(y.name));
                 }
                 Debug.Log($"=== For collection {collection.name}: {collection.binaryList.Count} binaries.");
