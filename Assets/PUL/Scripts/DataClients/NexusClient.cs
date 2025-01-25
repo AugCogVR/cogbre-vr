@@ -476,7 +476,7 @@ namespace PUL
                 // data returned by function_extract! e.g., basic block 47058 in regedit.exe
                 // HACK: Create dummy function to contain these blocks. 
                 int mainDummyOffset = Int32.MaxValue;
-                OxideFunction mainDummyFunction = new OxideFunction("dummy", $"{mainDummyOffset}", "dummy function");
+                OxideFunction mainDummyFunction = new OxideFunction("_orphaned_blocks", $"{mainDummyOffset}", "artificial container");
                 binary.functionDict[mainDummyOffset] = mainDummyFunction;
                 mainDummyFunction.parentBinary = binary;
                 mainDummyFunction.vaddr = "0";
