@@ -6,40 +6,6 @@ namespace PUL
 {
     public class PolylineEdgeRouting
     {
-        // // Represents a node in the graph
-        // public class Node
-        // {
-        //     public Vector2 Position;
-        //     public Rect Bounds;  // Rectangular bounding box of the node
-
-        //     public Node(Vector2 position, float width, float height)
-        //     {
-        //         Position = position;
-        //         Bounds = new Rect(position.x - width / 2, position.y - height / 2, width, height);
-        //     }
-        // }
-
-        // // Represents a polyline edge from one node to another
-        // public class Edge
-        // {
-        //     public Node StartNode;
-        //     public Node EndNode;
-        //     public List<Vector2> Path;
-
-        //     public Edge(Node startNode, Node endNode)
-        //     {
-        //         StartNode = startNode;
-        //         EndNode = endNode;
-        //         Path = new List<Vector2>();
-        //     }
-        // }
-
-
-        // edgeInfo.controlPoints = new List<GameObject>();
-        // edgeInfo.controlPoints.Add(sourceNodeInfo.nodeGameObject);
-        // edgeInfo.controlPoints.Add(targetNodeInfo.nodeGameObject);
-
-
         // Main function to route the edge between nodes.
         public static void RouteEdge(EdgeInfo edgeInfo, List<NodeInfo> nodes)
         {
@@ -52,61 +18,52 @@ namespace PUL
             edgeInfo.controlPoints = new List<GameObject>();
 
             // Step 2: Get start and end positions of the nodes
-            // Vector3 startPosition = startNode.nodeGameObject.transform.localPosition;
-            // Vector3 endPosition = endNode.nodeGameObject.transform.localPosition;
-
             (Vector3 startPoint, Vector3 endPoint) = FindEdgeStartAndEndPositions(startNode, endNode);
 
-            // TO DO: Modify positions to point to edge of graph node instead of center
-
-            // TEMP TEST: Add a couple of artificial control points to test out rest of code
-            GameObject temp = new GameObject();
-            temp.transform.SetParent(parentTransform, false);
-            temp.transform.localPosition = startPoint;
-            edgeInfo.controlPoints.Add(temp);
-            // temp = new GameObject();
-            // temp.transform.SetParent(parentTransform, false);
-            // temp.transform.localPosition = new Vector3(startPoint.x * 0.2f, startPoint.y * 2.1f, startPoint.z);
-            // edgeInfo.controlPoints.Add(temp);
-            // temp = new GameObject();
-            // temp.transform.SetParent(parentTransform, false);
-            // temp.transform.localPosition = new Vector3(endPoint.x * 2.1f, endPoint.y * 0.2f, endPoint.z);
-            // edgeInfo.controlPoints.Add(temp);
-            temp = new GameObject();
-            temp.transform.SetParent(parentTransform, false);
-            temp.transform.localPosition = endPoint;
-            edgeInfo.controlPoints.Add(temp);
+            // // TEMP TEST: Add a couple of artificial control points to test out rest of code
+            edgeInfo.controlPoints.Add(MakeControlPointGameObject(startPoint, parentTransform));
+            // edgeInfo.controlPoints.Add(MakeControlPointGameObject(new Vector3(startPoint.x * 0.2f, startPoint.y * 2.1f, startPoint.z), parentTransform));
+            // edgeInfo.controlPoints.Add(MakeControlPointGameObject(new Vector3(endPoint.x * 2.1f, endPoint.y * 0.2f, endPoint.z), parentTransform));
+            edgeInfo.controlPoints.Add(MakeControlPointGameObject(endPoint, parentTransform));
 
             // // Step 3: Check if the start and end nodes are on the same level or row
-            // if (Mathf.Abs(startPosition.y - endPosition.y) < 0.01f) || (Mathf.Abs(startPosition.x - endPosition.x) < 0.01f);
+            // if (Mathf.Abs(startPoint.y - endPoint.y) < 0.01f) || (Mathf.Abs(startPoint.x - endPoint.x) < 0.01f);
             // {
             //     // Simple case: Route edge directly between the nodes
-            //     path.Add(startPosition);
-            //     path.Add(endPosition);
+            //     edgeInfo.controlPoints.Add(MakeControlPointGameObject(startPoint, parentTransform));
+            //     edgeInfo.controlPoints.Add(MakeControlPointGameObject(endPoint, parentTransform));
             // }
             // else
             // {
             //     // Step 4: Avoid crossing through nodes by routing around them
             //     Rect bufferStart = GetNodeBufferZone(startNode);
             //     Rect bufferEnd = GetNodeBufferZone(endNode);
-
-            //     // Step 4.2: Find a path around any obstacles (other nodes)
-            //     List<Vector2> intermediatePath = FindPathAroundNodes(startNode, endNode, nodes, bufferStart, bufferEnd);
+            //     List<GameObject> intermediatePath = FindPathAroundNodes(startNode, endNode, nodes, bufferStart, bufferEnd, parentTransform);
 
             //     if (intermediatePath != null)
             //     {
-            //         path.AddRange(intermediatePath);
+            //         edgeInfo.controlPoints.AddRange(intermediatePath);
             //     }
             //     else
             //     {
             //         // Default fallback: direct route if no obstacles found
-            //         path.Add(startPosition);
-            //         path.Add(endPosition);
+            //         edgeInfo.controlPoints.Add(MakeControlPointGameObject(startPoint, parentTransform));
+            //         edgeInfo.controlPoints.Add(MakeControlPointGameObject(endPoint, parentTransform));
             //     }
             // }
         }
 
-        // Given two rectangular nodes, find 
+        // Given a position and a parent, create a gameObject at that position as a child of the parent.
+        public static GameObject MakeControlPointGameObject(Vector3 localPosition, Transform parentTransform)
+        {
+            GameObject temp = new GameObject();
+            temp.transform.SetParent(parentTransform, false);
+            temp.transform.localPosition = localPosition;
+            return temp;
+        }
+
+        // Given two rectangular nodes, find the start and end positions of the edge between them.
+        // The edge connects the midpoints of the sides closest to each other.
         public static (Vector3, Vector3) FindEdgeStartAndEndPositions(NodeInfo startNode, NodeInfo endNode)
         {
             Vector3 startPosition = startNode.nodeGameObject.transform.localPosition;
@@ -175,24 +132,30 @@ namespace PUL
         // // Helper function: Get a buffer zone around a node to avoid overlap
         // public static Rect GetNodeBufferZone(NodeInfo node)
         // {
-        //     float margin = 10f;  // Define a margin to avoid nodes
-        //     return new Rect(node.Bounds.xMin - margin, node.Bounds.yMin - margin,
-        //                     node.Bounds.width + 2 * margin, node.Bounds.height + 2 * margin);
+        //     float margin = 0.10f;  // Define a margin to avoid nodes
+
+        //     Vector3 nodePosition = node.nodeGameObject.transform.localPosition;
+        //     Vector3 bounds = node.nodeGameObject.GetComponent<Collider>().bounds.size;
+
+        //     Vector3 rectPosition = new Vector3(nodePosition.x - (bounds.x / 2f), nodePosition.y - (bounds.y / 2f), nodePosition.z);
+
+        //     return new Rect(rectPosition.x - margin, rectPosition.y - margin,
+        //                     bounds.x + (2 * margin), bounds.y + (2 * margin));
         // }
 
         // // Helper function: Find a path around any obstacles (nodes)
-        // public static List<Vector2> FindPathAroundNodes(Node startNode, Node endNode, List<Node> nodes, Rect bufferStart, Rect bufferEnd)
+        // public static List<GameObject> FindPathAroundNodes(NodeInfo startNode, NodeInfo endNode, List<NodeInfo> nodes, Rect bufferStart, Rect bufferEnd, Transform parentTransform)
         // {
         //     // Initialize potential path
-        //     List<Vector2> potentialPath = new List<Vector2>();
+        //     List<GameObject> potentialPath = new List<GameObject>();
 
         //     // Step 1: Check for nodes that might obstruct the direct path
-        //     foreach (Node node in nodes)
+        //     foreach (NodeInfo node in nodes)
         //     {
-        //         if (Intersects(node, bufferStart, bufferEnd))
+        //         if (node.Bounds.Overlaps(bufferStart) || node.Bounds.Overlaps(bufferEnd))
         //         {
         //             // Path intersects with this node; attempt to find a detour path
-        //             List<Vector2> detourPath = FindDetourPath(startNode, endNode, node);
+        //             List<GameObject> detourPath = FindDetourPath(startNode, endNode, node);
         //             if (detourPath != null)
         //             {
         //                 return detourPath;
@@ -205,22 +168,16 @@ namespace PUL
         //     }
 
         //     // If no obstacles are found, return a direct path
-        //     potentialPath.Add(startNode.Position);
-        //     potentialPath.Add(endNode.Position);
+        //     potentialPath.Add(MakeControlPointGameObject(startNode.nodeGameObject.transform.localPosition, parentTransform));
+        //     potentialPath.Add(MakeControlPointGameObject(endNode.nodeGameObject.transform.localPosition, parentTransform));
         //     return potentialPath;
         // }
 
-        // // Helper function: Check if two zones (e.g., node's buffer and an edge) intersect
-        // public static bool Intersects(Node node, Rect bufferStart, Rect bufferEnd)
-        // {
-        //     return node.Bounds.Overlaps(bufferStart) || node.Bounds.Overlaps(bufferEnd);
-        // }
-
         // // Helper function: Find a detour path around an obstacle node
-        // public static List<Vector2> FindDetourPath(Node startNode, Node endNode, Node obstacleNode)
+        // public static List<GameObject> FindDetourPath(NodeInfo startNode, NodeInfo endNode, NodeInfo obstacleNode)
         // {
         //     // Simple strategy: Route above, below, or to the sides of the obstacle node
-        //     List<Vector2> detourPath = new List<Vector2>();
+        //     List<GameObject> detourPath = new List<GameObject>();
 
         //     // Example: Route above the obstacle node
         //     detourPath.Add(startNode.Position);
@@ -229,28 +186,6 @@ namespace PUL
         //     detourPath.Add(endNode.Position);
 
         //     return detourPath;
-        // }
-
-        // // Example of using the routing function
-        // public static void ExampleUsage()
-        // {
-        //     // Create some example nodes
-        //     Node startNode = new Node(new Vector2(0, 0), 50, 50);
-        //     Node endNode = new Node(new Vector2(100, 100), 50, 50);
-        //     List<Node> nodes = new List<Node>
-        //     {
-        //         new Node(new Vector2(50, 50), 50, 50),
-        //         new Node(new Vector2(75, 75), 50, 50)
-        //     };
-
-        //     // Route the edge
-        //     List<Vector2> path = RouteEdge(startNode, endNode, nodes);
-
-        //     // Print the path
-        //     foreach (var point in path)
-        //     {
-        //         Debug.Log("Path point: " + point);
-        //     }
         // }
     }
 }
