@@ -7,6 +7,11 @@ namespace PUL
     public class PolylineEdgeRouting
     {
         // Main function to route the edge between nodes.
+        // THIS CLASS IS UNFINISHED. 
+        // It simply creates a straight-line edge between two nodes. 
+        // The value it currently offers is to route the edge between 
+        // appropriate locations along the outer bounds of the node graphic 
+        // instead of between the node centers.
         public static void RouteEdge(EdgeInfo edgeInfo, List<NodeInfo> nodes)
         {
             // Step 0: Set up convenience variables
