@@ -13,13 +13,13 @@ namespace PUL
         // The control points defining the line or curve between source and target nodes
         public IList<GameObject> controlPoints;
 
+        // Only update if dirty
+        public bool isDirty = false;
+
 
         public void Update()
         {
-            // TODO: I *feel* like we should check if the source or target node positions have changed before
-            // recalculating the transforms for every edge model on every single frame. However, the checks 
-            // themselves require calculation on every frame as well, and there would be more code needed 
-            // to track status, increasing maintenance footprint. So... leaving it as-is for now. 
+            if (!isDirty) return;
 
             // Update the line renderer
             LineRenderer lineRenderer = this.gameObject.GetComponent<LineRenderer>();
@@ -37,15 +37,25 @@ namespace PUL
             }
 
             // Update the arrow:
-            // Position the arrow closer to the target (.lerp linearly interpolates between two points)
-            // Ideally, we want the arrow to be adjacent to the target but not inside the target. 
-            // TODO: Don't hardcode the distance adjustment
+
+            // OLD METHOD
+            // // Position the arrow closer to the target (.lerp linearly interpolates between two points)
+            // // Ideally, we want the arrow to be adjacent to the target but not inside the target. 
+            // // TODO: Don't hardcode the distance adjustment
+            // Transform lastSectionStart = (controlPoints[controlPoints.Count - 2]).transform;
+            // Transform lastSectionEnd = (controlPoints[controlPoints.Count - 1]).transform;
+            // float distance = Vector3.Distance(lastSectionStart.position, lastSectionEnd.position);
+            // transform.position = Vector3.Lerp(lastSectionStart.position, lastSectionEnd.position, (distance - 0.12f) / distance);
+            // // Set the arrow's heading toward the target transform
+            // transform.LookAt(lastSectionEnd);
+
+            // Put arrow at end of line aligned with final segment
             Transform lastSectionStart = (controlPoints[controlPoints.Count - 2]).transform;
             Transform lastSectionEnd = (controlPoints[controlPoints.Count - 1]).transform;
-            float distance = Vector3.Distance(lastSectionStart.position, lastSectionEnd.position);
-            transform.position = Vector3.Lerp(lastSectionStart.position, lastSectionEnd.position, (distance - 0.12f) / distance);
-            // Set the arrow's heading toward the target transform
-            transform.LookAt(lastSectionEnd);
+            transform.position = lastSectionStart.position;
+            transform.LookAt(lastSectionEnd.position);
+            transform.position = lastSectionEnd.position;
+
             // Rotate the model to head the right way
             transform.Rotate(Vector3.up * -90);
         }
@@ -68,6 +78,7 @@ namespace PUL
                 }                
             }
         }
+
         Vector3 CalculateCubicBezierPoint(float t, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
         {
             float u = 1 - t;
@@ -81,6 +92,7 @@ namespace PUL
             p += 3 * u * tt * p2; 
             p += ttt * p3; 
             
+            // Debug.Log($"IN: t={t} pts {p0} {p1} {p2} {p3} OUT: {p}");
             return p;
         }
     }

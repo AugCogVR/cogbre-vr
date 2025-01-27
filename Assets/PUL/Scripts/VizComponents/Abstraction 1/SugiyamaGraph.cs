@@ -144,6 +144,14 @@ namespace PUL
                 GameObject boundingBox = graphHandle.transform.Find("BoundingBox").gameObject;
                 boundingBox.transform.localPosition = collider.center;
                 boundingBox.transform.localScale = collider.size;
+
+                // Update edge control points
+                List<EdgeInfo> edgeInfoList = new List<EdgeInfo>(GetComponentsInChildren<EdgeInfo>());
+                foreach (EdgeInfo edgeInfo in edgeInfoList)
+                {
+                    PolylineEdgeRouting.RouteEdge(edgeInfo, nodes);
+                    edgeInfo.isDirty = true;
+                }
             }
         }
 
