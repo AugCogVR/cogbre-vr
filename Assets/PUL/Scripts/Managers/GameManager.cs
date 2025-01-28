@@ -96,13 +96,19 @@ namespace PUL
             StartCoroutine(routine);
         }
 
-        private string getJSONFragmentForIdPosAndDir(string id, Vector3 pos, Vector3 dir)
+        private string getJSONFragmentForIdPosAndEuler(string id, Vector3 pos, Vector3 euler)
         {
             string returnMe = "";
             returnMe += $"\"{id}\",";
             returnMe += $"\"{pos.x}\", \"{pos.y}\", \"{pos.z}\", ";
-            returnMe += $"\"{dir.x}\", \"{dir.y}\", \"{dir.z}\"";
+            returnMe += $"\"{euler.x}\", \"{euler.y}\", \"{euler.z}\"";
             return returnMe;
+        }
+
+        Vector3 getEulerFromRay(Ray ray)
+        {
+            Quaternion q = Quaternion.FromToRotation(Vector3.up, ray.direction);
+            return(q.eulerAngles);
         }
 
         public string GetUserTelemetryJSON()
@@ -112,18 +118,18 @@ namespace PUL
             // ref: https://learn.microsoft.com/en-us/windows/mixed-reality/mrtk-unity/mrtk2/features/input/input-state?view=mrtkunity-2022-05
 
             UnityEngine.Ray headRay = InputRayUtils.GetHeadGazeRay();
-            returnMe += getJSONFragmentForIdPosAndDir("head", headRay.origin, headRay.direction);
+            returnMe += getJSONFragmentForIdPosAndEuler("head", headRay.origin, getEulerFromRay(headRay));
 
             // Get the right hand ray
             if (InputRayUtils.TryGetHandRay(Handedness.Right, out UnityEngine.Ray rightHandRay))
             {
-                returnMe += ", " + getJSONFragmentForIdPosAndDir("rhand", rightHandRay.origin, rightHandRay.direction);
+                returnMe += ", " + getJSONFragmentForIdPosAndEuler("rhand", rightHandRay.origin, getEulerFromRay(rightHandRay));
             }
 
             // Get the left hand ray
             if (InputRayUtils.TryGetHandRay(Handedness.Left, out UnityEngine.Ray leftHandRay))
             {
-                returnMe += ", " + getJSONFragmentForIdPosAndDir("lhand", leftHandRay.origin, leftHandRay.direction);
+                returnMe += ", " + getJSONFragmentForIdPosAndEuler("lhand", leftHandRay.origin, getEulerFromRay(leftHandRay));
             }
 
             returnMe += "]";
