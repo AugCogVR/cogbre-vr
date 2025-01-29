@@ -177,16 +177,21 @@ namespace PUL
             sessionInitialized = true;
         }
 
-        // Handle an individual session update command and process its response. 
-        private async void NexusSessionUpdate(string command)
+        // Handle an individual session update command (e.g., telemetry update) 
+        // and process its response. 
+        // Command example: $"[\"session_update\", \"objectTelemetry\", " followed by
+        // comma-separated object name, position, and orientation.
+        public async void NexusSessionUpdate(string command)
         {
             // Send user telemetry to Nexus and await response
             string responseJson = await NexusSyncTask(command);
 
-            // Process the response. 
+            // Process the response. It may contain an update to the 
+            // session configuration provided by the Nexus.
             JsonData responseJsonData = JsonMapper.ToObject(responseJson);
             try
             {
+                // If there is a config update, pass it to the Config Manager.
                 JsonData configJsonData = responseJsonData["config_update"];
                 ConfigManager.Instance.SetConfigFromJSON(configJsonData);
             }

@@ -138,6 +138,17 @@ namespace PUL
             GameObject followMeButton = slate.transform.Find("TitleBar/Buttons/FollowMeButton").gameObject;
             followMeButton.SetActive(slatesMoveable);
 
+            // Report creation event to Nexus.
+            string objectId = "TBD";
+            string objectName = "slate:" + title.Replace("\n", ":");
+            // TODO: santize contents for JSON -- see https://stackoverflow.com/questions/3020094/how-should-i-escape-strings-in-json
+            // string details = contents.Replace("\n", "<br>");
+            // Debug.Log($"DETAILS: {details}");
+            string details = "detailsTBD";
+            string command = $"[\"session_update\", \"event\", \"create\", \"{objectId}\", \"{objectName}\", \"{details}\"]";
+            // Debug.Log($"COMMAND: {command}");
+            NexusClient.Instance.NexusSessionUpdate(command);
+
             // Track slate in ActiveSlates
             SlateData slateData = new SlateData(slate);
             activeSlates.Add(slateData);
@@ -232,6 +243,10 @@ namespace PUL
             }
             if (!found) Debug.LogError($"SlateManager - RemoveSlate(obj) -> No object found matching {obj.name}");
 
+            // TODO: Report destruction event to Nexus.
+            // ....
+
+            // Destroy the game object.
             Destroy(obj);
 
             // If slates are not moveable, reposition the remaining slates.
