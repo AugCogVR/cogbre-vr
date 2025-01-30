@@ -244,6 +244,15 @@ namespace PUL
             }
         } 
 
+        // Given an arbitray string, sanitize it so we can send it as JSON.
+        public string SanitizeStringForJSON(string fixMe)
+        {
+            // TODO: santize contents for JSON -- see https://stackoverflow.com/questions/3020094/how-should-i-escape-strings-in-json
+            // ...Or just use Base64 for now
+            string encoded = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(fixMe));
+            return encoded;
+        }
+
         // Ensure that this collection has its associated binary info collected.
         // Return the collection, but with info filled in.
         // This method does NOT fill in all the info for each binary -- that is performed,

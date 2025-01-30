@@ -98,7 +98,8 @@ namespace PUL
             if (NotepadGameObject.activeSelf)
             {
                 returnMe += $"[\"session_update\", \"objectTelemetry\"";
-                returnMe += $", \"notepad\", ";
+                returnMe += $", \"notepad\", "; // id
+                returnMe += $"\"notepad\", "; // display name
                 Vector3 pos = NotepadGameObject.transform.position;
                 returnMe += $"\"{pos.x}\", \"{pos.y}\", \"{pos.z}\", ";
                 Vector3 ori = NotepadGameObject.transform.eulerAngles;

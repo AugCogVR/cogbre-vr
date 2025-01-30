@@ -32,6 +32,8 @@ namespace PUL
 
         public List<SlateData> activeSlates = new List<SlateData>(); // LW: I later want this to be a list of a unique class structure, with gameobject as an element.
 
+        public int slateCounter = 0;
+
         // Instance holder
         private static SlateManager _instance; // this manager is a singleton
 
@@ -88,13 +90,18 @@ namespace PUL
         }
 
         // Make a slate with common characteristics. 
-        public GameObject MakeASlate(string title, string contents)
+        // title: goes at top of slate
+        // contents: goes into slate; may contain TMP markup codes
+        // altContents: assumed to be same as "contents" without markup codes 
+        public GameObject MakeASlate(string title, string contents, string altContents)
         {
             Debug.Log($"Make a slate: title:\n{title}\ncontents:\n{contents}");
             Debug.Log($"Slate at {GameManager.Instance.getSpawnPosition()}");
 
             // Make a new slate
             GameObject slate = Instantiate(slatePrefab, GameManager.Instance.getSpawnPosition(), GameManager.Instance.getSpawnRotation());
+            slateCounter++;
+            slate.name = $"slate{slateCounter}";
             slate.transform.rotation = Quaternion.LookRotation(slate.transform.position - Camera.main.transform.position);
 
             TextMeshPro titleBarTMP = slate.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>();
@@ -139,14 +146,10 @@ namespace PUL
             followMeButton.SetActive(slatesMoveable);
 
             // Report creation event to Nexus.
-            string objectId = "TBD";
+            string objectId = slate.name;
             string objectName = "slate:" + title.Replace("\n", ":");
-            // TODO: santize contents for JSON -- see https://stackoverflow.com/questions/3020094/how-should-i-escape-strings-in-json
-            // string details = contents.Replace("\n", "<br>");
-            // Debug.Log($"DETAILS: {details}");
-            string details = "detailsTBD";
+            string details = NexusClient.Instance.SanitizeStringForJSON(altContents);
             string command = $"[\"session_update\", \"event\", \"create\", \"{objectId}\", \"{objectName}\", \"{details}\"]";
-            // Debug.Log($"COMMAND: {command}");
             NexusClient.Instance.NexusSessionUpdate(command);
 
             // Track slate in ActiveSlates
@@ -182,6 +185,14 @@ namespace PUL
             }
 
             return slate;
+        }
+
+        // Make a slate with common characteristics. 
+        // Legacy method before altContents added. Call primary method
+        // with repeated contents. 
+        public GameObject MakeASlate(string title, string contents)
+        {
+            return MakeASlate(title, contents, contents);
         }
 
         // If slates are not moveable, lay them out in a fixed pattern.
@@ -264,10 +275,11 @@ namespace PUL
 
                 foreach (SlateData slate in activeSlates)
                 {            
-                    string slateName = "slate:";
-                    slateName += slate.obj.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>().text;
-                    slateName = slateName.Replace('\n', ':');
-                    returnMe += $", \"{slateName}\", ";
+                    returnMe += $", \"{slate.name}\", ";
+                    string slateDisplayName = "slate:";
+                    slateDisplayName += slate.obj.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>().text;
+                    slateDisplayName = slateDisplayName.Replace('\n', ':');
+                    returnMe += $"\"{slateDisplayName}\", ";
                     Vector3 pos = slate.obj.transform.position;
                     returnMe += $"\"{pos.x}\", \"{pos.y}\", \"{pos.z}\", ";
                     Vector3 ori = slate.obj.transform.eulerAngles;

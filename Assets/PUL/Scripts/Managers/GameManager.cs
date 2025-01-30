@@ -99,7 +99,8 @@ namespace PUL
         private string getJSONFragmentForIdPosAndEuler(string id, Vector3 pos, Vector3 euler)
         {
             string returnMe = "";
-            returnMe += $"\"{id}\",";
+            returnMe += $"\"{id}\", "; // actual ID
+            returnMe += $"\"{id}\", "; // display name is same as ID
             returnMe += $"\"{pos.x}\", \"{pos.y}\", \"{pos.z}\", ";
             returnMe += $"\"{euler.x}\", \"{euler.y}\", \"{euler.z}\"";
             return returnMe;

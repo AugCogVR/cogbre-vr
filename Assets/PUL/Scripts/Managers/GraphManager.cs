@@ -30,6 +30,8 @@ namespace PUL
         // END: These values are wired up in the Unity Editor
         // ====================================
 
+        public int graphCounter = 0;
+
         private static GraphManager _instance; // this manager is a singleton
 
         public static GraphManager Instance
@@ -80,6 +82,8 @@ namespace PUL
         {
             // Create the graph handle object at the spawn position and rotation
             GameObject graphHandle = Instantiate(GraphHandlePrefab, GameManager.Instance.getSpawnPosition(), GameManager.Instance.getSpawnRotation());
+            graphCounter++;
+            graphHandle.name = $"graph{graphCounter}";
             graphHandle.transform.rotation = Quaternion.LookRotation(graphHandle.transform.position - Camera.main.transform.position);
 
             Debug.Log($"Graph at {GameManager.Instance.getSpawnPosition()}");
@@ -98,6 +102,13 @@ namespace PUL
             // Graph enable/disable movement at startup based on config
             ObjectManipulator graphOM = graphHandle.GetComponent<ObjectManipulator>();
             graphOM.enabled = graphsMoveable;
+
+            // Report creation event to Nexus.
+            string objectId = graphHandle.name;
+            string objectName = "graph:" + labelText.Replace("\n", ":");
+            string details = "none";
+            string command = $"[\"session_update\", \"event\", \"create\", \"{objectId}\", \"{objectName}\", \"{details}\"]";
+            NexusClient.Instance.NexusSessionUpdate(command);
 
             return graphHandle;
         }
@@ -146,6 +157,9 @@ namespace PUL
         {
             graphList.Remove(graphHandle);
             Destroy(graphHandle);
+
+            // TODO: Report destruction event to Nexus.
+            // ....
 
             // If graphs are not moveable, reposition the remaining graphs.
             if (!graphsMoveable) positionUnmoveableGraphs();
@@ -468,10 +482,11 @@ namespace PUL
 
                 foreach (GameObject obj in graphList)
                 {
-                    string graphName = "graph:";
-                    graphName += obj.transform.Find("TextBar/TextTMP").gameObject.GetComponent<TextMeshPro>().text;
-                    graphName = graphName.Replace('\n', ':');
-                    returnMe += $", \"{graphName}\", ";
+                    returnMe += $", \"{obj.name}\", ";
+                    string graphDisplayName = "graph:";
+                    graphDisplayName += obj.transform.Find("TextBar/TextTMP").gameObject.GetComponent<TextMeshPro>().text;
+                    graphDisplayName = graphDisplayName.Replace('\n', ':');
+                    returnMe += $"\"{graphDisplayName}\", ";
                     Vector3 pos = obj.transform.position;
                     returnMe += $"\"{pos.x}\", \"{pos.y}\", \"{pos.z}\", ";
                     Vector3 ori = obj.transform.eulerAngles;

@@ -595,7 +595,7 @@ namespace PUL
             }
 
             // Make a new slate
-            GameObject slate = SlateManager.Instance.MakeASlate($"{binary.name} / {function.name} Disassembly\n{function.signature}", sbMarkup.ToString());
+            GameObject slate = SlateManager.Instance.MakeASlate($"{binary.name} / {function.name} Disassembly\n{function.signature}", sbMarkup.ToString(), sbPlainText.ToString());
 
             // Grab the content TMP
             TextMeshProUGUI contentTMP = slate.GetComponentInChildren<TextMeshProUGUI>();
@@ -685,7 +685,7 @@ namespace PUL
             }
 
             // Make a new slate
-            GameObject slate = SlateManager.Instance.MakeASlate($"{binary.name} / {function.name} Decompilation", sbMarkup.ToString());
+            GameObject slate = SlateManager.Instance.MakeASlate($"{binary.name} / {function.name} Decompilation", sbMarkup.ToString(), sbPlainText.ToString());
 
             // Grab the content TMP
             TextMeshProUGUI contentTMP = slate.GetComponentInChildren<TextMeshProUGUI>();
