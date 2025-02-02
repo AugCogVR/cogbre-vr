@@ -241,7 +241,8 @@ namespace PUL
             string slateName = obj.transform.Find("TitleBar/TitleBarTMP").gameObject.GetComponent<TextMeshPro>().text;
             Debug.Log($"Closing slate {slateName}");
 
-            // Remove slate data from list of active slates.
+            // Remove slate data from list of active slates by walking list of slateData objects and 
+            // finding the one that contains a gameobject matching the one passed to the callback.
             bool found = false;
             for (int i = 0; i < activeSlates.Count; i++)
             {
@@ -254,8 +255,10 @@ namespace PUL
             }
             if (!found) Debug.LogError($"SlateManager - RemoveSlate(obj) -> No object found matching {obj.name}");
 
-            // TODO: Report destruction event to Nexus.
-            // ....
+            // Report destruction event to Nexus.
+            string objectId = obj.name;
+            string command = $"[\"session_update\", \"event\", \"destroy\", \"{objectId}\"]";
+            NexusClient.Instance.NexusSessionUpdate(command);
 
             // Destroy the game object.
             Destroy(obj);

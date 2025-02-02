@@ -155,11 +155,16 @@ namespace PUL
         // Close (destroy) a graph attached to the provided graphHandle
         public void CloseGraphCallback(GameObject graphHandle)
         {
+            // Remove from graph list.
             graphList.Remove(graphHandle);
-            Destroy(graphHandle);
 
-            // TODO: Report destruction event to Nexus.
-            // ....
+            // Report destruction event to Nexus.
+            string objectId = graphHandle.name;
+            string command = $"[\"session_update\", \"event\", \"destroy\", \"{objectId}\"]";
+            NexusClient.Instance.NexusSessionUpdate(command);
+
+            // Destroy the game object.
+            Destroy(graphHandle);
 
             // If graphs are not moveable, reposition the remaining graphs.
             if (!graphsMoveable) positionUnmoveableGraphs();
