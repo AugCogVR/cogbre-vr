@@ -68,11 +68,25 @@ namespace PUL
             notepadOM.enabled = notepadMoveable;
             ObjectManipulator titleBarOM = NotepadGameObject.transform.Find("TitleBar").gameObject.GetComponent<ObjectManipulator>();
             titleBarOM.enabled = notepadMoveable;
+
+            // Attach a listener for changes to the Notepad text input field
+            TMP_InputField npInputField = NotepadGameObject.GetComponent<Notepad>().keyboard.InputField;
+            npInputField.onValueChanged.AddListener(delegate { NotepadChangeCallback(); });
         }
 
         // Update is called once per frame
         void Update()
         {
+        }
+
+        // When the value of the notepad text field changes, send update to Nexus.
+        public void NotepadChangeCallback()
+        {
+            TMP_InputField npInputField = NotepadGameObject.GetComponent<Notepad>().keyboard.InputField;
+            string textB64 = NexusClient.Instance.SanitizeStringForJSON(npInputField.text);
+            string command = $"[\"session_update\", \"event\", \"update\", \"notepad\", \"{textB64}\"]";
+            Debug.Log($"NOTEPAD UPDATE COMMAND: {command}");
+            NexusClient.Instance.NexusSessionUpdate(command);
         }
 
         // Callback used by any slate generated in the system to indicate the user wants 
