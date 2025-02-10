@@ -15,6 +15,7 @@ namespace PUL
     {
         public TMP_InputField linkedText = null; // Text linked to the dynamic scrollbar
         public bool updateHeight = false; // Flag to check if the height should be updated [SUBDUES UPDATE INTERACTABLE AREA]
+        public bool ignoreLineLimit = true;
         public string selectedInfo = "";
 
         private RectTransform ltTransform = null; // Refrence to the linked text's rect transform [REQUIRED FOR UPDATE INTERACTABLE AREA]
@@ -54,31 +55,16 @@ namespace PUL
             #if (WRITE_CONSOLE)
             Debug.Log("Checking linked text");
             #endif
-            // Check if the scrollbar should be shown
-            if (scrollbar.size == 1)
-            {
-                scrollbar.image.enabled = false;
-                barBGImage.enabled = false;
-            }
-            else
-            {
-                scrollbar.image.enabled = true;
-                barBGImage.enabled = true;
-            }
-
 
             // -> Check to see if the value has gone out of bounds
             int lineCount = linkedText.textComponent.textInfo.lineCount + 2; // Added 2 to create a slight buffer
-                #if (WRITE_CONSOLE)
-                Debug.Log($"Dynamic Scrollbar Handler -> Text with {lineCount - 2} lines modified.");
-                #endif
             int height = lineCount * Mathf.CeilToInt(linkedText.textComponent.fontSize);
+            #if (WRITE_CONSOLE)
+                        Debug.Log($"Dynamic Scrollbar Handler -> Text with {lineCount - 2} lines modified. \nHeight is {height} with a size of {sbTransform.sizeDelta.y}");
+#endif
             // Sets the scrollbar if the text is overflowing
             if (height > sbTransform.sizeDelta.y)
-            {
-                textOverflowing = true;
                 BindScrollbar();
-            }
             else
                 UnbindScrollbar();
         }
@@ -86,27 +72,38 @@ namespace PUL
         // Method that handles text selection
         void SelectionListener(string value)
         {
-            UnbindScrollbar();
+            UnbindScrollbar(false); // Discretely unbind the scrollbar, keeps the slate stable while selecting
         }
         // Method that handles text Deselection
         void DeselectionListener(string value)
         {
-            BindScrollbar();
+            BindScrollbar(false); // Rebind the scrollbar
             PullSelectionData();
         }
 
         // Method that unbinds the scroll bar to the linked text
-        void UnbindScrollbar()
+        void UnbindScrollbar(bool modifyVisibility = true)
         {
+            textOverflowing = false;
             linkedText.verticalScrollbar = null;
+
+            if (modifyVisibility)
+            {
+                scrollbar.image.enabled = false;
+                barBGImage.enabled = false;
+            }
         }
         // Method that binds the scroll bar to the linked text under the condition that the text is overflowing
-        void BindScrollbar()
+        void BindScrollbar(bool modifyVisibility = true)
         {
-            if (!textOverflowing)
-                return;
-
+            textOverflowing = true;
             linkedText.verticalScrollbar = scrollbar;
+
+            if (modifyVisibility)
+            {
+                scrollbar.image.enabled = true;
+                barBGImage.enabled = true;
+            }
         }
         // Method that pulls the information selected
         void PullSelectionData()
@@ -122,6 +119,9 @@ namespace PUL
         // Updates the line limit for the contained notepad
         void UpdateLineLimit()
         {
+            // Check if the region should ignore the line limit
+            if (ignoreLineLimit) return;
+
             // Grab the height of the allocated space
             float storedHeight = ltTransform.sizeDelta.y;
 
@@ -131,7 +131,7 @@ namespace PUL
         }
 
         // Clears the notepad
-        public void ClearNotepad()
+        public void ClearText()
         {
             // Clear the linked text, update the scrollbar
             linkedText.text = "";

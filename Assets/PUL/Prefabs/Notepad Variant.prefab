@@ -788,6 +788,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   linkedText: {fileID: 7446882911997610413}
   updateHeight: 1
+  ignoreLineLimit: 0
   selectedInfo: 
 --- !u!1 &5350908063798196560 stripped
 GameObject:
@@ -849,10 +850,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   notepadText: {fileID: 8174152733387461321}
   notepadInputField: {fileID: 7446882911997610413}
-  openKeyboardButton: {fileID: 4551538804411128231}
   keyboard: {fileID: 0}
-  containedText: 
-  workingText: 
+  openKeyboardButton: {fileID: 4551538804411128231}
   dh: {fileID: 3740950221823847200}
   dictationButtonTMP: {fileID: 0}
   dictationHypothesisTMP: {fileID: 0}

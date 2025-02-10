@@ -14,6 +14,9 @@ namespace PUL
         // ====================================
         // NOTE: These values are wired up in the Unity Editor -> Graph Manager object
 
+        // Keep GameManager Ref
+        public GameManager gm;
+
         // The Slate prefeb we instantiate for function disassembly
         public GameObject slatePrefab;
 
@@ -65,6 +68,10 @@ namespace PUL
         // Start is called before the first frame update
         void Start()
         {
+            // Check if GM is null
+            if (gm == null)
+                gm = GameManager.Instance;
+
             // Read values fron config data
             string value = ConfigManager.Instance.GetFeatureSetProperty("slate_deconfliction_enabled");
             if (value != null) slateDeconflictionEnabled = bool.Parse(value);
@@ -81,6 +88,11 @@ namespace PUL
 
         private void OnDrawGizmos()
         {
+            // --> Slate spawn zone
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(gm.getSpawnPosition(), slateSpawnZone);
+
+            // --> Slate collision
             Gizmos.color = Color.magenta;
             // Draw a circle around each slate, shows padding
             foreach (SlateData slate in activeSlates)
@@ -96,10 +108,10 @@ namespace PUL
         public GameObject MakeASlate(string title, string contents, string altContents)
         {
             Debug.Log($"Make a slate: title:\n{title}\ncontents:\n{contents}");
-            Debug.Log($"Slate at {GameManager.Instance.getSpawnPosition()}");
+            Debug.Log($"Slate at {gm.getSpawnPosition()}");
 
             // Make a new slate
-            GameObject slate = Instantiate(slatePrefab, GameManager.Instance.getSpawnPosition(), GameManager.Instance.getSpawnRotation());
+            GameObject slate = Instantiate(slatePrefab, gm.getSpawnPosition() + (Random.insideUnitSphere * slateSpawnZone), gm.getSpawnRotation());
             slateCounter++;
             slate.name = $"slate{slateCounter}";
             slate.transform.rotation = Quaternion.LookRotation(slate.transform.position - Camera.main.transform.position);
@@ -205,12 +217,12 @@ namespace PUL
             if (activeSlates.Count == 0) return;
 
             // Find starting spawn position.
-            Vector3 startingSpawnPosition = GameManager.Instance.FixedSlateStartPoint.transform.position;
+            Vector3 startingSpawnPosition = gm.FixedSlateStartPoint.transform.position;
             float slateY = startingSpawnPosition.y;
             // Debug.Log($"SPAWN: {startingSpawnPosition}");
 
             // Find center of circle and radius.
-            Vector3 center = GameManager.Instance.FixedLayoutCircleCenter.transform.position;
+            Vector3 center = gm.FixedLayoutCircleCenter.transform.position;
             float radius = Vector3.Distance(center, startingSpawnPosition);
 
             // Find angle to the spawn point (where the first slate will be placed).
@@ -402,7 +414,11 @@ namespace PUL
 
         public Vector3 GetPushDirection(SlateData other)
         {
-            return GetSphereCenter() - other.GetSphereCenter();
+            // Check if two slates are on the same point
+            Vector3 direction = GetSphereCenter() - other.GetSphereCenter();
+            if(direction.Equals(Vector3.zero))
+                direction = Vector3.right * 0.1f;
+            return direction;
         }
 
         public void PushSlate(Vector3 force)
