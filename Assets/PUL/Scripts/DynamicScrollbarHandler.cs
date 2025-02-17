@@ -34,6 +34,7 @@ namespace PUL
             if (scrollbar == null || sbTransform == null)
                 return;
             linkedText.onValueChanged.AddListener((string value) => CheckLink(value));
+            linkedText.onValueChanged.AddListener((string value) => CheckLines(value));
             linkedText.onSelect.AddListener((string value) => SelectionListener(value));
             linkedText.onDeselect.AddListener((string value) => DeselectionListener(value));
 
@@ -52,21 +53,41 @@ namespace PUL
         // -> When text overflows the selection area starts to get updated
         void CheckLink(string value)
         {
-            #if (WRITE_CONSOLE)
+#if (WRITE_CONSOLE)
             Debug.Log("Checking linked text");
-            #endif
+#endif
 
             // -> Check to see if the value has gone out of bounds
             int lineCount = linkedText.textComponent.textInfo.lineCount + 2; // Added 2 to create a slight buffer
             int height = lineCount * Mathf.CeilToInt(linkedText.textComponent.fontSize);
-            #if (WRITE_CONSOLE)
-                        Debug.Log($"Dynamic Scrollbar Handler -> Text with {lineCount - 2} lines modified. \nHeight is {height} with a size of {sbTransform.sizeDelta.y}");
+#if (WRITE_CONSOLE)
+            Debug.Log($"Dynamic Scrollbar Handler -> Text with {lineCount - 2} lines modified. \nHeight is {height} with a size of {sbTransform.sizeDelta.y}");
 #endif
             // Sets the scrollbar if the text is overflowing
             if (height > sbTransform.sizeDelta.y)
                 BindScrollbar();
             else
                 UnbindScrollbar();
+        }
+
+        // Checks Linked text to see if the line total has changed
+        int totalLines = 0;
+        void CheckLines(string value)
+        {
+            // Get total lines of linked text
+            int cLines = linkedText.textComponent.textInfo.lineCount;
+
+            // Compare total lines
+            if (totalLines == cLines)
+                return;
+
+            // Do actions based on if the last frames lines are greater than or less than the current lines
+            // -> If we are removing lines and our cursor is in the last 200 characters, scroll to bottom
+            if (cLines < totalLines && value.Length - linkedText.caretPosition <= 200)
+                SetScrollbarValue(1);
+
+            // Set last lines to current
+            totalLines = cLines;
         }
 
         // Method that handles text selection
@@ -88,7 +109,7 @@ namespace PUL
             linkedText.verticalScrollbar = null;
 
             if (modifyVisibility)
-            {
+            {             
                 scrollbar.image.enabled = false;
                 barBGImage.enabled = false;
             }
@@ -136,6 +157,19 @@ namespace PUL
             // Clear the linked text, update the scrollbar
             linkedText.text = "";
             CheckLink("");
+        }
+
+        void SetScrollbarValue(int value)
+        {
+            StartCoroutine(SetScrollbarValue_Coroutine(value));
+        }
+        IEnumerator SetScrollbarValue_Coroutine(int value) 
+        {
+            yield return null;// new WaitForEndOfFrame();
+#if (WRITE_CONSOLE)
+            Debug.Log($"DynamicScrollbarHandler : SetScrollbarValue_Coroutine -> Setting value to {value}");
+#endif
+            scrollbar.value = value;
         }
     }
 }
