@@ -32,6 +32,10 @@ namespace PUL
 
         public int graphCounter = 0;
 
+
+        [Header("Sugiyama Graph Settings")]
+        public float nodeSpacing_X = 0.1f;
+        
         private static GraphManager _instance; // this manager is a singleton
 
         public static GraphManager Instance
@@ -292,6 +296,7 @@ namespace PUL
 
         public void BuildFunctionControlFlowGraph(OxideFunction function)
         {
+            Debug.Log($"GraphManager -> Building CFG ({function.parentBinary.name} / {function.name})");
             // Build the "handle" object that the user can use to move the whole graph around
             GameObject graphHandle = buildGraphHandle($"CFG for {function.parentBinary.name} / {function.name}");
             graphList.Add(graphHandle);

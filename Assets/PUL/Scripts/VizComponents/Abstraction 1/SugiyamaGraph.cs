@@ -102,6 +102,8 @@ namespace PUL
 
                         // Place the node based on its size and grid position
                         Vector3 size = vertex.nodeGameObject.GetComponent<Collider>().bounds.size;
+                        // -> Give nodes a touch more spacing
+                        size = size + (Vector3.right * GraphManager.Instance.nodeSpacing_X);
 
                         // Where to draw the graph in relation to the graph handle object's center
                         float xOffset = 0.25f;
