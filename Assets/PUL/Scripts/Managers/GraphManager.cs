@@ -24,7 +24,11 @@ namespace PUL
         public float graphHandleScale = 1f;
 
         [Header("Graphs in Fixed Position")]
-        public bool graphsMoveable = true; // can users move graphs?
+        // can users move graphs?
+        public bool graphsMoveable = true; 
+        
+        // debugging tweak to scale the angle a graph takes up in the circle 
+        // around which fixed-position graphs are arranged
         public float graphLayoutAngleScale = 1f;
 
         // END: These values are wired up in the Unity Editor
@@ -81,14 +85,14 @@ namespace PUL
         {
         }
 
-        // Build the "handle" object that the user can use to move the whole graph around
+        // Build the "handle" game object that identifies the graph and is the parent of substituent game objects forming the graph
         GameObject buildGraphHandle(string labelText)
         {
-            // Create the graph handle object at the spawn position and rotation
+            // Create the graph handle object at the spawn position and have it face the user (camera)
             GameObject graphHandle = Instantiate(GraphHandlePrefab, GameManager.Instance.getSpawnPosition(), GameManager.Instance.getSpawnRotation());
+            graphHandle.transform.rotation = Quaternion.LookRotation(graphHandle.transform.position - Camera.main.transform.position);
             graphCounter++;
             graphHandle.name = $"graph{graphCounter}";
-            graphHandle.transform.rotation = Quaternion.LookRotation(graphHandle.transform.position - Camera.main.transform.position);
 
             Debug.Log($"Graph at {GameManager.Instance.getSpawnPosition()}");
 
@@ -128,13 +132,13 @@ namespace PUL
 
             // Find starting spawn position.
             Vector3 startingSpawnPosition = GameManager.Instance.FixedGraphStartPoint.transform.position;
-            float slateY = startingSpawnPosition.y;
+            float graphY = startingSpawnPosition.y;
 
             // Find center of circle and radius.
             Vector3 center = GameManager.Instance.FixedLayoutCircleCenter.transform.position;
             float radius = Vector3.Distance(center, startingSpawnPosition);
 
-            // Find angle to the spawn point (where the first slate will be placed).
+            // Find angle to the spawn point (where the first graph will be placed).
             float currAngle = Mathf.Atan2(startingSpawnPosition.z - center.z, startingSpawnPosition.x - center.x);
 
             // Walk through graph list, positioning each one progressively in a circular pattern.
@@ -147,12 +151,35 @@ namespace PUL
                 currAngle += (graphLayoutAngle * graphLayoutAngleScale);
                 Debug.Log($"Graph is {boundingBox.transform.localScale.x} wide; angle {graphLayoutAngle * Mathf.Rad2Deg} adj {graphLayoutAngle * graphLayoutAngleScale * Mathf.Rad2Deg} fac {graphLayoutAngleScale}");
 
-                // Find and set position and orientation for this graph.
+                // Find new position for this graph.
                 float newX = center.x + Mathf.Cos(currAngle) * radius;
                 float newZ = center.z + Mathf.Sin(currAngle) * radius;
-                graphList[i].transform.position = new Vector3(newX, slateY, newZ);
-                graphList[i].transform.rotation = Quaternion.LookRotation(graphList[i].transform.position - center);
-                Debug.Log($"Graph {i} placed at {graphList[i].transform.position} {currAngle * Mathf.Rad2Deg}");
+
+                // We want the center of the graph (indicated by center of bounding box) at the
+                // new position, but the graph handle is the parent, so we have to adjust
+                // the parent's position such that the center of the bounding box ends up 
+                // at the new position. 
+                Vector3 handleOffset = graphList[i].transform.position - boundingBox.transform.position;
+                // Debug.Log($"GRAPH POS: {graphList[i].transform.position} / BB POS: {boundingBox.transform.position} / HANDLE OFFSET: {handleOffset}");
+                graphList[i].transform.position = new Vector3(newX, graphY, newZ) + handleOffset;
+
+
+graphList[i].transform.rotation = Quaternion.Euler(0, 180, 0);
+
+// Calculate the direction vector
+Vector3 direction = center - boundingBox.transform.position;
+// new Vector3(center.x, 0, center.z) - new Vector3(boundingBox.transform.position.x, 0, boundingBox.transform.position.z);
+
+// Calculate the angle
+float angle = Vector3.SignedAngle(Vector3.forward, direction, Vector3.up);
+
+// Rotate the first object around the Y-axis to face the second object
+graphList[i].transform.RotateAround(boundingBox.transform.position, Vector3.up, angle);
+
+                // graphList[i].transform.RotateAround(boundingBox.transform.position, Vector3.up, 180);
+                // graphList[i].transform.rotation = Quaternion.LookRotation(graphList[i].transform.position - center);
+
+                Debug.Log($"Graph {i} placed at pos {graphList[i].transform.position} rot {boundingBox.transform.rotation} based on angle {currAngle * Mathf.Rad2Deg}");
             }
         }
 
