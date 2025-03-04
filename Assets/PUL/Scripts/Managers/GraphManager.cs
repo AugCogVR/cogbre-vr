@@ -124,7 +124,6 @@ namespace PUL
             // Refer to SlateManager.positionUnMoveableSlates(). 
             // This code is similar, but starts to the left of where Notepad usually sits
             // and goes counter clockwise around the circle. 
-
             if (graphList.Count == 0) return;
 
             // Find starting spawn position.
