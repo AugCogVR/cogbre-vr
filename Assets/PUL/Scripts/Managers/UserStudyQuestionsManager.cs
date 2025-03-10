@@ -110,23 +110,23 @@ namespace PUL
             switch (questionNum)
             {
                 case 1: 
-                    questionTMP.text = "Question 1:\nIn this program, an input is considered correct when a function that asks for an input returns that input value instead of zero. What specific input does the function part1a require to return a nonzero value?";
+                    questionTMP.text = "Question 1:\n\nIn this program, an input is considered correct when a function that asks for an input returns that input value instead of zero. What specific input does the function part1a require to return a nonzero value?";
                     break;
 
                 case 2:
-                    questionTMP.text = "Question 2:\nWhat final value is returned by part1d when the input to part1a is correct?";
+                    questionTMP.text = "Question 2:\n\nWhat final value is returned by part1d when the input to part1a is correct?";
                     break;
 
                 case 3:
-                    questionTMP.text = "Question 3:\nWhat final value is returned by part3d when the input to part3a is correct?";
+                    questionTMP.text = "Question 3:\n\nWhat final value is returned by part3d when the input to part3a is correct?";
                     break;
 
                 case 4:
-                    questionTMP.text = "Question 4:\nWhat final value is returned by part4e when the required inputs are correct?";
+                    questionTMP.text = "Question 4:\n\nWhat final value is returned by part4e when the required inputs are correct?";
                     break;
 
                 case 5:
-                    questionTMP.text = "Question 5:\nHow many times is the function part1a called if the part1d function fully executes (you examined this chain of functions in question 2)?";
+                    questionTMP.text = "Question 5:\n\nHow many times is the function part1a called if the part1d function fully executes (you examined this chain of functions in question 2)?";
                     break;
             }
 
