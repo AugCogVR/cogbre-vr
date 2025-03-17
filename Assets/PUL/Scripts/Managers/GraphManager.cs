@@ -119,6 +119,81 @@ namespace PUL
         }
 
         // If graphs are not moveable, lay them out in a fixed pattern.
+        private void positionUnmoveableGraphs_REWRITE()
+        {
+            // Refer to SlateManager.positionUnMoveableSlates(). 
+            // This code is similar, but starts to the left of where Notepad usually sits
+            // and goes counter clockwise around the circle. 
+            if (graphList.Count == 0) return;
+
+            // Find starting spawn position.
+            Vector3 startingSpawnPosition = GameManager.Instance.FixedGraphStartPoint.transform.position;
+            float graphY = startingSpawnPosition.y;
+
+            // Find center of circle and radius.
+            Vector3 center = GameManager.Instance.FixedLayoutCircleCenter.transform.position;
+            float radius = Vector3.Distance(center, startingSpawnPosition);
+
+            // Find angle to the spawn point (where the first graph will be placed).
+            float currAngle = Mathf.Atan2(startingSpawnPosition.z - center.z, startingSpawnPosition.x - center.x);
+
+            // Walk through graph list, positioning each one progressively in a circular pattern.
+            for (int i = 0; i < graphList.Count; i++)
+            {
+                // Reset graph's rotation.
+                graphList[i].transform.rotation = Quaternion.Euler(0, 180, 0);
+
+                // Find the angle of the circle large to contain this graph
+                // based on width of the graph and the circle radius.
+                GameObject boundingBox = graphList[i].transform.Find("BoundingBox").gameObject;
+                float graphLayoutAngle = boundingBox.transform.localScale.x / radius;
+                // Debug.Log($"Graph is {boundingBox.transform.localScale.x} wide; angle {graphLayoutAngle * Mathf.Rad2Deg}");
+
+                // Find new position for this graph.
+                // How far from center of layout circle?
+                float distFromCenter = radius;
+                Debug.Log($"GraphManager -> DB {distFromCenter}");
+                // If graph is not exceptionally wide, have the graph be a chord of the layout circle. 
+                /*if (((radius * radius) - ((boundingBox.transform.localScale.x * boundingBox.transform.localScale.x) / 4.0f)) > 0.0f)
+                    distFromCenter = (float)(Math.Sqrt((radius * radius) - ((boundingBox.transform.localScale.x * boundingBox.transform.localScale.x) / 4.0f)));
+                // Otherwise fudge the radius to bring a big graph in closer to center. 
+                else
+                    distFromCenter = radius * 0.75f;*/
+                Debug.Log($"GraphManager -> DA {distFromCenter}");
+                float newX = center.x + Mathf.Cos(currAngle/* + (graphLayoutAngle / 2.0f)*/) * distFromCenter;
+                float newZ = center.z + Mathf.Sin(currAngle/* + (graphLayoutAngle / 2.0f)*/) * distFromCenter;
+                Debug.Log($"GraphManager -> Angles: Current {currAngle} || Graph Layout {graphLayoutAngle}");
+                // Debug.Log($"radius {radius} distFromCenter {distFromCenter} center {center} newX {newX} newZ {newZ}");
+
+                // We want the center of the graph (indicated by center of bounding box) at the
+                // new position, but the graph handle is the parent, so we have to adjust
+                // the parent's position such that the center of the bounding box ends up 
+                // at the new position. 
+                Vector3 handleOffset = graphList[i].transform.position - boundingBox.transform.position;
+                // Debug.Log($"GRAPH PRE POS: {graphList[i].transform.position} / BB POS: {boundingBox.transform.position} / HANDLE OFFSET: {handleOffset}");
+                graphList[i].transform.position = new Vector3(newX, graphY, newZ);// + handleOffset;
+                // Debug.Log($"GRAPH POST POS: {graphList[i].transform.position} / BB POS: {boundingBox.transform.position}");
+
+                // Rotate the graph (pivoting on center of bounding box) toward center of layout circle.
+                // Calculate the direction vector
+                Vector3 direction = center - graphList[i].transform.position;
+                // Calculate the angle
+                float angle = Vector3.SignedAngle(Vector3.forward, direction, Vector3.up);
+                // Rotate the first object around the Y-axis to face the second object
+                graphList[i].transform.RotateAround(graphList[i].transform.position, Vector3.up, angle);
+
+                // Get turn rotation to face graph towards camera
+                Vector3 bDirection = center - boundingBox.transform.position;
+                float turnAngle = Vector3.Angle(direction, bDirection);
+                graphList[i].transform.RotateAround(graphList[i].transform.position, Vector3.up, turnAngle);
+
+                Debug.Log($"Graph {i} placed at pos {graphList[i].transform.position} / bb pos {boundingBox.transform.position} / rot {boundingBox.transform.rotation} based on angle {currAngle * Mathf.Rad2Deg}");
+
+                // Update currAngle for the next graph in the list
+                currAngle += graphLayoutAngle;
+            }
+        } 
+        // If graphs are not moveable, lay them out in a fixed pattern.
         private void positionUnmoveableGraphs()
         {
             // Refer to SlateManager.positionUnMoveableSlates(). 
@@ -152,12 +227,14 @@ namespace PUL
                 // Find new position for this graph.
                 // How far from center of layout circle?
                 float distFromCenter = radius;
+                Debug.Log($"GraphManager -> DB {distFromCenter}");
                 // If graph is not exceptionally wide, have the graph be a chord of the layout circle. 
                 if (((radius * radius) - ((boundingBox.transform.localScale.x * boundingBox.transform.localScale.x) / 4.0f)) > 0.0f)
                     distFromCenter = (float)(Math.Sqrt((radius * radius) - ((boundingBox.transform.localScale.x * boundingBox.transform.localScale.x) / 4.0f)));
                 // Otherwise fudge the radius to bring a big graph in closer to center. 
                 else
-                    distFromCenter = radius * 0.75f; 
+                    distFromCenter = radius * 0.75f;
+                Debug.Log($"GraphManager -> DA {distFromCenter}");
                 float newX = center.x + Mathf.Cos(currAngle + (graphLayoutAngle / 2.0f)) * distFromCenter;
                 float newZ = center.z + Mathf.Sin(currAngle + (graphLayoutAngle / 2.0f)) * distFromCenter;
                 // Debug.Log($"radius {radius} distFromCenter {distFromCenter} center {center} newX {newX} newZ {newZ}");
