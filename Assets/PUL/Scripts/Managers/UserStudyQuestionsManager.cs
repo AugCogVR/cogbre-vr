@@ -21,6 +21,7 @@ namespace PUL
         public GameObject q3Button;
         public GameObject q4Button;
         public GameObject q5Button;
+        public GameObject endButton;
 
         // END: These values are wired up in the Unity Editor
         // ====================================
@@ -97,6 +98,11 @@ namespace PUL
             q5ButtonFunction.TouchBegin.AddListener(() => QuestionButtonCallback(5));
             Interactable q5DistanceInteract = q5Button.GetComponent<Interactable>();
             q5DistanceInteract.OnClick.AddListener(() => QuestionButtonCallback(5));
+
+            PressableButtonHoloLens2 endButtonFunction = endButton.GetComponent<PressableButtonHoloLens2>();
+            endButtonFunction.TouchBegin.AddListener(() => QuestionButtonCallback(6));
+            Interactable endDistanceInteract = endButton.GetComponent<Interactable>();
+            endDistanceInteract.OnClick.AddListener(() => QuestionButtonCallback(6));
         }
 
         // Update is called once per frame
@@ -127,6 +133,10 @@ namespace PUL
 
                 case 5:
                     questionTMP.text = "Question 5:\n\nHow many times is the function part1a called if the part1d function fully executes (you examined this chain of functions in question 2)?";
+                    break;
+
+                case 6:
+                    questionTMP.text = "Thank you for your participation!";
                     break;
             }
 
