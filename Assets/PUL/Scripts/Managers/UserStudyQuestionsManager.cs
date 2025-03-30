@@ -116,7 +116,7 @@ namespace PUL
             switch (questionNum)
             {
                 case 1: 
-                    questionTMP.text = "Question 1:\n\nIn this program, an input is considered correct when a function that asks for an input returns that input value instead of zero. What specific input does the function part1a require to return a nonzero value?";
+                    questionTMP.text = "Question 1:\n\nIn this program, a user's input is considered correct when a function that asks for an input returns the user's input value instead of zero. What specific input does the function part1a require to return a nonzero value?";
                     break;
 
                 case 2:
