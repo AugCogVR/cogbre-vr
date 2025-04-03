@@ -27,6 +27,10 @@ namespace PUL
         // END: These values are wired up in the Unity Editor -> Nexus Client object
         // ====================================
 
+        // We'll receive commands from the websocket. It runs in its own thread.
+        // That thread can't create GameObjects; only the Unity main thread can.
+        // So we create a queue of actions that the socket will add to, and 
+        // we'll check it and execute those actions during Update().
         private static readonly Queue<Action> _executionQueue = new Queue<Action>();
  
         private WebSocketServer _wsServer;
@@ -73,6 +77,7 @@ namespace PUL
         // Update is called once per frame
         void Update()
         {
+            // Check the action queue and execute every pending action.
             while (_executionQueue.Count > 0)
             {
                 var action = _executionQueue.Dequeue();
@@ -80,6 +85,7 @@ namespace PUL
             }
         }
 
+        // Add an action to the action queue. 
         public void Enqueue(Action action)
         {
             lock (_executionQueue)
@@ -88,6 +94,7 @@ namespace PUL
             }
         }
 
+        // Stop the websocket server when the app quits. 
         void OnApplicationQuit()
         {
             if (_wsServer != null)
@@ -97,109 +104,116 @@ namespace PUL
         }    
     }
 
+    [System.Serializable]
+    public class ColorRGBA
+    {
+        public float r, g, b, a;
+    }
+
+    [System.Serializable]
+    public class Vector3D
+    {
+        public float x, y, z;
+    }
+
+    [System.Serializable]
+    public class Primitive
+    {
+        public string type;
+        public Vector3D position;
+        public Vector3D rotation;
+        public Vector3D scale;
+        public ColorRGBA color;
+        public string name;
+    }
+
+    [System.Serializable]
+    public class SceneData
+    {
+        public List<Primitive> primitives;
+    }
+
     public class WebSocketBehavior : WebSocketSharp.Server.WebSocketBehavior
     {
         // Delegate to create objects on the main thread
-        private Action<string> onCommandReceived;
+        private Action<string> onMessageReceived;
 
         protected override void OnOpen()
         {
             base.OnOpen();
             // Initialize the delegate to create objects on the main thread
-            onCommandReceived = CreateObjectOnMainThread;
+            onMessageReceived = ProcessPayloadOnMainThread;
         }
 
         protected override void OnMessage(WebSocketSharp.MessageEventArgs e)
         {
-            string command = e.Data;  // The message (command) from the Python MCP server
-            Debug.Log("Received command: " + command);
+            string payload = e.Data;  // The message (command) from the Python MCP server
+            Debug.Log("Received payload: " + payload);
 
-            // Invoke the object creation on the main thread
-            AIAssistantManager.Instance.Enqueue(() => onCommandReceived(command));
+            // Enqueue the object creation for later execution on the main thread
+            AIAssistantManager.Instance.Enqueue(() => onMessageReceived(payload));
         }
 
-        // Main-thread-safe object creation
-        private void CreateObjectOnMainThread(string command)
+        // Method to instantiate objects in the environment.
+        // Must execute within Unity's main thread (not directly called
+        // from websocket OnMessage).
+        private void ProcessPayloadOnMainThread(string payload)
         {
-            // Split the input string by commas, handling the quoted label
-            string[] parts = command.Split(',');
+            Debug.Log($"Payload received: {payload}");
 
-            // Extract the object type
-            string objectType = parts[0];
+            SceneData sceneData = JsonConvert.DeserializeObject<SceneData>(payload);
 
-            // Parse position
-            float posX = float.Parse(parts[1]);
-            float posY = float.Parse(parts[2]);
-            float posZ = float.Parse(parts[3]);
-            Vector3 position = new Vector3(posX, posY, posZ);
+            Debug.Log($"Payload scene has {sceneData.primitives.Count} objects");
 
-            // Parse scale
-            float scaleX = float.Parse(parts[4]);
-            float scaleY = float.Parse(parts[5]);
-            float scaleZ = float.Parse(parts[6]);
-            Vector3 scale = new Vector3(scaleX, scaleY, scaleZ);
-
-            // Parse color
-            float colorR = float.Parse(parts[7]);
-            float colorG = float.Parse(parts[8]);
-            float colorB = float.Parse(parts[9]);
-            Color color = new Color(colorR, colorG, colorB);
-
-            // Parse the label (it's the last part, which could have quotes)
-            string label = parts[10].Trim('\"');
-
-            // Instantiate the appropriate object based on the type
-            GameObject newObject = null;
-
-            switch (objectType.ToLower())
+            foreach (var primitive in sceneData.primitives)
             {
-                case "cube":
-                    newObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    break;
+                GameObject newObject = null;
 
-                case "sphere":
-                    newObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                    break;
+                switch (primitive.type.ToLower())
+                {
+                    case "cube":
+                        newObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                        break;
 
-                case "capsule":
-                    newObject = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-                    break;
+                    case "sphere":
+                        newObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                        break;
 
-                case "cylinder":
-                    newObject = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-                    break;
+                    case "capsule":
+                        newObject = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                        break;
 
-                case "plane":
-                    newObject = GameObject.CreatePrimitive(PrimitiveType.Plane);
-                    break;
+                    case "cylinder":
+                        newObject = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                        break;
 
-                case "quad":
-                    newObject = GameObject.CreatePrimitive(PrimitiveType.Quad);
-                    break;
+                    case "plane":
+                        newObject = GameObject.CreatePrimitive(PrimitiveType.Plane);
+                        break;
 
-                default:
-                    Debug.LogError("Unknown object type: " + objectType);
-                    return;
+                    case "quad":
+                        newObject = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                        break;
+
+                    default:
+                        Debug.LogError("Unknown object type: " + primitive.type);
+                        return;
+                }
+
+                newObject.transform.position = new Vector3(primitive.position.x, primitive.position.y, primitive.position.z);
+                newObject.transform.rotation = Quaternion.Euler(primitive.rotation.x, primitive.rotation.y, primitive.rotation.z);
+                newObject.transform.localScale = new Vector3(primitive.scale.x, primitive.scale.y, primitive.scale.z);
+                Renderer renderer = newObject.GetComponent<Renderer>();
+                if (renderer != null)
+                {
+                    Color color = new Color(primitive.color.r, primitive.color.g, primitive.color.b, primitive.color.a);
+                    renderer.material.color = color;
+                }            
+                newObject.name = primitive.name;
+
+                Debug.Log("Object created: " + newObject.name + " at " + newObject.transform.position); 
             }
-
-            // Set parent
-            newObject.transform.SetParent(AIAssistantManager.Instance.AIAssistantManagerObject.transform);
-
-            // Set the position, scale, and color of the object
-            newObject.transform.position = position;
-            newObject.transform.localScale = scale;
-
-            Renderer renderer = newObject.GetComponent<Renderer>();
-            if (renderer != null)
-            {
-                renderer.material.color = color;
-            }
-
-            // Set the label (for example, as the object name or using UI text)
-            newObject.name = label;
-
-            // Log the object creation
-            Debug.Log("Object created: " + newObject.name + " at " + newObject.transform.position); 
         }
     }
 }
+
