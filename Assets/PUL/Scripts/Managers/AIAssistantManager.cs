@@ -13,6 +13,7 @@ using System.Globalization;
 using LitJson;
 using WebSocketSharp;
 using WebSocketSharp.Server;
+using TMPro;
 
 namespace PUL
 {
@@ -210,6 +211,39 @@ namespace PUL
                     renderer.material.color = color;
                 }            
                 newObject.name = primitive.name;
+
+
+                // Title Text
+                // Add object to hold text 
+                GameObject textHolder = new GameObject();
+                textHolder.transform.parent = newObject.transform;
+                // Create text mesh and attach to text holder object; position above cube
+                TextMeshPro textObject = textHolder.AddComponent<TextMeshPro>();
+                RectTransform rectTransform = textHolder.GetComponent<RectTransform>();
+                rectTransform.localPosition = new Vector3(0, 1.0f, 0);
+                // Set text contents and style
+                textObject.font = Resources.Load("Fonts/LiberationSans", typeof(TMP_FontAsset)) as TMP_FontAsset;
+                textObject.color = new Color(0,0,0,1.0f);
+                textObject.text = primitive.name;
+                textObject.fontSize = 1;  
+                //textObject.autoSizeTextContainer = true;
+                textObject.alignment = TextAlignmentOptions.Center;
+
+                // Content Text
+                // Add object to hold text 
+                GameObject textHolder2 = new GameObject();
+                textHolder2.transform.parent = newObject.transform;
+                // Create text mesh and attach to text holder object; position outside cube
+                TextMeshPro textObject2 = textHolder2.AddComponent<TextMeshPro>();
+                RectTransform rectTransform2 = textHolder2.GetComponent<RectTransform>();
+                rectTransform2.localPosition = new Vector3(0, 0, -1.0f);
+                // Set text contents and style
+                textObject2.font = Resources.Load("Fonts/LiberationSans", typeof(TMP_FontAsset)) as TMP_FontAsset;
+                textObject2.color = new Color(0,0,0,1.0f);
+                textObject2.text = $"some info about\n{primitive.name}";
+                textObject2.fontSize = 0.25f;  
+                textObject2.alignment = TextAlignmentOptions.Center;
+
 
                 Debug.Log("Object created: " + newObject.name + " at " + newObject.transform.position); 
             }
