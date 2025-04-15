@@ -14,6 +14,7 @@ using LitJson;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 using TMPro;
+using Microsoft.MixedReality.Toolkit.UI;
 
 namespace PUL
 {
@@ -25,8 +26,18 @@ namespace PUL
 
         public GameObject AIAssistantManagerObject; 
 
+        public GameObject VisHandlePrefab = null;
+
+        public GameObject GraphEdgePrefab = null;
+
+        public float visHandleScale = 1f;
+
         // END: These values are wired up in the Unity Editor -> Nexus Client object
         // ====================================
+
+        // Keep track of all the active visualizations
+        public int visCounter = 0;
+        List<GameObject> visList;
 
         // We'll receive commands from the websocket. It runs in its own thread.
         // That thread can't create GameObjects; only the Unity main thread can.
@@ -62,6 +73,8 @@ namespace PUL
                 _instance = this;
             }
             DontDestroyOnLoad(this);
+
+            visList = new List<GameObject>();
         }
 
         // Start is called before the first frame update if object is active
@@ -69,7 +82,7 @@ namespace PUL
         {
             // Create a new WebSocket server that listens on localhost:8080
             _wsServer = new WebSocketServer("ws://localhost:8989");
-            _wsServer.AddWebSocketService<WebSocketBehavior>("/geometry");
+            _wsServer.AddWebSocketService<WebSocketBehavior>("/vis");
             _wsServer.Start();
 
             Debug.Log("WebSocket server started on ws://localhost:8989");
@@ -103,81 +116,81 @@ namespace PUL
                 _wsServer.Stop();
             }
         }    
-    }
 
-    [System.Serializable]
-    public class ColorRGBA
-    {
-        public float r, g, b, a;
-    }
-
-    [System.Serializable]
-    public class Vector3D
-    {
-        public float x, y, z;
-    }
-
-    [System.Serializable]
-    public class Primitive
-    {
-        public string type;
-        public Vector3D position;
-        public Vector3D rotation;
-        public Vector3D scale;
-        public ColorRGBA color;
-        public string name;
-    }
-
-    [System.Serializable]
-    public class VisData
-    {
-        public string payload_type;
-        public string id;
-        public List<Primitive> primitives;
-    }
-
-    [System.Serializable]
-    public class Edge
-    {
-        public string source;
-        public string target;
-    }
-
-    [System.Serializable]
-    public class GraphData
-    {
-        public string payload_type;
-        public string id;
-        public List<Primitive> nodes;
-        public List<Edge> edges;
-    }
-
-    public class WebSocketBehavior : WebSocketSharp.Server.WebSocketBehavior
-    {
-        // Delegate to create objects on the main thread
-        private Action<string> onMessageReceived;
-
-        protected override void OnOpen()
+        class WebSocketBehavior : WebSocketSharp.Server.WebSocketBehavior
         {
-            base.OnOpen();
-            // Initialize the delegate to create objects on the main thread
-            onMessageReceived = ProcessPayloadOnMainThread;
+            // Delegate to create objects on the main thread
+            private Action<string> onMessageReceived;
+
+            protected override void OnOpen()
+            {
+                base.OnOpen();
+                // Initialize the delegate to create objects on the main thread
+                onMessageReceived = AIAssistantManager.Instance.ProcessPayloadOnMainThread;
+            }
+
+            protected override void OnMessage(WebSocketSharp.MessageEventArgs e)
+            {
+                string payload = e.Data;  // The message (command) from the Python MCP server
+                Debug.Log("Received payload: " + payload);
+
+                // Enqueue the object creation for later execution on the main thread
+                AIAssistantManager.Instance.Enqueue(() => onMessageReceived(payload));
+            }
         }
 
-        protected override void OnMessage(WebSocketSharp.MessageEventArgs e)
+        [System.Serializable]
+        public class ColorRGBA
         {
-            string payload = e.Data;  // The message (command) from the Python MCP server
-            Debug.Log("Received payload: " + payload);
+            public float r, g, b, a;
+        }
 
-            // Enqueue the object creation for later execution on the main thread
-            AIAssistantManager.Instance.Enqueue(() => onMessageReceived(payload));
+        [System.Serializable]
+        public class Vector3D
+        {
+            public float x, y, z;
+        }
+
+        [System.Serializable]
+        public class Primitive
+        {
+            public string type;
+            public Vector3D position;
+            public Vector3D rotation;
+            public Vector3D scale;
+            public ColorRGBA color;
+            public string name;
+        }
+
+        [System.Serializable]
+        public class VisData
+        {
+            public string payload_type;
+            public string id;
+            public List<Primitive> primitives;
+        }
+
+        [System.Serializable]
+        public class Edge
+        {
+            public string source;
+            public string target;
+        }
+
+        [System.Serializable]
+        public class GraphData
+        {
+            public string payload_type;
+            public string id;
+            public List<Primitive> nodes;
+            public List<Edge> edges;
         }
 
         // Method to process the payload of incoming messages. Since it will
         // likely create/update/destroy objects in the scene, it 
         // must execute within Unity's main thread (not directly called
         // from websocket OnMessage).
-        private void ProcessPayloadOnMainThread(string payload)
+        public void ProcessPayloadOnMainThread(string payload)
         {
             Debug.Log($"Payload received: {payload}");
 
@@ -205,11 +218,13 @@ namespace PUL
             {
                 VisData visData = JsonConvert.DeserializeObject<VisData>(payload);
 
-                Debug.Log($"Vis has {visData.primitives.Count} objects");
+                Debug.Log($"Vis {visData.id} has {visData.primitives.Count} objects");
+
+                GameObject visHandle = createVisHandle(visData.id);
 
                 foreach (Primitive primitive in visData.primitives)
                 {
-                    createPrimitive(primitive);
+                    createPrimitive(primitive, visHandle);
                 }
             }
             catch (Exception e)
@@ -224,11 +239,13 @@ namespace PUL
             {
                 GraphData graphData = JsonConvert.DeserializeObject<GraphData>(payload);
 
-                Debug.Log($"Graph has {graphData.nodes.Count} objects");
+                Debug.Log($"Graph {graphData.id} has {graphData.nodes.Count} nodes");
+
+                GameObject visHandle = createVisHandle(graphData.id);
 
                 foreach (Primitive primitive in graphData.nodes)
                 {
-                    createPrimitive(primitive);
+                    createPrimitive(primitive, visHandle);
                 }
             }
             catch (Exception e)
@@ -236,8 +253,7 @@ namespace PUL
                 Debug.Log($"Exception processing graph: {e.Message}");
             }
         }
-
-        private GameObject createPrimitive(Primitive primitive)
+        private GameObject createPrimitive(Primitive primitive, GameObject visHandle)
         {
             GameObject newObject = null;
 
@@ -282,6 +298,7 @@ namespace PUL
                 renderer.material.color = color;
             }            
             newObject.name = primitive.name;
+            newObject.transform.parent = visHandle.transform;
 
             // Title Text
             // Add object to hold text 
@@ -316,6 +333,41 @@ namespace PUL
 
             Debug.Log("Object created: " + newObject.name + " at " + newObject.transform.position); 
             return newObject;
+        }
+
+        private GameObject createVisHandle(string label)
+        {
+            GameObject visHandle = Instantiate(VisHandlePrefab, GameManager.Instance.getSpawnPosition(), GameManager.Instance.getSpawnRotation());
+            visHandle.transform.rotation = Quaternion.LookRotation(visHandle.transform.position - Camera.main.transform.position);
+            visCounter++;
+            visHandle.name = $"vis{visCounter}";
+
+            Debug.Log($"VisHandle {label} created at {GameManager.Instance.getSpawnPosition()}");
+
+            // Set the label
+            TextMeshPro nodeTitleTMP = visHandle.transform.Find("TextBar/TextTMP").gameObject.GetComponent<TextMeshPro>();
+            nodeTitleTMP.text = label;
+
+            // Wire up graph close button
+            GameObject closeButton = visHandle.transform.Find("CloseGraphButton").gameObject;
+            PressableButtonHoloLens2 buttonFunction = closeButton.GetComponent<PressableButtonHoloLens2>();
+            buttonFunction.TouchBegin.AddListener(() => DestroyVisCallback(visHandle));
+            Interactable distanceInteract = closeButton.GetComponent<Interactable>();
+            distanceInteract.OnClick.AddListener(() => DestroyVisCallback(visHandle));
+
+            visList.Add(visHandle);
+
+            return visHandle;
+        }
+
+        // Destroy a visualizatiobn attached to the provided visHandle
+        public void DestroyVisCallback(GameObject visHandle)
+        {
+            // Remove from vis list.
+            visList.Remove(visHandle);
+
+            // Destroy the game object.
+            Destroy(visHandle);
         }
     }
 }
