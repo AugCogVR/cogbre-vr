@@ -218,7 +218,7 @@ namespace PUL
             {
                 VisData visData = JsonConvert.DeserializeObject<VisData>(payload);
 
-                Debug.Log($"Vis {visData.id} has {visData.primitives.Count} objects");
+                Debug.Log($"VIS: Vis {visData.id} has {visData.primitives.Count} objects");
 
                 GameObject visHandle = createVisHandle(visData.id);
 
@@ -239,13 +239,86 @@ namespace PUL
             {
                 GraphData graphData = JsonConvert.DeserializeObject<GraphData>(payload);
 
-                Debug.Log($"Graph {graphData.id} has {graphData.nodes.Count} nodes");
+                // Debug.Log($"VIS: Graph {graphData.id} has {graphData.nodes.Count} nodes");
 
                 GameObject visHandle = createVisHandle(graphData.id);
 
-                foreach (Primitive primitive in graphData.nodes)
+                Dictionary<string, GameObject> nodeDict = new Dictionary<string, GameObject>();
+
+                foreach (Primitive nodeGeo in graphData.nodes)
                 {
-                    createPrimitive(primitive, visHandle);
+                    GameObject node = createPrimitive(nodeGeo, visHandle);
+                    if (!(nodeDict.ContainsKey(nodeGeo.name)))
+                        nodeDict[nodeGeo.name] = node;
+                    else
+                        Debug.Log($"VIS: Node name {nodeGeo.name} used multiple times");
+                }
+
+                foreach (Edge edge in graphData.edges)
+                {
+                    GameObject source = null;
+                    GameObject target = null;
+
+                    if (nodeDict.ContainsKey(edge.source))
+                        source = nodeDict[edge.source];
+                    else
+                        Debug.Log($"VIS: Edge source {edge.source} not found in node list");
+
+                    if (nodeDict.ContainsKey(edge.target))
+                        target = nodeDict[edge.target];
+                    else
+                        Debug.Log($"VIS: Edge target {edge.target} not found in node list");
+
+                    if ((source != null) && (target != null))
+                    {
+                        // Put a connecting arrow in the environment
+                        // Debug.Log($"VIS: Build arrow from {edge.source} to {edge.target}");
+
+
+
+                        Vector3 startPos = source.transform.position;
+                        Vector3 endPos = target.transform.position;
+                        Vector3 direction = endPos - startPos;
+                        float distance = direction.magnitude;
+
+                        // Create the edge line
+                        GameObject edgeObj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                        edgeObj.name = $"edge_{edge.source}_{edge.target}";
+                        edgeObj.transform.position = startPos + direction / 2;
+                        edgeObj.transform.up = direction.normalized; 
+                        edgeObj.transform.localScale = new Vector3(0.1f, distance / 2, 0.1f); 
+                        Renderer renderer = edgeObj.GetComponent<Renderer>();
+                        renderer.material.color = new Color(0.4f, 0.4f, 0.4f, 0.5f);
+                        edgeObj.transform.parent = visHandle.transform;
+
+                        // Create the arrowhead
+                        GameObject graphEdgePrefab = GraphManager.Instance.GraphEdgePrefab;
+                        GameObject arrowhead = Instantiate(graphEdgePrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
+                        arrowhead.transform.localScale = new Vector3(20f, 30f, 20f); // yay magic values
+                        arrowhead.transform.position = endPos - direction.normalized * 0.6f;
+                        arrowhead.transform.rotation = Quaternion.LookRotation(direction);
+                        // arrowhead.transform.Rotate(90f, 0f, 0f); // Align if needed
+                        arrowhead.transform.Rotate(Vector3.up * -90); // Rotate the model to head the right way
+                        arrowhead.transform.parent = edgeObj.transform;
+
+
+
+                        // GameObject graphEdgePrefab = GraphManager.Instance.GraphEdgePrefab;
+                        // GameObject graphEdge = Instantiate(graphEdgePrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
+                        // graphEdge.transform.SetParent(visHandle.transform, false);
+                        // // Attach line renderer
+                        // LineRenderer lineRenderer = graphEdge.AddComponent<LineRenderer>();
+                        // lineRenderer.startWidth = 0.05f;
+                        // lineRenderer.endWidth = 0.05f;
+                        // lineRenderer.material = new Material(Shader.Find("Legacy Shaders/Particles/Alpha Blended Premultiply")); // This is apparently the new location for the "default-line" material per some rando on the internet
+                        // lineRenderer.SetPosition(0, source.transform.position); // TODO: Adjust for node size so ends aren't buried in objects
+                        // lineRenderer.SetPosition(1, target.transform.position);
+                        // // Orient the arrow head
+                        // graphEdge.transform.position = source.transform.position; // start at source
+                        // graphEdge.transform.LookAt(target.transform.position); // look at target
+                        // graphEdge.transform.position = target.transform.position; // move to target
+                        // graphEdge.transform.Rotate(Vector3.up * -90); // Rotate the model to head the right way
+                    }
                 }
             }
             catch (Exception e)
@@ -253,6 +326,7 @@ namespace PUL
                 Debug.Log($"Exception processing graph: {e.Message}");
             }
         }
+
         private GameObject createPrimitive(Primitive primitive, GameObject visHandle)
         {
             GameObject newObject = null;
@@ -331,7 +405,7 @@ namespace PUL
             textObject2.fontSize = 0.25f;  
             textObject2.alignment = TextAlignmentOptions.Center;
 
-            Debug.Log("Object created: " + newObject.name + " at " + newObject.transform.position); 
+            // Debug.Log("VIS: Object created: " + newObject.name + " at " + newObject.transform.position); 
             return newObject;
         }
 
