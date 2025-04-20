@@ -183,16 +183,35 @@ namespace PUL
         // comma-separated object name, position, and orientation.
         public async void NexusSessionUpdate(string command)
         {
-            // Send user telemetry to Nexus and await response
-            string responseJson = await NexusSyncTask(command);
+            // Send session update to Nexus and await response
+            string responseJSONString = await NexusSyncTask(command);
+            // if (responseJSONString != "{}")
+            //     Debug.Log($"NexusClient: Session update response JSON: {responseJSONString}");
 
-            // Process the response. It may contain an update to the 
-            // session configuration provided by the Nexus.
-            JsonData responseJsonData = JsonMapper.ToObject(responseJson);
+            // Process the response. 
+            JsonData responseJSON = JsonMapper.ToObject(responseJSONString);
+
+            // Check for AI payload
+            try
+            {
+                // If there is an AI payload, pass it to the AI Manager.
+                string payload = (string)responseJSON["ai_payload"];
+                // Debug.Log($"NexusClient: Received AI payload: {payload}");
+                AIAssistantManager.Instance.AcceptAIPayload(payload);
+            }
+            catch (Exception e)
+            {
+                // Fail silently; assume JSON was missing key "ai_payload" and do nothing further.
+                // Newer versions of LitJson include "ContainsKey()" that we could use to check for 
+                // the key instead of doing this try...catch dance, but we have an old 
+                // version of LitJson that Viveport depends on.
+            }
+
+            // Check for config update
             try
             {
                 // If there is a config update, pass it to the Config Manager.
-                JsonData configJsonData = responseJsonData["config_update"];
+                JsonData configJsonData = responseJSON["config_update"];
                 ConfigManager.Instance.SetConfigFromJSON(configJsonData);
             }
             catch (Exception e)
