@@ -324,12 +324,14 @@ namespace PUL
                     break;
 
                 default:
-                    Debug.Log("Create primitive: Unknown object type: " + primitive.type);
+                    Debug.Log($"Create primitive: Unknown object type: {primitive.type} -- substituting Cube");
+                    newObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+
                     return newObject;
             }
 
-            newObject.transform.position = new Vector3(primitive.position.x, primitive.position.y, primitive.position.z);
-            newObject.transform.rotation = Quaternion.Euler(primitive.rotation.x, primitive.rotation.y, primitive.rotation.z);
+            newObject.transform.position = new Vector3(-primitive.position.x, primitive.position.y, primitive.position.z);
+            newObject.transform.rotation = Quaternion.Euler(primitive.rotation.x, primitive.rotation.y + 180f, primitive.rotation.z);
             newObject.transform.localScale = new Vector3(primitive.scale.x, primitive.scale.y, primitive.scale.z);
             Renderer renderer = newObject.GetComponent<Renderer>();
             if (renderer != null)
